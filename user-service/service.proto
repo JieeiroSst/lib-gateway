@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./pb";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service UserService {
+
+}
