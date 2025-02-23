@@ -6,8 +6,126 @@ package user;
 option go_package = "./pb";
 
 import "google/api/annotations.proto";
-import "google/protobuf/timestamp.proto";
 
 service AuthorizeService {
+    rpc Authorize(CasbinAuth) returns (OTP) {
+        option (google.api.http) = {
+            post: "/casbin/authorize"
+            body: "*"
+        };
+    }
+    
+    rpc GetCasbinRules(CasbinRequest) returns (CasbinRuleList) {
+        option (google.api.http) = {
+            get: "/casbin"
+        };
+    }
+    
+    rpc GetCasbinRuleById(CasbinRuleId) returns (CasbinRule) {
+        option (google.api.http) = {
+            get: "/casbin/{id}"
+        };
+    }
+    
+    rpc CreateCasbinRule(CasbinRule) returns (CasbinRule) {
+        option (google.api.http) = {
+            post: "/casbin"
+            body: "*"
+        };
+    }
+    
+    rpc DeleteCasbinRule(CasbinRuleId) returns (DeleteCasbinRuleResponse) {
+        option (google.api.http) = {
+            delete: "/casbin/{id}"
+        };
+    }
+    
+    rpc UpdateCasbinRule(UpdateCasbinRuleRequest) returns (CasbinRule) {
+        option (google.api.http) = {
+            put: "/casbin/{id}/{field}/{value}"
+        };
+    }
 
+    rpc CreateOTP(CreateOTPRequest) returns (CreateOTPResponse) {
+        option (google.api.http) = {
+            post: "/otp"
+            body: "*"
+        };
+    }
+
+    rpc AuthorizeOTP(AuthorizeOTPRequest) returns (AuthorizeOTPResponse) {
+        option (google.api.http) = {
+            post: "/otp/authorize"
+            body: "*"
+        };
+    }
+}
+
+
+message CasbinRule {
+    int32 id = 1;       
+    string ptype = 2;
+    string v0 = 3;
+    string v1 = 4;
+    string v2 = 5;
+    string v3 = 6;
+    string v4 = 7;
+    string v5 = 8;
+}
+  
+message CasbinAuth {
+    string sub = 1;  // Subject
+    string obj = 2;  // Object
+    string act = 3;  // Action
+}
+  
+message OTP {
+    string otp = 1;
+}
+
+message CasbinRuleId {
+    int32 id = 1;
+}
+
+message CasbinRuleList {
+    repeated CasbinRule rules = 1;
+}
+
+message CasbinRequest {
+    int32 limit = 1;
+    int32 page = 2;
+    string sort = 3;
+    int64 total_rows = 4;
+    int32 total_pages = 5;
+}
+
+message UpdateCasbinRuleRequest {
+    int32 id = 1;
+    string field = 2;  // ptype, name, endpoint, method
+    string value = 3;
+}
+
+message DeleteCasbinRuleResponse {
+    bool success = 1;
+}
+
+message CreateOTPRequest {
+    string user_id = 1;   
+    string username = 2; 
+}
+
+message CreateOTPResponse {
+    string otp = 1;
+    int64 expires_at = 2; 
+}
+
+message AuthorizeOTPRequest {
+    string otp = 1;
+    string user_id = 2;   
+    string username = 3;
+}
+
+message AuthorizeOTPResponse {
+    bool valid = 1;
+    string message = 2;
 }
