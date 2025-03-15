@@ -57,35 +57,33 @@ service UserService {
         };
     }
 
-    
-      // Find users with optional filters
     rpc FindUser(FindUserRequest) returns (FindUserResponse) {
         option (google.api.http) = {
           get: "/user"
         };
     }
 
-    rpc AddRole(AddRoleRequest) returns (AddRoleResponse) {
+    rpc AddRole(AddRoleItemRequest) returns (AddRoleItemResponse) {
         option (google.api.http) = {
           post: "/api/v1/role-item"
           body: "*"
         };
     }
     
-    rpc UpdateItemRole(UpdateRoleRequest) returns (UpdateRoleResponse) {
+    rpc UpdateItemRole(UpdateRoleItemRequest) returns (UpdateRoleItemResponse) {
         option (google.api.http) = {
           put: "/api/v1/role-item"
           body: "*"
         };
     }
     
-    rpc RemoveRole(RemoveRoleRequest) returns (RemoveRoleResponse) {
+    rpc RemoveRole(RemoveRoleItemRequest) returns (RemoveRoleItemResponse) {
         option (google.api.http) = {
           delete: "/api/v1/role-item"
         };
     }
     
-    rpc GetRole(GetRoleRequest) returns (Role) {
+    rpc GetRole(GetRoleRequest) returns (GetRoleResponse) {
         option (google.api.http) = {
           get: "/api/v1/role/{id}"
         };
@@ -97,21 +95,21 @@ service UserService {
         };
     }
     
-    rpc CreateRole(Role) returns (CreateRoleResponse) {
+    rpc CreateRole(CreateRoleResquest) returns (CreateRoleResponse) {
         option (google.api.http) = {
           post: "/api/v1/role"
           body: "*"
         };
     }
     
-    rpc UpdateRole(Role) returns (UpdateRoleResponse) {
+    rpc UpdateRole(UpdateRoleRequest) returns (UpdateRoleResponse) {
         option (google.api.http) = {
           put: "/api/v1/role"
           body: "*"
         };
     }
     
-    rpc DeleteRole(GetRoleRequest) returns (DeleteRoleResponse) {
+    rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse) {
         option (google.api.http) = {
           delete: "/api/v1/role"
         };
@@ -192,31 +190,31 @@ message RoleResponse {
     string message = 2;
 }
   
-  message RemoveRoleResponse {
+  message RemoveRoleItemResponse {
     string message = 1;
 }
 
-message AddRoleRequest {
+message AddRoleItemRequest {
     int32 user_id = 1;
     int32 role_id = 2;
 }
   
-message AddRoleResponse {
+message AddRoleItemResponse {
     Role role = 1;
     string message = 2;
 }
   
-message UpdateRoleRequest {
+message UpdateRoleItemRequest {
     int32 user_id = 1;
     int32 role_id = 2;
 }
   
-message UpdateRoleResponse {
+message UpdateRoleItemResponse {
     Role role = 1;
     string message = 2;
 }
   
-message RemoveRoleRequest {
+message RemoveRoleItemRequest {
     int32 user_id = 1;
 }
 
@@ -243,7 +241,8 @@ message GetRoleRequest {
 }
 
 message ListRolesRequest {
-
+    int32 limit = 1;
+    int32 page = 2;
 }
 
 message SignUpRequest {
@@ -330,4 +329,28 @@ message RefreshResponse {
     string new_session_token = 1;
     string new_refresh_token = 2;
     int64 expiry_time = 3;
+}
+
+message GetRoleResponse {
+    Role role = 1;
+    string message = 2;
+}
+
+message UpdateRoleRequest {
+    int32 id = 1;
+    string name = 2;
+}
+
+message UpdateRoleResponse {
+    Role role = 1;
+    string message = 2;
+}
+
+message DeleteRoleRequest {
+    int32 id = 1;
+}
+
+message CreateRoleResquest {
+    int32 id = 1;
+    string name = 2;
 }

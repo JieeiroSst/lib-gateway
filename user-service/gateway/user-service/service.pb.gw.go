@@ -255,7 +255,7 @@ func local_request_UserService_FindUser_0(ctx context.Context, marshaler runtime
 
 func request_UserService_AddRole_0(ctx context.Context, marshaler runtime.Marshaler, client UserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq AddRoleRequest
+		protoReq AddRoleItemRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -267,7 +267,7 @@ func request_UserService_AddRole_0(ctx context.Context, marshaler runtime.Marsha
 
 func local_request_UserService_AddRole_0(ctx context.Context, marshaler runtime.Marshaler, server UserServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq AddRoleRequest
+		protoReq AddRoleItemRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -279,7 +279,7 @@ func local_request_UserService_AddRole_0(ctx context.Context, marshaler runtime.
 
 func request_UserService_UpdateItemRole_0(ctx context.Context, marshaler runtime.Marshaler, client UserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq UpdateRoleRequest
+		protoReq UpdateRoleItemRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -291,7 +291,7 @@ func request_UserService_UpdateItemRole_0(ctx context.Context, marshaler runtime
 
 func local_request_UserService_UpdateItemRole_0(ctx context.Context, marshaler runtime.Marshaler, server UserServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq UpdateRoleRequest
+		protoReq UpdateRoleItemRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -305,7 +305,7 @@ var filter_UserService_RemoveRole_0 = &utilities.DoubleArray{Encoding: map[strin
 
 func request_UserService_RemoveRole_0(ctx context.Context, marshaler runtime.Marshaler, client UserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq RemoveRoleRequest
+		protoReq RemoveRoleItemRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {
@@ -320,7 +320,7 @@ func request_UserService_RemoveRole_0(ctx context.Context, marshaler runtime.Mar
 
 func local_request_UserService_RemoveRole_0(ctx context.Context, marshaler runtime.Marshaler, server UserServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq RemoveRoleRequest
+		protoReq RemoveRoleItemRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {
@@ -369,11 +369,19 @@ func local_request_UserService_GetRole_0(ctx context.Context, marshaler runtime.
 	return msg, metadata, err
 }
 
+var filter_UserService_ListRoles_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
 func request_UserService_ListRoles_0(ctx context.Context, marshaler runtime.Marshaler, client UserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq ListRolesRequest
 		metadata runtime.ServerMetadata
 	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_UserService_ListRoles_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	msg, err := client.ListRoles(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -383,13 +391,19 @@ func local_request_UserService_ListRoles_0(ctx context.Context, marshaler runtim
 		protoReq ListRolesRequest
 		metadata runtime.ServerMetadata
 	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_UserService_ListRoles_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	msg, err := server.ListRoles(ctx, &protoReq)
 	return msg, metadata, err
 }
 
 func request_UserService_CreateRole_0(ctx context.Context, marshaler runtime.Marshaler, client UserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq Role
+		protoReq CreateRoleResquest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -401,7 +415,7 @@ func request_UserService_CreateRole_0(ctx context.Context, marshaler runtime.Mar
 
 func local_request_UserService_CreateRole_0(ctx context.Context, marshaler runtime.Marshaler, server UserServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq Role
+		protoReq CreateRoleResquest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -413,7 +427,7 @@ func local_request_UserService_CreateRole_0(ctx context.Context, marshaler runti
 
 func request_UserService_UpdateRole_0(ctx context.Context, marshaler runtime.Marshaler, client UserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq Role
+		protoReq UpdateRoleRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -425,7 +439,7 @@ func request_UserService_UpdateRole_0(ctx context.Context, marshaler runtime.Mar
 
 func local_request_UserService_UpdateRole_0(ctx context.Context, marshaler runtime.Marshaler, server UserServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq Role
+		protoReq UpdateRoleRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -439,7 +453,7 @@ var filter_UserService_DeleteRole_0 = &utilities.DoubleArray{Encoding: map[strin
 
 func request_UserService_DeleteRole_0(ctx context.Context, marshaler runtime.Marshaler, client UserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq GetRoleRequest
+		protoReq DeleteRoleRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {
@@ -454,7 +468,7 @@ func request_UserService_DeleteRole_0(ctx context.Context, marshaler runtime.Mar
 
 func local_request_UserService_DeleteRole_0(ctx context.Context, marshaler runtime.Marshaler, server UserServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq GetRoleRequest
+		protoReq DeleteRoleRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {
