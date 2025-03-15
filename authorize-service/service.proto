@@ -8,7 +8,7 @@ option go_package = "./pb";
 import "google/api/annotations.proto";
 
 service AuthorizeService {
-    rpc Authorize(CasbinAuth) returns (OTP) {
+    rpc Authorize(CasbinAuth) returns (AuthorizeResponse) {
         option (google.api.http) = {
             post: "/casbin/authorize"
             body: "*"
@@ -69,6 +69,11 @@ service AuthorizeService {
 }
 
 
+message AuthorizeResponse {
+    string message = 1;
+    bool error = 2;
+}
+
 message CasbinRule {
     int32 id = 1;       
     string ptype = 2;
@@ -95,7 +100,12 @@ message CasbinRuleId {
 }
 
 message CasbinRuleList {
-    repeated CasbinRule rules = 1;
+    int32 limit = 1;
+    int32 page = 2;
+    string sort = 3;
+    int64 total_rows = 4;
+    int32 total_pages = 5;
+    repeated CasbinRule rows = 6;
 }
 
 message CasbinRequest {
