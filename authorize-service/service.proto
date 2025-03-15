@@ -59,6 +59,13 @@ service AuthorizeService {
             body: "*"
         };
     }
+
+    rpc EnforceCasbin(CasbinRuleRequest) returns (CasbinRuleReponse) {
+        option (google.api.http) = {
+            post: "/casbin/enforce"
+            body: "*"
+        };
+    }
 }
 
 
@@ -129,3 +136,15 @@ message AuthorizeOTPResponse {
     bool valid = 1;
     string message = 2;
 }
+
+message CasbinRuleRequest {
+    string sub = 1;
+    string obj = 2;
+    string act = 3;
+
+};
+
+message CasbinRuleReponse {
+    string message = 1;
+    bool error = 2;
+};

@@ -27,6 +27,7 @@ const (
 	AuthorizeService_UpdateCasbinRule_FullMethodName  = "/user.AuthorizeService/UpdateCasbinRule"
 	AuthorizeService_CreateOTP_FullMethodName         = "/user.AuthorizeService/CreateOTP"
 	AuthorizeService_AuthorizeOTP_FullMethodName      = "/user.AuthorizeService/AuthorizeOTP"
+	AuthorizeService_EnforceCasbin_FullMethodName     = "/user.AuthorizeService/EnforceCasbin"
 )
 
 // AuthorizeServiceClient is the client API for AuthorizeService service.
@@ -41,6 +42,7 @@ type AuthorizeServiceClient interface {
 	UpdateCasbinRule(ctx context.Context, in *UpdateCasbinRuleRequest, opts ...grpc.CallOption) (*CasbinRule, error)
 	CreateOTP(ctx context.Context, in *CreateOTPRequest, opts ...grpc.CallOption) (*CreateOTPResponse, error)
 	AuthorizeOTP(ctx context.Context, in *AuthorizeOTPRequest, opts ...grpc.CallOption) (*AuthorizeOTPResponse, error)
+	EnforceCasbin(ctx context.Context, in *CasbinRuleRequest, opts ...grpc.CallOption) (*CasbinRuleReponse, error)
 }
 
 type authorizeServiceClient struct {
@@ -131,6 +133,16 @@ func (c *authorizeServiceClient) AuthorizeOTP(ctx context.Context, in *Authorize
 	return out, nil
 }
 
+func (c *authorizeServiceClient) EnforceCasbin(ctx context.Context, in *CasbinRuleRequest, opts ...grpc.CallOption) (*CasbinRuleReponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CasbinRuleReponse)
+	err := c.cc.Invoke(ctx, AuthorizeService_EnforceCasbin_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthorizeServiceServer is the server API for AuthorizeService service.
 // All implementations must embed UnimplementedAuthorizeServiceServer
 // for forward compatibility.
@@ -143,6 +155,7 @@ type AuthorizeServiceServer interface {
 	UpdateCasbinRule(context.Context, *UpdateCasbinRuleRequest) (*CasbinRule, error)
 	CreateOTP(context.Context, *CreateOTPRequest) (*CreateOTPResponse, error)
 	AuthorizeOTP(context.Context, *AuthorizeOTPRequest) (*AuthorizeOTPResponse, error)
+	EnforceCasbin(context.Context, *CasbinRuleRequest) (*CasbinRuleReponse, error)
 	mustEmbedUnimplementedAuthorizeServiceServer()
 }
 
@@ -176,6 +189,9 @@ func (UnimplementedAuthorizeServiceServer) CreateOTP(context.Context, *CreateOTP
 }
 func (UnimplementedAuthorizeServiceServer) AuthorizeOTP(context.Context, *AuthorizeOTPRequest) (*AuthorizeOTPResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthorizeOTP not implemented")
+}
+func (UnimplementedAuthorizeServiceServer) EnforceCasbin(context.Context, *CasbinRuleRequest) (*CasbinRuleReponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnforceCasbin not implemented")
 }
 func (UnimplementedAuthorizeServiceServer) mustEmbedUnimplementedAuthorizeServiceServer() {}
 func (UnimplementedAuthorizeServiceServer) testEmbeddedByValue()                          {}
@@ -342,6 +358,24 @@ func _AuthorizeService_AuthorizeOTP_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthorizeService_EnforceCasbin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CasbinRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthorizeServiceServer).EnforceCasbin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthorizeService_EnforceCasbin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthorizeServiceServer).EnforceCasbin(ctx, req.(*CasbinRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthorizeService_ServiceDesc is the grpc.ServiceDesc for AuthorizeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -380,6 +414,10 @@ var AuthorizeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthorizeOTP",
 			Handler:    _AuthorizeService_AuthorizeOTP_Handler,
+		},
+		{
+			MethodName: "EnforceCasbin",
+			Handler:    _AuthorizeService_EnforceCasbin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
