@@ -1,0 +1,331 @@
+syntax = "proto3";
+
+package point;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "./pd";
+
+service RewardPointsService {
+  rpc GetRewardPoint(GetRewardPointRequest) returns (GetRewardPointResponse) {
+    option (google.api.http) = {
+      get: "/v1/reward-points/{reward_points_id}"
+    };
+  }
+  rpc ListRewardPoints(ListRewardPointsRequest) returns (ListRewardPointsResponse) {
+    option (google.api.http) = {
+      get: "/v1/reward-points"
+    };
+  }
+  rpc CreateRewardPoint(CreateRewardPointRequest) returns (CreateRewardPointResponse) {
+    option (google.api.http) = {
+      post: "/v1/reward-points"
+      body: "*"
+    };
+  }
+  rpc UpdateRewardPoint(UpdateRewardPointRequest) returns (UpdateRewardPointResponse) {
+    option (google.api.http) = {
+      put: "/v1/reward-points/{reward_points_id}"
+      body: "*"
+    };
+  }
+  rpc DeleteRewardPoint(DeleteRewardPointRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/reward-points/{reward_points_id}"
+    };
+  }
+  
+  rpc GetRewardDiscount(GetRewardDiscountRequest) returns (GetRewardDiscountResponse) {
+    option (google.api.http) = {
+      get: "/v1/reward-discounts/{reward_discount_id}"
+    };
+  }
+  rpc ListRewardDiscounts(ListRewardDiscountsRequest) returns (ListRewardDiscountsResponse) {
+    option (google.api.http) = {
+      get: "/v1/reward-discounts"
+    };
+  }
+  rpc CreateRewardDiscount(CreateRewardDiscountRequest) returns (CreateRewardDiscountResponse) {
+    option (google.api.http) = {
+      post: "/v1/reward-discounts"
+      body: "*"
+    };
+  }
+  rpc UpdateRewardDiscount(UpdateRewardDiscountRequest) returns (UpdateRewardDiscountResponse) {
+    option (google.api.http) = {
+      put: "/v1/reward-discounts/{reward_discount_id}"
+      body: "*"
+    };
+  }
+  rpc DeleteRewardDiscount(DeleteRewardDiscountRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/reward-discounts/{reward_discount_id}"
+    };
+  }
+  
+  rpc GetConvertedRewardPoint(GetConvertedRewardPointRequest) returns (GetConvertedRewardPointResponse) {
+    option (google.api.http) = {
+      get: "/v1/converted-reward-points/{rew_convert_id}"
+    };
+  }
+  rpc ListConvertedRewardPoints(ListConvertedRewardPointsRequest) returns (ListConvertedRewardPointsResponse) {
+    option (google.api.http) = {
+      get: "/v1/converted-reward-points"
+    };
+  }
+  rpc CreateConvertedRewardPoint(CreateConvertedRewardPointRequest) returns (CreateConvertedRewardPointResponse) {
+    option (google.api.http) = {
+      post: "/v1/converted-reward-points"
+      body: "*"
+    };
+  }
+  rpc UpdateConvertedRewardPoint(UpdateConvertedRewardPointRequest) returns (UpdateConvertedRewardPointResponse) {
+    option (google.api.http) = {
+      put: "/v1/converted-reward-points/{rew_convert_id}"
+      body: "*"
+    };
+  }
+  rpc DeleteConvertedRewardPoint(DeleteConvertedRewardPointRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/converted-reward-points/{rew_convert_id}"
+    };
+  }
+  
+  rpc ConvertPoints(ConvertPointsRequest) returns (ConvertPointsResponse) {
+    option (google.api.http) = {
+      post: "/v1/reward-points/{reward_points_id}/convert"
+      body: "*"
+    };
+  }
+  rpc GetPointsHistory(GetPointsHistoryRequest) returns (GetPointsHistoryResponse) {
+    option (google.api.http) = {
+      get: "/v1/reward-points/{reward_points_id}/history"
+    };
+  }
+}
+
+message RewardPoint {
+  string reward_points_id = 1;
+  int32 total_points = 2;
+  int32 points_pending = 3;
+  int32 points_active = 4;
+  int32 points_expired = 5;
+  int32 points_converted = 6;
+  int32 points_cancelled = 7;
+  int64 activate_date = 8;
+  int64 expire_date = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+message GetRewardPointRequest {
+  string reward_points_id = 1;
+}
+
+message GetRewardPointResponse {
+  RewardPoint reward_point = 1;
+}
+
+message ListRewardPointsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListRewardPointsResponse {
+  repeated RewardPoint reward_points = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message CreateRewardPointRequest {
+  int32 total_points = 1;
+  int32 points_pending = 2;
+  int32 points_active = 3;
+  int64 activate_date = 4;
+  int64 expire_date = 5;
+}
+
+message CreateRewardPointResponse {
+  RewardPoint reward_point = 1;
+}
+
+message UpdateRewardPointRequest {
+  string reward_points_id = 1;
+  int32 total_points = 2;
+  int32 points_pending = 3;
+  int32 points_active = 4;
+  int32 points_expired = 5;
+  int32 points_converted = 6;
+  int32 points_cancelled = 7;
+  int64 activate_date = 8;
+  int64 expire_date = 9;
+}
+
+message UpdateRewardPointResponse {
+  RewardPoint reward_point = 1;
+}
+
+message DeleteRewardPointRequest {
+  string reward_points_id = 1;
+}
+
+message RewardDiscount {
+  string reward_discount_id = 1;
+  int32 total_points = 2;
+  int32 points_pending = 3;
+  int32 points_active = 4;
+  int32 points_expired = 5;
+  int32 points_converted = 6;
+  int32 points_cancelled = 7;
+  int64 activate_date = 8;
+  int64 expire_date = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+message GetRewardDiscountRequest {
+  string reward_discount_id = 1;
+}
+
+message GetRewardDiscountResponse {
+  RewardDiscount reward_discount = 1;
+}
+
+message ListRewardDiscountsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListRewardDiscountsResponse {
+  repeated RewardDiscount reward_discounts = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message CreateRewardDiscountRequest {
+  int32 total_points = 1;
+  int32 points_pending = 2;
+  int32 points_active = 3;
+  int64 activate_date = 4;
+  int64 expire_date = 5;
+}
+
+message CreateRewardDiscountResponse {
+  RewardDiscount reward_discount = 1;
+}
+
+message UpdateRewardDiscountRequest {
+  string reward_discount_id = 1;
+  int32 total_points = 2;
+  int32 points_pending = 3;
+  int32 points_active = 4;
+  int32 points_expired = 5;
+  int32 points_converted = 6;
+  int32 points_cancelled = 7;
+  int64 activate_date = 8;
+  int64 expire_date = 9;
+}
+
+message UpdateRewardDiscountResponse {
+  RewardDiscount reward_discount = 1;
+}
+
+message DeleteRewardDiscountRequest {
+  string reward_discount_id = 1;
+}
+
+message ConvertedRewardPoint {
+  string rew_convert_id = 1;
+  string rew_convert_ord_detail_id = 2;
+  string rew_convert_discount_id = 3;
+  int32 rew_convert_points = 4;
+  int64 rew_convert_date = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message GetConvertedRewardPointRequest {
+  string rew_convert_id = 1;
+}
+
+message GetConvertedRewardPointResponse {
+  ConvertedRewardPoint converted_reward_point = 1;
+}
+
+message ListConvertedRewardPointsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string reward_points_id = 3;
+  string reward_discount_id = 4;
+}
+
+message ListConvertedRewardPointsResponse {
+  repeated ConvertedRewardPoint converted_reward_points = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message CreateConvertedRewardPointRequest {
+  string rew_convert_ord_detail_id = 1;
+  string rew_convert_discount_id = 2;
+  int32 rew_convert_points = 3;
+  int64 rew_convert_date = 4;
+}
+
+message CreateConvertedRewardPointResponse {
+  ConvertedRewardPoint converted_reward_point = 1;
+}
+
+message UpdateConvertedRewardPointRequest {
+  string rew_convert_id = 1;
+  string rew_convert_ord_detail_id = 2;
+  string rew_convert_discount_id = 3;
+  int32 rew_convert_points = 4;
+  int64 rew_convert_date = 5;
+}
+
+message UpdateConvertedRewardPointResponse {
+  ConvertedRewardPoint converted_reward_point = 1;
+}
+
+message DeleteConvertedRewardPointRequest {
+  string rew_convert_id = 1;
+}
+
+message ConvertPointsRequest {
+  string reward_points_id = 1;
+  int32 points_to_convert = 2;
+  string rew_convert_ord_detail_id = 3;
+  string rew_convert_discount_id = 4;
+}
+
+message ConvertPointsResponse {
+  ConvertedRewardPoint converted_reward_point = 1;
+  RewardPoint updated_reward_point = 2;
+}
+
+message GetPointsHistoryRequest {
+  string reward_points_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+  int64 from_date = 4;
+  int64 to_date = 5;
+}
+
+message GetPointsHistoryResponse {
+  repeated PointsHistoryEntry history_entries = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message PointsHistoryEntry {
+  string entry_id = 1;
+  string reward_points_id = 2;
+  int32 points_changed = 3;
+  string change_type = 4; // "ADDED", "EXPIRED", "CONVERTED", "CANCELLED"
+  string reference_id = 5;
+  int64 change_date = 6;
+  google.protobuf.Timestamp created_at = 7;
+}

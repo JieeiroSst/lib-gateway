@@ -1,0 +1,264 @@
+syntax = "proto3";
+
+package campaign;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "./proto";
+
+service CampaignService {
+  rpc CreateCampaignTypeConfig(CreateCampaignTypeConfigRequest) returns (CampaignTypeConfigResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/campaign-types"
+      body: "*"
+    };
+  }
+
+  rpc GetCampaignTypeConfig(GetCampaignTypeConfigRequest) returns (CampaignTypeConfigResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/campaign-types/{id}"
+    };
+  }
+
+  rpc ListCampaignTypeConfigs(ListCampaignTypeConfigsRequest) returns (ListCampaignTypeConfigsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/campaign-types"
+    };
+  }
+
+  rpc UpdateCampaignTypeConfig(UpdateCampaignTypeConfigRequest) returns (CampaignTypeConfigResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/campaign-types/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteCampaignTypeConfig(DeleteCampaignTypeConfigRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/campaign-types/{id}"
+    };
+  }
+
+  rpc CreateCampaignConfig(CreateCampaignConfigRequest) returns (CampaignConfigResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/campaigns"
+      body: "*"
+    };
+  }
+
+  rpc GetCampaignConfig(GetCampaignConfigRequest) returns (CampaignConfigResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/campaigns/{id}"
+    };
+  }
+
+  rpc ListCampaignConfigs(ListCampaignConfigsRequest) returns (ListCampaignConfigsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/campaigns"
+    };
+  }
+
+  rpc UpdateCampaignConfig(UpdateCampaignConfigRequest) returns (CampaignConfigResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/campaigns/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteCampaignConfig(DeleteCampaignConfigRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/campaigns/{id}"
+    };
+  }
+
+  rpc CreateUserCampaignConfig(CreateUserCampaignConfigRequest) returns (UserCampaignConfigResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/users/{user_id}/campaigns"
+      body: "*"
+    };
+  }
+
+  rpc GetUserCampaignConfig(GetUserCampaignConfigRequest) returns (UserCampaignConfigResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/users/{user_id}/campaigns/{id}"
+    };
+  }
+
+  rpc ListUserCampaignConfigs(ListUserCampaignConfigsRequest) returns (ListUserCampaignConfigsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/users/{user_id}/campaigns"
+    };
+  }
+
+  rpc UpdateUserCampaignConfig(UpdateUserCampaignConfigRequest) returns (UserCampaignConfigResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/users/{user_id}/campaigns/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteUserCampaignConfig(DeleteUserCampaignConfigRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/users/{user_id}/campaigns/{id}"
+    };
+  }
+}
+
+message CampaignTypeConfigProto {
+  string id = 1;
+  string type = 2;
+  string name = 3;
+}
+
+message CreateCampaignTypeConfigRequest {
+  string type = 1;
+  string name = 2;
+}
+
+message GetCampaignTypeConfigRequest {
+  string id = 1;
+}
+
+message UpdateCampaignTypeConfigRequest {
+  string id = 1;
+  string type = 2;
+  string name = 3;
+}
+
+message DeleteCampaignTypeConfigRequest {
+  string id = 1;
+}
+
+message CampaignTypeConfigResponse {
+  CampaignTypeConfigProto campaign_type_config = 1;
+}
+
+message ListCampaignTypeConfigsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListCampaignTypeConfigsResponse {
+  repeated CampaignTypeConfigProto campaign_type_configs = 1;
+  string next_page_token = 2;
+}
+
+message CampaignContentProto {
+  string id = 1;
+  string content = 2;
+  double value = 3;
+  int32 condition = 4;
+}
+
+message CampaignConfigProto {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string classify_type = 4;
+  string campaign_type_id = 5;
+  string campaign_content_id = 6;
+  int32 status = 7;
+  google.protobuf.Timestamp create_adt = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp deleted_at = 10;
+  CampaignTypeConfigProto campaign_type_config = 11;
+  repeated CampaignContentProto campaign_content = 12;
+}
+
+message CreateCampaignConfigRequest {
+  string name = 1;
+  string description = 2;
+  string classify_type = 3;
+  string campaign_type_id = 4;
+  string campaign_content_id = 5;
+  int32 status = 6;
+  repeated CampaignContentProto campaign_content = 7;
+}
+
+message GetCampaignConfigRequest {
+  string id = 1;
+}
+
+message UpdateCampaignConfigRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string classify_type = 4;
+  string campaign_type_id = 5;
+  string campaign_content_id = 6;
+  int32 status = 7;
+  repeated CampaignContentProto campaign_content = 8;
+}
+
+message DeleteCampaignConfigRequest {
+  string id = 1;
+}
+
+message CampaignConfigResponse {
+  CampaignConfigProto campaign_config = 1;
+}
+
+message ListCampaignConfigsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string filter = 3;
+}
+
+message ListCampaignConfigsResponse {
+  repeated CampaignConfigProto campaign_configs = 1;
+  string next_page_token = 2;
+}
+
+message UserCampaignConfigProto {
+  string id = 1;
+  string user_id = 2;
+  string campaign_id = 3;
+  google.protobuf.Timestamp create_adt = 4;
+  google.protobuf.Timestamp updated_at = 5;
+  double total_amount = 6;
+  google.protobuf.Timestamp date_at = 7;
+  CampaignConfigProto campaign_config = 8;
+}
+
+message CreateUserCampaignConfigRequest {
+  string user_id = 1;
+  string campaign_id = 2;
+  double total_amount = 3;
+  google.protobuf.Timestamp date_at = 4;
+}
+
+message GetUserCampaignConfigRequest {
+  string id = 1;
+  string user_id = 2;
+}
+
+message UpdateUserCampaignConfigRequest {
+  string id = 1;
+  string user_id = 2;
+  string campaign_id = 3;
+  double total_amount = 4;
+  google.protobuf.Timestamp date_at = 5;
+}
+
+message DeleteUserCampaignConfigRequest {
+  string id = 1;
+  string user_id = 2;
+}
+
+message UserCampaignConfigResponse {
+  UserCampaignConfigProto user_campaign_config = 1;
+}
+
+message ListUserCampaignConfigsRequest {
+  string user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+  string filter = 4;
+}
+
+message ListUserCampaignConfigsResponse {
+  repeated UserCampaignConfigProto user_campaign_configs = 1;
+  string next_page_token = 2;
+}

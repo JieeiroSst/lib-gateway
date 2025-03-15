@@ -1,0 +1,439 @@
+syntax = "proto3";
+
+package wallet;
+
+option go_package = "./pd";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service WalletService {
+  rpc CreateUser(CreateUserRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      post: "/v1/users"
+      body: "*"
+    };
+  }
+  
+  rpc GetUser(GetUserRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}"
+    };
+  }
+  
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      put: "/v1/users/{user_id}"
+      body: "*"
+    };
+  }
+  
+  rpc UpdateKycStatus(UpdateKycStatusRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      patch: "/v1/users/{user_id}/kyc"
+      body: "*"
+    };
+  }
+
+  rpc CreateWallet(CreateWalletRequest) returns (WalletResponse) {
+    option (google.api.http) = {
+      post: "/v1/wallets"
+      body: "*"
+    };
+  }
+  
+  rpc GetWallet(GetWalletRequest) returns (WalletResponse) {
+    option (google.api.http) = {
+      get: "/v1/wallets/{wallet_id}"
+    };
+  }
+  
+  rpc GetUserWallets(GetUserWalletsRequest) returns (WalletsResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/wallets"
+    };
+  }
+  
+  rpc UpdateWalletStatus(UpdateWalletStatusRequest) returns (WalletResponse) {
+    option (google.api.http) = {
+      patch: "/v1/wallets/{wallet_id}/status"
+      body: "*"
+    };
+  }
+
+  rpc CreateTransaction(CreateTransactionRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      post: "/v1/transactions"
+      body: "*"
+    };
+  }
+  
+  rpc GetTransaction(GetTransactionRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      get: "/v1/transactions/{transaction_id}"
+    };
+  }
+  
+  rpc GetWalletTransactions(GetWalletTransactionsRequest) returns (TransactionsResponse) {
+    option (google.api.http) = {
+      get: "/v1/wallets/{wallet_id}/transactions"
+    };
+  }
+  
+  rpc UpdateTransactionStatus(UpdateTransactionStatusRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      patch: "/v1/transactions/{transaction_id}/status"
+      body: "*"
+    };
+  }
+
+  rpc TransferFunds(TransferFundsRequest) returns (TransferResponse) {
+    option (google.api.http) = {
+      post: "/v1/transfers"
+      body: "*"
+    };
+  }
+  
+  rpc GetTransfer(GetTransferRequest) returns (TransferResponse) {
+    option (google.api.http) = {
+      get: "/v1/transfers/{transfer_id}"
+    };
+  }
+  
+  rpc GetUserTransfers(GetUserTransfersRequest) returns (TransfersResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/transfers"
+    };
+  }
+
+  rpc AddPaymentMethod(AddPaymentMethodRequest) returns (PaymentMethodResponse) {
+    option (google.api.http) = {
+      post: "/v1/payment-methods"
+      body: "*"
+    };
+  }
+  
+  rpc GetPaymentMethods(GetPaymentMethodsRequest) returns (PaymentMethodsResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/payment-methods"
+    };
+  }
+  
+  rpc UpdatePaymentMethod(UpdatePaymentMethodRequest) returns (PaymentMethodResponse) {
+    option (google.api.http) = {
+      put: "/v1/payment-methods/{payment_method_id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeletePaymentMethod(DeletePaymentMethodRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/payment-methods/{payment_method_id}"
+    };
+  }
+
+  rpc SubmitKycDocument(SubmitKycDocumentRequest) returns (KycDocumentResponse) {
+    option (google.api.http) = {
+      post: "/v1/kyc-documents"
+      body: "*"
+    };
+  }
+  
+  rpc GetKycDocuments(GetKycDocumentsRequest) returns (KycDocumentsResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/kyc-documents"
+    };
+  }
+  
+  rpc UpdateKycDocumentStatus(UpdateKycDocumentStatusRequest) returns (KycDocumentResponse) {
+    option (google.api.http) = {
+      patch: "/v1/kyc-documents/{document_id}/status"
+      body: "*"
+    };
+  }
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string phone_number = 3;
+  string password = 4;
+  string first_name = 5;
+  string last_name = 6;
+  string date_of_birth = 7; 
+}
+
+message GetUserRequest {
+  int64 user_id = 1;
+}
+
+message UpdateUserRequest {
+  int64 user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string phone_number = 4;
+  string email = 5;
+}
+
+message UpdateKycStatusRequest {
+  int64 user_id = 1;
+  KycStatus kyc_status = 2;
+}
+
+message UserResponse {
+  int64 user_id = 1;
+  string username = 2;
+  string email = 3;
+  string phone_number = 4;
+  string first_name = 5;
+  string last_name = 6;
+  string date_of_birth = 7;
+  KycStatus kyc_status = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+  bool is_active = 11;
+}
+
+message CreateWalletRequest {
+  int64 user_id = 1;
+  string currency = 2;
+}
+
+message GetWalletRequest {
+  int64 wallet_id = 1;
+}
+
+message GetUserWalletsRequest {
+  int64 user_id = 1;
+}
+
+message UpdateWalletStatusRequest {
+  int64 wallet_id = 1;
+  WalletStatus wallet_status = 2;
+}
+
+message WalletResponse {
+  int64 wallet_id = 1;
+  int64 user_id = 2;
+  string balance = 3; 
+  string currency = 4;
+  WalletStatus wallet_status = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message WalletsResponse {
+  repeated WalletResponse wallets = 1;
+}
+
+message CreateTransactionRequest {
+  int64 wallet_id = 1;
+  TransactionType transaction_type = 2;
+  string amount = 3;
+  string currency = 4;
+  string description = 5;
+  string reference_id = 6;
+}
+
+message GetTransactionRequest {
+  int64 transaction_id = 1;
+}
+
+message GetWalletTransactionsRequest {
+  int64 wallet_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+  TransactionType transaction_type = 6;
+}
+
+message UpdateTransactionStatusRequest {
+  int64 transaction_id = 1;
+  TransactionStatus status = 2;
+}
+
+message TransactionResponse {
+  int64 transaction_id = 1;
+  int64 wallet_id = 2;
+  TransactionType transaction_type = 3;
+  string amount = 4;
+  string currency = 5;
+  TransactionStatus status = 6;
+  string description = 7;
+  string reference_id = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+message TransactionsResponse {
+  repeated TransactionResponse transactions = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message TransferFundsRequest {
+  int64 sender_wallet_id = 1;
+  int64 receiver_wallet_id = 2;
+  string amount = 3; 
+  string currency = 4;
+  string description = 5;
+}
+
+message GetTransferRequest {
+  int64 transfer_id = 1;
+}
+
+message GetUserTransfersRequest {
+  int64 user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+}
+
+message TransferResponse {
+  int64 transfer_id = 1;
+  int64 sender_wallet_id = 2;
+  int64 receiver_wallet_id = 3;
+  string amount = 4;
+  string currency = 5;
+  TransactionStatus status = 6;
+  int64 transaction_id = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message TransfersResponse {
+  repeated TransferResponse transfers = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message AddPaymentMethodRequest {
+  int64 user_id = 1;
+  PaymentType payment_type = 2;
+  string provider = 3;
+  string account_number = 4;
+  bool is_default = 5;
+}
+
+message GetPaymentMethodsRequest {
+  int64 user_id = 1;
+}
+
+message UpdatePaymentMethodRequest {
+  int64 payment_method_id = 1;
+  bool is_default = 2;
+  bool is_active = 3;
+}
+
+message DeletePaymentMethodRequest {
+  int64 payment_method_id = 1;
+}
+
+message PaymentMethodResponse {
+  int64 payment_method_id = 1;
+  int64 user_id = 2;
+  PaymentType payment_type = 3;
+  string provider = 4;
+  string masked_account_number = 5; 
+  bool is_default = 6;
+  bool is_active = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message PaymentMethodsResponse {
+  repeated PaymentMethodResponse payment_methods = 1;
+}
+
+message SubmitKycDocumentRequest {
+  int64 user_id = 1;
+  DocumentType document_type = 2;
+  string document_number = 3;
+  bytes document_file = 4; 
+  string file_extension = 5;
+}
+
+message GetKycDocumentsRequest {
+  int64 user_id = 1;
+}
+
+message UpdateKycDocumentStatusRequest {
+  int64 document_id = 1;
+  VerificationStatus verification_status = 2;
+  string rejection_reason = 3;
+}
+
+message KycDocumentResponse {
+  int64 document_id = 1;
+  int64 user_id = 2;
+  DocumentType document_type = 3;
+  string document_number = 4;
+  string document_url = 5;
+  VerificationStatus verification_status = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  string rejection_reason = 9;
+}
+
+message KycDocumentsResponse {
+  repeated KycDocumentResponse documents = 1;
+}
+
+enum KycStatus {
+  KYC_STATUS_UNSPECIFIED = 0;
+  KYC_STATUS_PENDING = 1;
+  KYC_STATUS_VERIFIED = 2;
+  KYC_STATUS_REJECTED = 3;
+}
+
+enum WalletStatus {
+  WALLET_STATUS_UNSPECIFIED = 0;
+  WALLET_STATUS_ACTIVE = 1;
+  WALLET_STATUS_FROZEN = 2;
+  WALLET_STATUS_CLOSED = 3;
+}
+
+enum TransactionType {
+  TRANSACTION_TYPE_UNSPECIFIED = 0;
+  TRANSACTION_TYPE_CREDIT = 1;
+  TRANSACTION_TYPE_DEBIT = 2;
+  TRANSACTION_TYPE_TRANSFER = 3;
+  TRANSACTION_TYPE_REFUND = 4;
+}
+
+enum TransactionStatus {
+  TRANSACTION_STATUS_UNSPECIFIED = 0;
+  TRANSACTION_STATUS_PENDING = 1;
+  TRANSACTION_STATUS_COMPLETED = 2;
+  TRANSACTION_STATUS_FAILED = 3;
+  TRANSACTION_STATUS_REVERSED = 4;
+}
+
+enum PaymentType {
+  PAYMENT_TYPE_UNSPECIFIED = 0;
+  PAYMENT_TYPE_CREDIT_CARD = 1;
+  PAYMENT_TYPE_DEBIT_CARD = 2;
+  PAYMENT_TYPE_BANK_ACCOUNT = 3;
+  PAYMENT_TYPE_UPI = 4;
+}
+
+enum DocumentType {
+  DOCUMENT_TYPE_UNSPECIFIED = 0;
+  DOCUMENT_TYPE_PASSPORT = 1;
+  DOCUMENT_TYPE_DRIVING_LICENSE = 2;
+  DOCUMENT_TYPE_NATIONAL_ID = 3;
+  DOCUMENT_TYPE_OTHER = 4;
+}
+
+enum VerificationStatus {
+  VERIFICATION_STATUS_UNSPECIFIED = 0;
+  VERIFICATION_STATUS_PENDING = 1;
+  VERIFICATION_STATUS_VERIFIED = 2;
+  VERIFICATION_STATUS_REJECTED = 3;
+}

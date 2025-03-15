@@ -1,0 +1,260 @@
+syntax = "proto3";
+
+package parking;
+
+option go_package = "./proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service ParkingService {
+  rpc GetSpot(GetSpotRequest) returns (ParkingSpot) {
+    option (google.api.http) = {
+      get: "/v1/spots/{spot_id}"
+    };
+  }
+  
+  rpc ListSpots(ListSpotsRequest) returns (ListSpotsResponse) {
+    option (google.api.http) = {
+      get: "/v1/spots"
+    };
+  }
+  
+  rpc CreateSpot(CreateSpotRequest) returns (ParkingSpot) {
+    option (google.api.http) = {
+      post: "/v1/spots"
+      body: "*"
+    };
+  }
+  
+  rpc UpdateSpot(UpdateSpotRequest) returns (ParkingSpot) {
+    option (google.api.http) = {
+      put: "/v1/spots/{spot_id}"
+      body: "spot"
+    };
+  }
+  
+  rpc DeleteSpot(DeleteSpotRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/spots/{spot_id}"
+    };
+  }
+  
+  rpc GetVehicle(GetVehicleRequest) returns (Vehicle) {
+    option (google.api.http) = {
+      get: "/v1/vehicles/{license_plate}"
+    };
+  }
+  
+  rpc ListVehicles(ListVehiclesRequest) returns (ListVehiclesResponse) {
+    option (google.api.http) = {
+      get: "/v1/vehicles"
+    };
+  }
+  
+  rpc CreateVehicle(CreateVehicleRequest) returns (Vehicle) {
+    option (google.api.http) = {
+      post: "/v1/vehicles"
+      body: "*"
+    };
+  }
+  
+  rpc UpdateVehicle(UpdateVehicleRequest) returns (Vehicle) {
+    option (google.api.http) = {
+      put: "/v1/vehicles/{license_plate}"
+      body: "vehicle"
+    };
+  }
+  
+  rpc DeleteVehicle(DeleteVehicleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/vehicles/{license_plate}"
+    };
+  }
+  
+  rpc ParkVehicle(ParkVehicleRequest) returns (ParkingHistory) {
+    option (google.api.http) = {
+      post: "/v1/park"
+      body: "*"
+    };
+  }
+  
+  rpc LeaveParking(LeaveParkingRequest) returns (ParkingHistory) {
+    option (google.api.http) = {
+      post: "/v1/leave"
+      body: "*"
+    };
+  }
+  
+  rpc GetParkingHistory(GetParkingHistoryRequest) returns (ParkingHistory) {
+    option (google.api.http) = {
+      get: "/v1/history/{history_id}"
+    };
+  }
+  
+  rpc SearchParkingHistory(SearchParkingHistoryRequest) returns (SearchParkingHistoryResponse) {
+    option (google.api.http) = {
+      get: "/v1/history"
+    };
+  }
+  
+  rpc GetOccupancyReport(GetOccupancyReportRequest) returns (OccupancyReport) {
+    option (google.api.http) = {
+      get: "/v1/reports/occupancy"
+    };
+  }
+}
+
+message ParkingSpot {
+  int32 spot_id = 1;
+  enum SpotType {
+    UNKNOWN = 0;
+    CAR = 1;
+    MOTORCYCLE = 2;
+    TRUCK = 3;
+  }
+  SpotType type = 2;
+  bool is_available = 3;
+}
+
+message Vehicle {
+  string license_plate = 1;
+  enum VehicleType {
+    UNKNOWN = 0;
+    CAR = 1;
+    MOTORCYCLE = 2;
+    TRUCK = 3;
+  }
+  VehicleType type = 2;
+}
+
+message ParkingHistory {
+  int32 history_id = 1;
+  string vehicle_plate = 2;
+  int32 spot_id = 3;
+  google.protobuf.Timestamp parked_time = 4;
+  google.protobuf.Timestamp leave_time = 5;
+}
+
+message GetSpotRequest {
+  int32 spot_id = 1;
+}
+
+message ListSpotsRequest {
+  enum SpotType {
+    ALL = 0;
+    CAR = 1;
+    MOTORCYCLE = 2;
+    TRUCK = 3;
+  }
+  SpotType type_filter = 1;
+  bool available_only = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListSpotsResponse {
+  repeated ParkingSpot spots = 1;
+  string next_page_token = 2;
+}
+
+message CreateSpotRequest {
+  int32 spot_id = 1;
+  ParkingSpot.SpotType type = 2;
+  bool is_available = 3;
+}
+
+message UpdateSpotRequest {
+  int32 spot_id = 1;
+  ParkingSpot spot = 2;
+}
+
+message DeleteSpotRequest {
+  int32 spot_id = 1;
+}
+
+message GetVehicleRequest {
+  string license_plate = 1;
+}
+
+message ListVehiclesRequest {
+  enum VehicleType {
+    ALL = 0;
+    CAR = 1;
+    MOTORCYCLE = 2;
+    TRUCK = 3;
+  }
+  VehicleType type_filter = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListVehiclesResponse {
+  repeated Vehicle vehicles = 1;
+  string next_page_token = 2;
+}
+
+message CreateVehicleRequest {
+  string license_plate = 1;
+  Vehicle.VehicleType type = 2;
+}
+
+message UpdateVehicleRequest {
+  string license_plate = 1;
+  Vehicle vehicle = 2;
+}
+
+message DeleteVehicleRequest {
+  string license_plate = 1;
+}
+
+message ParkVehicleRequest {
+  string license_plate = 1;
+  int32 spot_id = 2;
+  google.protobuf.Timestamp parked_time = 3;
+}
+
+message LeaveParkingRequest {
+  int32 history_id = 1;
+  google.protobuf.Timestamp leave_time = 2;
+}
+
+message GetParkingHistoryRequest {
+  int32 history_id = 1;
+}
+
+message SearchParkingHistoryRequest {
+  string vehicle_plate = 1;
+  int32 spot_id = 2;
+  google.protobuf.Timestamp start_time = 3;
+  google.protobuf.Timestamp end_time = 4;
+  bool active_only = 5;
+  int32 page_size = 6;
+  string page_token = 7;
+}
+
+message SearchParkingHistoryResponse {
+  repeated ParkingHistory history_records = 1;
+  string next_page_token = 2;
+}
+
+message GetOccupancyReportRequest {
+  google.protobuf.Timestamp start_time = 1;
+  google.protobuf.Timestamp end_time = 2;
+  bool group_by_type = 3;
+}
+
+message OccupancyReport {
+  message TypeOccupancy {
+    string type = 1;
+    double average_occupancy_rate = 2;
+    int32 peak_occupied_spots = 3;
+    google.protobuf.Timestamp peak_time = 4;
+  }
+  
+  double overall_average_occupancy_rate = 1;
+  int32 overall_peak_occupied_spots = 2;
+  google.protobuf.Timestamp overall_peak_time = 3;
+  repeated TypeOccupancy type_occupancy = 4;
+}

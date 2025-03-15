@@ -1,0 +1,311 @@
+syntax = "proto3";
+
+package movie_recommendation;
+
+option go_package = "./proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service MovieRecommendationService {
+  rpc GetMovie(GetMovieRequest) returns (Movie) {
+    option (google.api.http) = {
+      get: "/v1/movies/{movie_id}"
+    };
+  }
+  
+  rpc ListMovies(ListMoviesRequest) returns (ListMoviesResponse) {
+    option (google.api.http) = {
+      get: "/v1/movies"
+    };
+  }
+  
+  rpc CreateMovie(CreateMovieRequest) returns (Movie) {
+    option (google.api.http) = {
+      post: "/v1/movies"
+      body: "movie"
+    };
+  }
+  
+  rpc UpdateMovie(UpdateMovieRequest) returns (Movie) {
+    option (google.api.http) = {
+      put: "/v1/movies/{movie_id}"
+      body: "movie"
+    };
+  }
+  
+  rpc DeleteMovie(DeleteMovieRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/movies/{movie_id}"
+    };
+  }
+  
+  rpc GetUser(GetUserRequest) returns (User) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}"
+    };
+  }
+  
+  rpc CreateUser(CreateUserRequest) returns (User) {
+    option (google.api.http) = {
+      post: "/v1/users"
+      body: "user"
+    };
+  }
+  
+  rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (google.api.http) = {
+      put: "/v1/users/{user_id}"
+      body: "user"
+    };
+  }
+  
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/users/{user_id}"
+    };
+  }
+  
+  rpc RateMovie(RateMovieRequest) returns (Rating) {
+    option (google.api.http) = {
+      post: "/v1/ratings"
+      body: "rating"
+    };
+  }
+  
+  rpc GetUserRatings(GetUserRatingsRequest) returns (GetUserRatingsResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/ratings"
+    };
+  }
+  
+  rpc SetUserPreference(SetUserPreferenceRequest) returns (UserPreference) {
+    option (google.api.http) = {
+      post: "/v1/users/{user_id}/preferences"
+      body: "preference"
+    };
+  }
+  
+  rpc GetUserPreferences(GetUserPreferencesRequest) returns (GetUserPreferencesResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/preferences"
+    };
+  }
+  
+  rpc AddMovieTag(AddMovieTagRequest) returns (MovieTag) {
+    option (google.api.http) = {
+      post: "/v1/movies/{movie_id}/tags"
+      body: "tag"
+    };
+  }
+  
+  rpc GetMovieTags(GetMovieTagsRequest) returns (GetMovieTagsResponse) {
+    option (google.api.http) = {
+      get: "/v1/movies/{movie_id}/tags"
+    };
+  }
+  
+  rpc GetTopRatedMovies(GetTopRatedMoviesRequest) returns (GetTopRatedMoviesResponse) {
+    option (google.api.http) = {
+      get: "/v1/recommendations/top-rated"
+    };
+  }
+  
+  rpc GetPersonalizedRecommendations(GetPersonalizedRecommendationsRequest) returns (GetPersonalizedRecommendationsResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/recommendations"
+    };
+  }
+  
+  rpc FindSimilarMovies(FindSimilarMoviesRequest) returns (FindSimilarMoviesResponse) {
+    option (google.api.http) = {
+      get: "/v1/movies/{movie_id}/similar"
+    };
+  }
+  
+  rpc UpdatePopularityScores(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/admin/update-popularity-scores"
+    };
+  }
+}
+
+message Movie {
+  int32 movie_id = 1;
+  string title = 2;
+  int32 release_year = 3;
+  string genre = 4;
+  string director = 5;
+  float average_rating = 6;
+  int32 popularity_score = 7;
+}
+
+message GetMovieRequest {
+  int32 movie_id = 1;
+}
+
+message ListMoviesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string genre = 3;
+  int32 release_year_from = 4;
+  int32 release_year_to = 5;
+  string sort_by = 6;
+}
+
+message ListMoviesResponse {
+  repeated Movie movies = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message CreateMovieRequest {
+  Movie movie = 1;
+}
+
+message UpdateMovieRequest {
+  int32 movie_id = 1;
+  Movie movie = 2;
+}
+
+message DeleteMovieRequest {
+  int32 movie_id = 1;
+}
+
+message User {
+  int32 user_id = 1;
+  string username = 2;
+  string email = 3;
+  string join_date = 4;
+  google.protobuf.Timestamp last_active = 5;
+}
+
+message GetUserRequest {
+  int32 user_id = 1;
+}
+
+message CreateUserRequest {
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  int32 user_id = 1;
+  User user = 2;
+}
+
+message DeleteUserRequest {
+  int32 user_id = 1;
+}
+
+message Rating {
+  int32 rating_id = 1;
+  int32 user_id = 2;
+  int32 movie_id = 3;
+  float rating = 4;
+  google.protobuf.Timestamp rating_date = 5;
+}
+
+message RateMovieRequest {
+  Rating rating = 1;
+}
+
+message GetUserRatingsRequest {
+  int32 user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message GetUserRatingsResponse {
+  repeated Rating ratings = 1;
+  string next_page_token = 2;
+}
+
+message UserPreference {
+  int32 preference_id = 1;
+  int32 user_id = 2;
+  string genre = 3;
+  float weight = 4;
+}
+
+message SetUserPreferenceRequest {
+  int32 user_id = 1;
+  UserPreference preference = 2;
+}
+
+message GetUserPreferencesRequest {
+  int32 user_id = 1;
+}
+
+message GetUserPreferencesResponse {
+  repeated UserPreference preferences = 1;
+}
+
+message MovieTag {
+  int32 tag_id = 1;
+  int32 movie_id = 2;
+  string tag = 3;
+}
+
+message AddMovieTagRequest {
+  int32 movie_id = 1;
+  MovieTag tag = 2;
+}
+
+message GetMovieTagsRequest {
+  int32 movie_id = 1;
+}
+
+message GetMovieTagsResponse {
+  repeated MovieTag tags = 1;
+}
+
+message TopRatedMovie {
+  int32 movie_id = 1;
+  string title = 2;
+  string genre = 3;
+  int32 release_year = 4;
+  float average_rating = 5;
+  int32 number_of_ratings = 6;
+}
+
+message GetTopRatedMoviesRequest {
+  int32 limit = 1;
+  int32 min_ratings = 2;
+  string genre = 3;
+}
+
+message GetTopRatedMoviesResponse {
+  repeated TopRatedMovie movies = 1;
+}
+
+message RecommendedMovie {
+  int32 movie_id = 1;
+  string title = 2;
+  string genre = 3;
+  float recommended_score = 4;
+}
+
+message GetPersonalizedRecommendationsRequest {
+  int32 user_id = 1;
+  int32 limit = 2;
+}
+
+message GetPersonalizedRecommendationsResponse {
+  repeated RecommendedMovie recommendations = 1;
+}
+
+message SimilarMovie {
+  int32 movie_id = 1;
+  string title = 2;
+  float similarity_score = 3;
+}
+
+message FindSimilarMoviesRequest {
+  int32 movie_id = 1;
+  int32 limit = 2;
+}
+
+message FindSimilarMoviesResponse {
+  repeated SimilarMovie similar_movies = 1;
+}

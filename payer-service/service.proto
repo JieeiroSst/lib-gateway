@@ -1,0 +1,225 @@
+syntax = "proto3";
+
+package payer;
+option go_package = "./proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message Payer {
+  int64 payer_id = 1;
+  string name = 2;
+  string email = 3;
+  string phone_number = 4;
+}
+
+message Buyer {
+  int64 buyer_id = 1;
+  string name = 2;
+  string email = 3;
+  string phone_number = 4;
+}
+
+message Transaction {
+  int64 transaction_id = 1;
+  int64 payer_id = 2;
+  int64 buyer_id = 3;
+  string amount = 4;
+  google.protobuf.Timestamp transaction_date = 5;
+}
+
+message CreatePayerRequest {
+  string name = 1;
+  string email = 2;
+  string phone_number = 3;
+}
+
+message GetPayerRequest {
+  int64 payer_id = 1;
+}
+
+message UpdatePayerRequest {
+  int64 payer_id = 1;
+  string name = 2;
+  string email = 3;
+  string phone_number = 4;
+}
+
+message DeletePayerRequest {
+  int64 payer_id = 1;
+}
+
+message ListPayersRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+}
+
+message ListPayersResponse {
+  repeated Payer payers = 1;
+  int32 total_count = 2;
+}
+
+message CreateBuyerRequest {
+  string name = 1;
+  string email = 2;
+  string phone_number = 3;
+}
+
+message GetBuyerRequest {
+  int64 buyer_id = 1;
+}
+
+message UpdateBuyerRequest {
+  int64 buyer_id = 1;
+  string name = 2;
+  string email = 3;
+  string phone_number = 4;
+}
+
+message DeleteBuyerRequest {
+  int64 buyer_id = 1;
+}
+
+message ListBuyersRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+}
+
+message ListBuyersResponse {
+  repeated Buyer buyers = 1;
+  int32 total_count = 2;
+}
+
+message CreateTransactionRequest {
+  int64 payer_id = 1;
+  int64 buyer_id = 2;
+  string amount = 3; 
+}
+
+message GetTransactionRequest {
+  int64 transaction_id = 1;
+}
+
+message UpdateTransactionRequest {
+  int64 transaction_id = 1;
+  int64 payer_id = 2;
+  int64 buyer_id = 3;
+  string amount = 4; 
+}
+
+message DeleteTransactionRequest {
+  int64 transaction_id = 1;
+}
+
+message ListTransactionsRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+  int64 payer_id = 3; 
+  int64 buyer_id = 4; 
+  google.protobuf.Timestamp start_date = 5;
+  google.protobuf.Timestamp end_date = 6;
+}
+
+message ListTransactionsResponse {
+  repeated Transaction transactions = 1;
+  int32 total_count = 2;
+}
+
+service TransactionService {
+  rpc CreatePayer(CreatePayerRequest) returns (Payer) {
+    option (google.api.http) = {
+      post: "/v1/payers"
+      body: "*"
+    };
+  }
+  
+  rpc GetPayer(GetPayerRequest) returns (Payer) {
+    option (google.api.http) = {
+      get: "/v1/payers/{payer_id}"
+    };
+  }
+  
+  rpc UpdatePayer(UpdatePayerRequest) returns (Payer) {
+    option (google.api.http) = {
+      put: "/v1/payers/{payer_id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeletePayer(DeletePayerRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/payers/{payer_id}"
+    };
+  }
+  
+  rpc ListPayers(ListPayersRequest) returns (ListPayersResponse) {
+    option (google.api.http) = {
+      get: "/v1/payers"
+    };
+  }
+  
+  rpc CreateBuyer(CreateBuyerRequest) returns (Buyer) {
+    option (google.api.http) = {
+      post: "/v1/buyers"
+      body: "*"
+    };
+  }
+  
+  rpc GetBuyer(GetBuyerRequest) returns (Buyer) {
+    option (google.api.http) = {
+      get: "/v1/buyers/{buyer_id}"
+    };
+  }
+  
+  rpc UpdateBuyer(UpdateBuyerRequest) returns (Buyer) {
+    option (google.api.http) = {
+      put: "/v1/buyers/{buyer_id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteBuyer(DeleteBuyerRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/buyers/{buyer_id}"
+    };
+  }
+  
+  rpc ListBuyers(ListBuyersRequest) returns (ListBuyersResponse) {
+    option (google.api.http) = {
+      get: "/v1/buyers"
+    };
+  }
+  
+  rpc CreateTransaction(CreateTransactionRequest) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/v1/transactions"
+      body: "*"
+    };
+  }
+  
+  rpc GetTransaction(GetTransactionRequest) returns (Transaction) {
+    option (google.api.http) = {
+      get: "/v1/transactions/{transaction_id}"
+    };
+  }
+  
+  rpc UpdateTransaction(UpdateTransactionRequest) returns (Transaction) {
+    option (google.api.http) = {
+      put: "/v1/transactions/{transaction_id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteTransaction(DeleteTransactionRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/transactions/{transaction_id}"
+    };
+  }
+  
+  rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse) {
+    option (google.api.http) = {
+      get: "/v1/transactions"
+    };
+  }
+}

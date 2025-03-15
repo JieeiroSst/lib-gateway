@@ -1,0 +1,244 @@
+syntax = "proto3";
+
+package shipping;
+
+option go_package = "./pd";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service ShippingService {
+  rpc CreateShipment(CreateShipmentRequest) returns (ShipmentResponse) {
+    option (google.api.http) = {
+      post: "/v1/shipments"
+      body: "*"
+    };
+  }
+  
+  rpc GetShipment(GetShipmentRequest) returns (ShipmentResponse) {
+    option (google.api.http) = {
+      get: "/v1/shipments/{shipment_id}"
+    };
+  }
+  
+  rpc UpdateShipmentStatus(UpdateShipmentStatusRequest) returns (ShipmentResponse) {
+    option (google.api.http) = {
+      patch: "/v1/shipments/{shipment_id}/status"
+      body: "*"
+    };
+  }
+  
+  rpc ListShipments(ListShipmentsRequest) returns (ListShipmentsResponse) {
+    option (google.api.http) = {
+      get: "/v1/shipments"
+    };
+  }
+  
+  rpc TrackShipment(TrackShipmentRequest) returns (TrackingResponse) {
+    option (google.api.http) = {
+      get: "/v1/shipments/{tracking_number}/track"
+    };
+  }
+  
+  rpc CreateSender(CreateSenderRequest) returns (SenderResponse) {
+    option (google.api.http) = {
+      post: "/v1/senders"
+      body: "*"
+    };
+  }
+  
+  rpc GetSender(GetSenderRequest) returns (SenderResponse) {
+    option (google.api.http) = {
+      get: "/v1/senders/{sender_id}"
+    };
+  }
+  
+  rpc UpdateSender(UpdateSenderRequest) returns (SenderResponse) {
+    option (google.api.http) = {
+      put: "/v1/senders/{sender_id}"
+      body: "*"
+    };
+  }
+  
+  rpc CreateRecipient(CreateRecipientRequest) returns (RecipientResponse) {
+    option (google.api.http) = {
+      post: "/v1/recipients"
+      body: "*"
+    };
+  }
+  
+  rpc GetRecipient(GetRecipientRequest) returns (RecipientResponse) {
+    option (google.api.http) = {
+      get: "/v1/recipients/{recipient_id}"
+    };
+  }
+  
+  rpc UpdateRecipient(UpdateRecipientRequest) returns (RecipientResponse) {
+    option (google.api.http) = {
+      put: "/v1/recipients/{recipient_id}"
+      body: "*"
+    };
+  }
+}
+
+message Shipment {
+  string shipment_id = 1;
+  string order_id = 2;
+  string sender_id = 3;
+  string recipient_id = 4;
+  PackageDetails package_details = 5;
+  string shipping_method = 6;
+  float shipping_cost = 7;
+  ShipmentStatus status = 8;
+  google.protobuf.Timestamp shipped_date = 9;
+  google.protobuf.Timestamp estimated_delivery_date = 10;
+  string tracking_number = 11;
+}
+
+message PackageDetails {
+  float weight = 1;
+  Dimensions dimensions = 2;
+  string description = 3;
+}
+
+message Dimensions {
+  float length = 1;
+  float width = 2;
+  float height = 3;
+  string unit = 4; 
+}
+
+enum ShipmentStatus {
+  SHIPMENT_STATUS_UNSPECIFIED = 0;
+  SHIPMENT_STATUS_PLACED = 1;
+  SHIPMENT_STATUS_PICKED_UP = 2;
+  SHIPMENT_STATUS_IN_TRANSIT = 3;
+  SHIPMENT_STATUS_OUT_FOR_DELIVERY = 4;
+  SHIPMENT_STATUS_DELIVERED = 5;
+  SHIPMENT_STATUS_FAILED = 6;
+  SHIPMENT_STATUS_RETURNED = 7;
+}
+
+message Sender {
+  string sender_id = 1;
+  string name = 2;
+  Address address = 3;
+  string phone_number = 4;
+  string email = 5;
+}
+
+message Recipient {
+  string recipient_id = 1;
+  string name = 2;
+  Address address = 3;
+  string phone_number = 4;
+  string email = 5;
+}
+
+message Address {
+  string street_line1 = 1;
+  string street_line2 = 2;
+  string city = 3;
+  string state = 4;
+  string postal_code = 5;
+  string country = 6;
+}
+
+message CreateShipmentRequest {
+  string order_id = 1;
+  string sender_id = 2;
+  string recipient_id = 3;
+  PackageDetails package_details = 4;
+  string shipping_method = 5;
+}
+
+message GetShipmentRequest {
+  string shipment_id = 1;
+}
+
+message UpdateShipmentStatusRequest {
+  string shipment_id = 1;
+  ShipmentStatus status = 2;
+  string status_notes = 3;
+}
+
+message ListShipmentsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string filter = 3;
+  string order_by = 4; 
+}
+
+message ListShipmentsResponse {
+  repeated Shipment shipments = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message TrackShipmentRequest {
+  string tracking_number = 1;
+}
+
+message TrackingEvent {
+  ShipmentStatus status = 1;
+  string location = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  string description = 4;
+}
+
+message TrackingResponse {
+  string tracking_number = 1;
+  ShipmentStatus current_status = 2;
+  google.protobuf.Timestamp estimated_delivery_date = 3;
+  repeated TrackingEvent events = 4;
+}
+
+message CreateSenderRequest {
+  string name = 1;
+  Address address = 2;
+  string phone_number = 3;
+  string email = 4;
+}
+
+message GetSenderRequest {
+  string sender_id = 1;
+}
+
+message UpdateSenderRequest {
+  string sender_id = 1;
+  string name = 2;
+  Address address = 3;
+  string phone_number = 4;
+  string email = 5;
+}
+
+message SenderResponse {
+  Sender sender = 1;
+}
+
+message CreateRecipientRequest {
+  string name = 1;
+  Address address = 2;
+  string phone_number = 3;
+  string email = 4;
+}
+
+message GetRecipientRequest {
+  string recipient_id = 1;
+}
+
+message UpdateRecipientRequest {
+  string recipient_id = 1;
+  string name = 2;
+  Address address = 3;
+  string phone_number = 4;
+  string email = 5;
+}
+
+message RecipientResponse {
+  Recipient recipient = 1;
+}
+
+message ShipmentResponse {
+  Shipment shipment = 1;
+}

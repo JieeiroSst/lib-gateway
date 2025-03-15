@@ -1,0 +1,230 @@
+syntax = "proto3";
+
+package partnership;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "//proto";
+
+service PartnershipService {
+  rpc CreatePartner(CreatePartnerRequest) returns (Partner) {
+    option (google.api.http) = {
+      post: "/v1/partners"
+      body: "*"
+    };
+  }
+  
+  rpc GetPartner(GetPartnerRequest) returns (Partner) {
+    option (google.api.http) = {
+      get: "/v1/partners/{id}"
+    };
+  }
+  
+  rpc ListPartners(ListPartnersRequest) returns (ListPartnersResponse) {
+    option (google.api.http) = {
+      get: "/v1/partners"
+    };
+  }
+  
+  rpc UpdatePartner(UpdatePartnerRequest) returns (Partner) {
+    option (google.api.http) = {
+      put: "/v1/partners/{partner.id}"
+      body: "partner"
+    };
+  }
+  
+  rpc DeletePartner(DeletePartnerRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/partners/{id}"
+    };
+  }
+
+  rpc CreatePartnership(CreatePartnershipRequest) returns (Partnership) {
+    option (google.api.http) = {
+      post: "/v1/partnerships"
+      body: "*"
+    };
+  }
+  
+  rpc GetPartnership(GetPartnershipRequest) returns (Partnership) {
+    option (google.api.http) = {
+      get: "/v1/partnerships/{id}"
+    };
+  }
+  
+  rpc ListPartnerships(ListPartnershipsRequest) returns (ListPartnershipsResponse) {
+    option (google.api.http) = {
+      get: "/v1/partnerships"
+    };
+  }
+  
+  rpc UpdatePartnership(UpdatePartnershipRequest) returns (Partnership) {
+    option (google.api.http) = {
+      put: "/v1/partnerships/{partnership.id}"
+      body: "partnership"
+    };
+  }
+  
+  rpc DeletePartnership(DeletePartnershipRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/partnerships/{id}" 
+    };
+  }
+
+  rpc GetProject(GetProjectRequest) returns (Project) {
+    option (google.api.http) = {
+      get: "/v1/projects/{id}"
+    };
+  }
+  
+  rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse) {
+    option (google.api.http) = {
+      get: "/v1/projects"
+    };
+  }
+
+  rpc AddPartnerToPartnership(AddPartnerToPartnershipRequest) returns (PartnershipParticipation) {
+    option (google.api.http) = {
+      post: "/v1/partnerships/{partnership_id}/partners"
+      body: "*"
+    };
+  }
+  
+  rpc RemovePartnerFromPartnership(RemovePartnerFromPartnershipRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/partnerships/{partnership_id}/partners/{partner_id}"
+    };
+  }
+  
+  rpc ListPartnershipParticipations(ListPartnershipParticipationsRequest) returns (ListPartnershipParticipationsResponse) {
+    option (google.api.http) = {
+      get: "/v1/partnerships/{partnership_id}/partners"
+    };
+  }
+}
+
+message Partner {
+  int32 id = 1;
+  string type = 2; // Company, Student, University, etc.
+  map<string, string> details = 3; 
+}
+
+message CreatePartnerRequest {
+  string type = 1;
+  map<string, string> details = 2;
+}
+
+message GetPartnerRequest {
+  int32 id = 1;
+}
+
+message ListPartnersRequest {
+  int32 page_size = 1;
+  int32 page_token = 2;
+  string type_filter = 3;
+}
+
+message ListPartnersResponse {
+  repeated Partner partners = 1;
+  int32 next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message UpdatePartnerRequest {
+  Partner partner = 1;
+}
+
+message DeletePartnerRequest {
+  int32 id = 1;
+}
+
+message Partnership {
+  int32 id = 1;
+  string description = 2;
+  google.protobuf.Timestamp started_on = 3;
+  google.protobuf.Timestamp expires_on = 4;
+  int32 project_id = 5; 
+}
+
+message CreatePartnershipRequest {
+  string description = 1;
+  google.protobuf.Timestamp started_on = 2;
+  google.protobuf.Timestamp expires_on = 3;
+  int32 project_id = 4;
+}
+
+message GetPartnershipRequest {
+  int32 id = 1;
+}
+
+message ListPartnershipsRequest {
+  int32 page_size = 1;
+  int32 page_token = 2;
+  int32 project_id = 3;
+  bool active_only = 4; 
+}
+
+message ListPartnershipsResponse {
+  repeated Partnership partnerships = 1;
+  int32 next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message UpdatePartnershipRequest {
+  Partnership partnership = 1;
+}
+
+message DeletePartnershipRequest {
+  int32 id = 1;
+}
+
+message Project {
+  int32 id = 1;
+  string name = 2;
+}
+
+message GetProjectRequest {
+  int32 id = 1;
+}
+
+message ListProjectsRequest {
+  int32 page_size = 1;
+  int32 page_token = 2;
+}
+
+message ListProjectsResponse {
+  repeated Project projects = 1;
+  int32 next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message PartnershipParticipation {
+  int32 id = 1;
+  int32 partner_id = 2;
+  int32 partnership_id = 3;
+  string context = 4; // Role information: admin, participant, etc.
+  google.protobuf.Timestamp joined_on = 5;
+  google.protobuf.Timestamp left_on = 6; 
+}
+
+message AddPartnerToPartnershipRequest {
+  int32 partnership_id = 1;
+  int32 partner_id = 2;
+  string context = 3; 
+}
+
+message RemovePartnerFromPartnershipRequest {
+  int32 partnership_id = 1;
+  int32 partner_id = 2;
+}
+
+message ListPartnershipParticipationsRequest {
+  int32 partnership_id = 1;
+  bool active_only = 2; 
+}
+
+message ListPartnershipParticipationsResponse {
+  repeated PartnershipParticipation participations = 1;
+}

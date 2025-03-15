@@ -1,0 +1,174 @@
+syntax = "proto3";
+
+package payment;
+
+option go_package = "./pd";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service WishlistService {
+  rpc CreateWishlist(CreateWishlistRequest) returns (Wishlist) {
+    option (google.api.http) = {
+      post: "/v1/wishlists"
+      body: "*"
+    };
+  }
+  
+  rpc GetWishlist(GetWishlistRequest) returns (Wishlist) {
+    option (google.api.http) = {
+      get: "/v1/wishlists/{id}"
+    };
+  }
+  
+  rpc UpdateWishlist(UpdateWishlistRequest) returns (Wishlist) {
+    option (google.api.http) = {
+      put: "/v1/wishlists/{id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteWishlist(DeleteWishlistRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/wishlists/{id}"
+    };
+  }
+  
+  rpc ListWishlists(ListWishlistsRequest) returns (ListWishlistsResponse) {
+    option (google.api.http) = {
+      get: "/v1/wishlists"
+    };
+  }
+  
+  rpc AddWishlistItem(AddWishlistItemRequest) returns (WishlistItem) {
+    option (google.api.http) = {
+      post: "/v1/wishlists/{wishlist_id}/items"
+      body: "*"
+    };
+  }
+  
+  rpc GetWishlistItem(GetWishlistItemRequest) returns (WishlistItem) {
+    option (google.api.http) = {
+      get: "/v1/wishlists/{wishlist_id}/items/{id}"
+    };
+  }
+  
+  rpc UpdateWishlistItem(UpdateWishlistItemRequest) returns (WishlistItem) {
+    option (google.api.http) = {
+      put: "/v1/wishlists/{wishlist_id}/items/{id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteWishlistItem(DeleteWishlistItemRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/wishlists/{wishlist_id}/items/{id}"
+    };
+  }
+  
+  rpc ListWishlistItems(ListWishlistItemsRequest) returns (ListWishlistItemsResponse) {
+    option (google.api.http) = {
+      get: "/v1/wishlists/{wishlist_id}/items"
+    };
+  }
+}
+
+message Wishlist {
+  string id = 1;
+  string name = 2;
+  string key = 3;
+  string visibility = 4;
+  google.protobuf.Timestamp date_created = 5;
+  string owner_id = 6;
+}
+
+message WishlistItem {
+  string id = 1;
+  int32 quantity = 2;
+  string title = 3;
+  string product_id = 4;
+  string wishlist_id = 5;
+}
+
+message User {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string first_name = 4;
+  string last_name = 5;
+  bool is_superuser = 6;
+  bool is_staff = 7;
+  bool is_active = 8;
+  google.protobuf.Timestamp last_login = 9;
+  google.protobuf.Timestamp date_joined = 10;
+}
+
+
+message CreateWishlistRequest {
+  string name = 1;
+  string visibility = 2; // e.g., "public", "private", "shared"
+}
+
+message GetWishlistRequest {
+  string id = 1;
+}
+
+message UpdateWishlistRequest {
+  string id = 1;
+  string name = 2;
+  string visibility = 3;
+}
+
+message DeleteWishlistRequest {
+  string id = 1;
+}
+
+message ListWishlistsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string owner_id = 3;
+  string visibility = 4;
+}
+
+message ListWishlistsResponse {
+  repeated Wishlist wishlists = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message AddWishlistItemRequest {
+  string wishlist_id = 1;
+  string product_id = 2;
+  int32 quantity = 3;
+  string title = 4;
+}
+
+message GetWishlistItemRequest {
+  string wishlist_id = 1;
+  string id = 2;
+}
+
+message UpdateWishlistItemRequest {
+  string wishlist_id = 1;
+  string id = 2;
+  int32 quantity = 3;
+  string title = 4;
+}
+
+message DeleteWishlistItemRequest {
+  string wishlist_id = 1;
+  string id = 2;
+}
+
+message ListWishlistItemsRequest {
+  string wishlist_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListWishlistItemsResponse {
+  repeated WishlistItem items = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}

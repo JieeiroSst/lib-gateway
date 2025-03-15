@@ -1,0 +1,193 @@
+syntax = "proto3";
+
+package discountprogram;
+
+option go_package = "./pd";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+enum DiscountType {
+  DISCOUNT_TYPE_UNSPECIFIED = 0;
+  DISCOUNT_TYPE_PERCENTAGE = 1;
+  DISCOUNT_TYPE_FIXED_AMOUNT = 2;
+}
+
+message Discount {
+  int32 id = 1;
+  int32 program_id = 2;
+  int32 product_id = 3;
+  DiscountType discount_type = 4;
+  double amount = 5;
+  string sku = 6;
+  google.protobuf.Timestamp start_date = 7;
+  google.protobuf.Timestamp end_date = 8;
+}
+
+message Program {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+  repeated Discount discounts = 6;
+}
+
+message CreateProgramRequest {
+  string name = 1;
+  string description = 2;
+  google.protobuf.Timestamp start_date = 3;
+  google.protobuf.Timestamp end_date = 4;
+}
+
+message UpdateProgramRequest {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+}
+
+message GetProgramRequest {
+  int32 id = 1;
+}
+
+message ListProgramsRequest {
+  google.protobuf.Timestamp active_on = 1;
+  int32 page_size = 2;
+  int32 page_token = 3;
+}
+
+message ListProgramsResponse {
+  repeated Program programs = 1;
+  int32 next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message DeleteProgramRequest {
+  int32 id = 1;
+}
+
+message CreateDiscountRequest {
+  int32 program_id = 1;
+  int32 product_id = 2;
+  DiscountType discount_type = 3;
+  double amount = 4;
+  string sku = 5;
+  google.protobuf.Timestamp start_date = 6;
+  google.protobuf.Timestamp end_date = 7;
+}
+
+message UpdateDiscountRequest {
+  int32 id = 1;
+  int32 program_id = 2;
+  int32 product_id = 3;
+  DiscountType discount_type = 4;
+  double amount = 5;
+  string sku = 6;
+  google.protobuf.Timestamp start_date = 7;
+  google.protobuf.Timestamp end_date = 8;
+}
+
+message GetDiscountRequest {
+  int32 id = 1;
+}
+
+message ListDiscountsRequest {
+  int32 program_id = 1;
+  int32 product_id = 2;
+  string sku = 3;
+  google.protobuf.Timestamp active_on = 4;
+  int32 page_size = 5;
+  int32 page_token = 6;
+}
+
+message ListDiscountsResponse {
+  repeated Discount discounts = 1;
+  int32 next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message DeleteDiscountRequest {
+  int32 id = 1;
+}
+
+service DiscountProgramService {
+  rpc CreateProgram(CreateProgramRequest) returns (Program) {
+    option (google.api.http) = {
+      post: "/v1/programs"
+      body: "*"
+    };
+  }
+  
+  rpc GetProgram(GetProgramRequest) returns (Program) {
+    option (google.api.http) = {
+      get: "/v1/programs/{id}"
+    };
+  }
+  
+  rpc ListPrograms(ListProgramsRequest) returns (ListProgramsResponse) {
+    option (google.api.http) = {
+      get: "/v1/programs"
+    };
+  }
+  
+  rpc UpdateProgram(UpdateProgramRequest) returns (Program) {
+    option (google.api.http) = {
+      put: "/v1/programs/{id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteProgram(DeleteProgramRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/programs/{id}"
+    };
+  }
+  
+  rpc CreateDiscount(CreateDiscountRequest) returns (Discount) {
+    option (google.api.http) = {
+      post: "/v1/discounts"
+      body: "*"
+    };
+  }
+  
+  rpc GetDiscount(GetDiscountRequest) returns (Discount) {
+    option (google.api.http) = {
+      get: "/v1/discounts/{id}"
+    };
+  }
+  
+  rpc ListDiscounts(ListDiscountsRequest) returns (ListDiscountsResponse) {
+    option (google.api.http) = {
+      get: "/v1/discounts"
+    };
+  }
+  
+  rpc UpdateDiscount(UpdateDiscountRequest) returns (Discount) {
+    option (google.api.http) = {
+      put: "/v1/discounts/{id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteDiscount(DeleteDiscountRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/discounts/{id}"
+    };
+  }
+  
+  rpc ListProgramDiscounts(GetProgramRequest) returns (ListDiscountsResponse) {
+    option (google.api.http) = {
+      get: "/v1/programs/{id}/discounts"
+    };
+  }
+  
+  rpc AddDiscountToProgram(CreateDiscountRequest) returns (Discount) {
+    option (google.api.http) = {
+      post: "/v1/programs/{program_id}/discounts"
+      body: "*"
+    };
+  }
+}

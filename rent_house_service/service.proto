@@ -1,0 +1,666 @@
+syntax = "proto3";
+
+package homestay;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "./pd";
+
+service HomestayService {
+  rpc CreateHomestay(CreateHomestayRequest) returns (HomestayResponse) {
+    option (google.api.http) = {
+      post: "/v1/homestays"
+      body: "*"
+    };
+  }
+
+  rpc GetHomestay(GetHomestayRequest) returns (HomestayResponse) {
+    option (google.api.http) = {
+      get: "/v1/homestays/{id}"
+    };
+  }
+
+  rpc UpdateHomestay(UpdateHomestayRequest) returns (HomestayResponse) {
+    option (google.api.http) = {
+      put: "/v1/homestays/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteHomestay(DeleteHomestayRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/homestays/{id}"
+    };
+  }
+
+  rpc ListHomestays(ListHomestaysRequest) returns (ListHomestaysResponse) {
+    option (google.api.http) = {
+      get: "/v1/homestays"
+    };
+  }
+
+  rpc UpdateAvailability(UpdateAvailabilityRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/v1/homestays/{homestay_id}/availability"
+      body: "*"
+    };
+  }
+
+  rpc GetAvailability(GetAvailabilityRequest) returns (GetAvailabilityResponse) {
+    option (google.api.http) = {
+      get: "/v1/homestays/{homestay_id}/availability"
+    };
+  }
+
+  rpc AddAmenities(AddAmenitiesRequest) returns (HomestayResponse) {
+    option (google.api.http) = {
+      post: "/v1/homestays/{homestay_id}/amenities"
+      body: "*"
+    };
+  }
+
+  rpc RemoveAmenities(RemoveAmenitiesRequest) returns (HomestayResponse) {
+    option (google.api.http) = {
+      post: "/v1/homestays/{homestay_id}/amenities/remove"
+      body: "*"
+    };
+  }
+
+  rpc CreateUser(CreateUserRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      post: "/v1/users"
+      body: "*"
+    };
+  }
+
+  rpc GetUser(GetUserRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{id}"
+    };
+  }
+
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      put: "/v1/users/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/users/{id}"
+    };
+  }
+
+  rpc GetProfile(GetProfileRequest) returns (ProfileResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/profile"
+    };
+  }
+
+  rpc UpdateProfile(UpdateProfileRequest) returns (ProfileResponse) {
+    option (google.api.http) = {
+      put: "/v1/users/{user_id}/profile"
+      body: "*"
+    };
+  }
+
+  rpc CreateBooking(CreateBookingRequest) returns (BookingResponse) {
+    option (google.api.http) = {
+      post: "/v1/bookings"
+      body: "*"
+    };
+  }
+
+  rpc GetBooking(GetBookingRequest) returns (BookingResponse) {
+    option (google.api.http) = {
+      get: "/v1/bookings/{id}"
+    };
+  }
+
+  rpc UpdateBooking(UpdateBookingRequest) returns (BookingResponse) {
+    option (google.api.http) = {
+      put: "/v1/bookings/{id}"
+      body: "*"
+    };
+  }
+
+  rpc CancelBooking(CancelBookingRequest) returns (BookingResponse) {
+    option (google.api.http) = {
+      post: "/v1/bookings/{id}/cancel"
+      body: "*"
+    };
+  }
+
+  rpc ListUserBookings(ListUserBookingsRequest) returns (ListBookingsResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/bookings"
+    };
+  }
+
+  rpc ListHomestayBookings(ListHomestayBookingsRequest) returns (ListBookingsResponse) {
+    option (google.api.http) = {
+      get: "/v1/homestays/{homestay_id}/bookings"
+    };
+  }
+
+  rpc ListProvinces(ListProvincesRequest) returns (ListProvincesResponse) {
+    option (google.api.http) = {
+      get: "/v1/locations/provinces"
+    };
+  }
+
+  rpc ListDistricts(ListDistrictsRequest) returns (ListDistrictsResponse) {
+    option (google.api.http) = {
+      get: "/v1/locations/provinces/{province_id}/districts"
+    };
+  }
+
+  rpc ListWards(ListWardsRequest) returns (ListWardsResponse) {
+    option (google.api.http) = {
+      get: "/v1/locations/districts/{district_id}/wards"
+    };
+  }
+
+  rpc ListAmenities(ListAmenitiesRequest) returns (ListAmenitiesResponse) {
+    option (google.api.http) = {
+      get: "/v1/amenities"
+    };
+  }
+
+  rpc CreateAmenity(CreateAmenityRequest) returns (AmenityResponse) {
+    option (google.api.http) = {
+      post: "/v1/amenities"
+      body: "*"
+    };
+  }
+
+  rpc UpdateAmenity(UpdateAmenityRequest) returns (AmenityResponse) {
+    option (google.api.http) = {
+      put: "/v1/amenities/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteAmenity(DeleteAmenityRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/amenities/{id}"
+    };
+  }
+}
+
+message Homestay {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  int32 type = 4;
+  int32 status = 5;
+  string phone_number = 6;
+  string address = 7;
+  int32 ward_id = 8;
+  int32 district_id = 9;
+  int32 province_id = 10;
+  repeated string images = 11;
+  int32 guests = 12;
+  int32 bedrooms = 13;
+  int32 bathrooms = 14;
+  string extra_data = 15; 
+  int64 version = 16;
+  google.protobuf.Timestamp created_at = 17;
+  int64 created_by = 18;
+  google.protobuf.Timestamp updated_at = 19;
+  int64 updated_by = 20;
+  repeated Amenity amenities = 21;
+  LocationInfo location = 22;
+}
+
+message User {
+  int64 id = 1;
+  string username = 2;
+  string email = 3;
+  string fullname = 4;
+  int32 type = 5;
+  int32 status = 6;
+  string extra_data = 7; 
+  int64 version = 8;
+  google.protobuf.Timestamp created_at = 9;
+  int64 created_by = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  int64 updated_by = 12;
+}
+
+message Profile {
+  int64 user_id = 1;
+  string avatar = 2;
+  string work = 3;
+  string about = 4;
+  repeated string interests = 5;
+  int32 status = 6;
+  string extra_data = 7; 
+  int64 version = 8;
+  google.protobuf.Timestamp created_at = 9;
+  int64 created_by = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  int64 updated_by = 12;
+}
+
+message Booking {
+  int64 id = 1;
+  int64 user_id = 2;
+  int64 homestay_id = 3;
+  string checkin_date = 4; 
+  string checkout_date = 5;
+  int32 guests = 6;
+  int32 status = 7;
+  string currency = 8;
+  double subtotal = 9;
+  double discount = 10;
+  double total_amount = 11;
+  string price_detail = 12; 
+  string note = 13;
+  string request_id = 14;
+  int32 version = 15;
+  string extra_data = 16;
+  google.protobuf.Timestamp created_at = 17;
+  int64 created_by = 18;
+  google.protobuf.Timestamp updated_at = 19;
+  int64 updated_by = 20;
+  User user = 21;
+  Homestay homestay = 22;
+}
+
+message Availability {
+  int64 homestay_id = 1;
+  string date = 2;
+  double price = 3;
+  int32 status = 4;
+}
+
+message Amenity {
+  int32 id = 1;
+  string name = 2;
+  string icon = 3;
+}
+
+message LocationInfo {
+  int32 province_id = 1;
+  string province_name = 2;
+  int32 district_id = 3;
+  string district_name = 4;
+  int32 ward_id = 5;
+  string ward_name = 6;
+}
+
+message Ward {
+  int32 id = 1;
+  string ward_name = 2;
+  int32 district_id = 3;
+}
+
+message District {
+  int32 id = 1;
+  string district_name = 2;
+  int32 province_id = 3;
+}
+
+message Province {
+  int32 id = 1;
+  string province_name = 2;
+  int32 country_id = 3;
+}
+
+message CreateHomestayRequest {
+  string name = 1;
+  string description = 2;
+  int32 type = 3;
+  int32 status = 4;
+  string phone_number = 5;
+  string address = 6;
+  int32 ward_id = 7;
+  int32 district_id = 8;
+  int32 province_id = 9;
+  repeated string images = 10;
+  int32 guests = 11;
+  int32 bedrooms = 12;
+  int32 bathrooms = 13;
+  string extra_data = 14; 
+}
+
+message GetHomestayRequest {
+  int64 id = 1;
+}
+
+message UpdateHomestayRequest {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  int32 type = 4;
+  int32 status = 5;
+  string phone_number = 6;
+  string address = 7;
+  int32 ward_id = 8;
+  int32 district_id = 9;
+  int32 province_id = 10;
+  repeated string images = 11;
+  int32 guests = 12;
+  int32 bedrooms = 13;
+  int32 bathrooms = 14;
+  string extra_data = 15; 
+  int64 version = 16;
+}
+
+message DeleteHomestayRequest {
+  int64 id = 1;
+}
+
+message ListHomestaysRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string search = 3;
+  int32 province_id = 4;
+  int32 district_id = 5;
+  int32 ward_id = 6;
+  int32 min_price = 7;
+  int32 max_price = 8;
+  int32 guests = 9;
+  int32 bedrooms = 10;
+  int32 bathrooms = 11;
+  repeated int32 amenity_ids = 12;
+  string checkin_date = 13; 
+  string checkout_date = 14; 
+  string sort_by = 15;
+  bool sort_desc = 16;
+}
+
+message ListHomestaysResponse {
+  repeated Homestay homestays = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message HomestayResponse {
+  Homestay homestay = 1;
+}
+
+message UpdateAvailabilityRequest {
+  int64 homestay_id = 1;
+  repeated Availability availabilities = 2;
+}
+
+message GetAvailabilityRequest {
+  int64 homestay_id = 1;
+  string start_date = 2; 
+  string end_date = 3; 
+}
+
+message GetAvailabilityResponse {
+  repeated Availability availabilities = 1;
+}
+
+message AddAmenitiesRequest {
+  int64 homestay_id = 1;
+  repeated int32 amenity_ids = 2;
+}
+
+message RemoveAmenitiesRequest {
+  int64 homestay_id = 1;
+  repeated int32 amenity_ids = 2;
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string password = 2;
+  string email = 3;
+  string fullname = 4;
+  int32 type = 5;
+  int32 status = 6;
+  string extra_data = 7; 
+}
+
+message GetUserRequest {
+    int64 id = 1;
+  }
+  
+  message UpdateUserRequest {
+    int64 id = 1;
+    string username = 2;
+    string password = 3;
+    string email = 4;
+    string fullname = 5;
+    int32 type = 6;
+    int32 status = 7;
+    string extra_data = 8;
+    int64 version = 9;
+  }
+  
+  message DeleteUserRequest {
+    int64 id = 1;
+  }
+  
+  message UserResponse {
+    User user = 1;
+  }
+  
+  message GetProfileRequest {
+    int64 user_id = 1;
+  }
+  
+  message UpdateProfileRequest {
+    int64 user_id = 1;
+    string avatar = 2;
+    string work = 3;
+    string about = 4;
+    repeated string interests = 5;
+    int32 status = 6;
+    string extra_data = 7;
+    int64 version = 8;
+  }
+  
+  message ProfileResponse {
+    Profile profile = 1;
+  }
+  
+  message CreateBookingRequest {
+    int64 user_id = 1;
+    int64 homestay_id = 2;
+    string checkin_date = 3; 
+    string checkout_date = 4; 
+    int32 guests = 5;
+    string currency = 6;
+    string note = 7;
+    string request_id = 8;
+    string extra_data = 9;
+  }
+  
+  message GetBookingRequest {
+    int64 id = 1;
+  }
+  
+  message UpdateBookingRequest {
+    int64 id = 1;
+    string checkin_date = 2; 
+    string checkout_date = 3; 
+    int32 guests = 4;
+    int32 status = 5;
+    string note = 6;
+    string extra_data = 7; 
+    int32 version = 8;
+  }
+  
+  message CancelBookingRequest {
+    int64 id = 1;
+    string reason = 2;
+    int32 version = 3;
+  }
+  
+  message ListUserBookingsRequest {
+    int64 user_id = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+    int32 status = 4;
+    string start_date = 5; 
+    string end_date = 6;
+    string sort_by = 7;
+    bool sort_desc = 8;
+  }
+  
+  message ListHomestayBookingsRequest {
+    int64 homestay_id = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+    int32 status = 4;
+    string start_date = 5; 
+    string end_date = 6; 
+    string sort_by = 7;
+    bool sort_desc = 8;
+  }
+  
+  message ListBookingsResponse {
+    repeated Booking bookings = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 page_size = 4;
+  }
+  
+  message BookingResponse {
+    Booking booking = 1;
+  }
+  
+  message ListProvincesRequest {
+    int32 country_id = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+    string search = 4;
+  }
+  
+  message ListProvincesResponse {
+    repeated Province provinces = 1;
+    int32 total = 2;
+  }
+  
+  message ListDistrictsRequest {
+    int32 province_id = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+    string search = 4;
+  }
+  
+  message ListDistrictsResponse {
+    repeated District districts = 1;
+    int32 total = 2;
+  }
+  
+  message ListWardsRequest {
+    int32 district_id = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+    string search = 4;
+  }
+  
+  message ListWardsResponse {
+    repeated Ward wards = 1;
+    int32 total = 2;
+  }
+  
+  message ListAmenitiesRequest {
+    int32 page = 1;
+    int32 page_size = 2;
+    string search = 3;
+  }
+  
+  message ListAmenitiesResponse {
+    repeated Amenity amenities = 1;
+    int32 total = 2;
+  }
+  
+  message CreateAmenityRequest {
+    string name = 1;
+    string icon = 2;
+  }
+  
+  message UpdateAmenityRequest {
+    int32 id = 1;
+    string name = 2;
+    string icon = 3;
+  }
+  
+  message DeleteAmenityRequest {
+    int32 id = 1;
+  }
+  
+  message AmenityResponse {
+    Amenity amenity = 1;
+  }
+  
+  message PaginationRequest {
+    int32 page = 1;
+    int32 page_size = 2;
+  }
+  
+  message PaginationResponse {
+    int32 total = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+    int32 total_pages = 4;
+  }
+  
+  message ErrorResponse {
+    string error_code = 1;
+    string message = 2;
+    repeated FieldError field_errors = 3;
+  }
+  
+  message FieldError {
+    string field = 1;
+    string message = 2;
+  }
+  
+  enum HomestayStatus {
+    HOMESTAY_STATUS_UNSPECIFIED = 0;
+    HOMESTAY_STATUS_DRAFT = 1;
+    HOMESTAY_STATUS_ACTIVE = 2;
+    HOMESTAY_STATUS_INACTIVE = 3;
+    HOMESTAY_STATUS_DELETED = 4;
+  }
+  
+  enum UserStatus {
+    USER_STATUS_UNSPECIFIED = 0;
+    USER_STATUS_ACTIVE = 1;
+    USER_STATUS_INACTIVE = 2;
+    USER_STATUS_SUSPENDED = 3;
+    USER_STATUS_DELETED = 4;
+  }
+  
+  enum UserType {
+    USER_TYPE_UNSPECIFIED = 0;
+    USER_TYPE_GUEST = 1;
+    USER_TYPE_HOST = 2;
+    USER_TYPE_ADMIN = 3;
+  }
+  
+  enum BookingStatus {
+    BOOKING_STATUS_UNSPECIFIED = 0;
+    BOOKING_STATUS_PENDING = 1;
+    BOOKING_STATUS_CONFIRMED = 2;
+    BOOKING_STATUS_CHECKEDIN = 3;
+    BOOKING_STATUS_COMPLETED = 4;
+    BOOKING_STATUS_CANCELLED = 5;
+    BOOKING_STATUS_REJECTED = 6;
+  }
+  
+  enum AvailabilityStatus {
+    AVAILABILITY_STATUS_UNSPECIFIED = 0;
+    AVAILABILITY_STATUS_AVAILABLE = 1;
+    AVAILABILITY_STATUS_UNAVAILABLE = 2;
+    AVAILABILITY_STATUS_BOOKED = 3;
+  }
+  
+  enum HomestayType {
+    HOMESTAY_TYPE_UNSPECIFIED = 0;
+    HOMESTAY_TYPE_ENTIRE_PLACE = 1;
+    HOMESTAY_TYPE_PRIVATE_ROOM = 2;
+    HOMESTAY_TYPE_SHARED_ROOM = 3;
+  }

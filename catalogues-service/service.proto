@@ -1,0 +1,312 @@
+syntax = "proto3";
+
+package catalog;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "./proto";
+
+service CatalogService {
+  rpc GetProduct(GetProductRequest) returns (Product) {
+    option (google.api.http) = {
+      get: "/v1/products/{id}"
+    };
+  }
+  
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {
+    option (google.api.http) = {
+      get: "/v1/products"
+    };
+  }
+  
+  rpc CreateProduct(CreateProductRequest) returns (Product) {
+    option (google.api.http) = {
+      post: "/v1/products"
+      body: "*"
+    };
+  }
+  
+  rpc UpdateProduct(UpdateProductRequest) returns (Product) {
+    option (google.api.http) = {
+      patch: "/v1/products/{product.id}"
+      body: "product"
+    };
+  }
+  
+  rpc DeleteProduct(DeleteProductRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/products/{id}"
+    };
+  }
+  
+  rpc GetCategory(GetCategoryRequest) returns (Category) {
+    option (google.api.http) = {
+      get: "/v1/categories/{id}"
+    };
+  }
+  
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse) {
+    option (google.api.http) = {
+      get: "/v1/categories"
+    };
+  }
+  
+  rpc GetProductAttribute(GetProductAttributeRequest) returns (ProductAttribute) {
+    option (google.api.http) = {
+      get: "/v1/attributes/{id}"
+    };
+  }
+  
+  rpc ListProductAttributes(ListProductAttributesRequest) returns (ListProductAttributesResponse) {
+    option (google.api.http) = {
+      get: "/v1/attributes"
+    };
+  }
+  
+  rpc GetProductReview(GetProductReviewRequest) returns (ProductReview) {
+    option (google.api.http) = {
+      get: "/v1/products/{product_id}/reviews/{id}"
+    };
+  }
+  
+  rpc ListProductReviews(ListProductReviewsRequest) returns (ListProductReviewsResponse) {
+    option (google.api.http) = {
+      get: "/v1/products/{product_id}/reviews"
+    };
+  }
+  
+  rpc CreateProductReview(CreateProductReviewRequest) returns (ProductReview) {
+    option (google.api.http) = {
+      post: "/v1/products/{product_id}/reviews"
+      body: "review"
+    };
+  }
+  
+  rpc GetProductInventory(GetProductInventoryRequest) returns (ProductInventory) {
+    option (google.api.http) = {
+      get: "/v1/products/{product_id}/inventory"
+    };
+  }
+}
+
+message Product {
+  string id = 1;
+  string structure = 2;
+  string sku = 3;
+  string title = 4;
+  string slug = 5;
+  string meta_description = 6;
+  string meta_title = 7;
+  bool is_public = 8;
+  bool is_available = 9;
+  double rating = 10;
+  string parent_id = 11;
+  repeated string product_class_ids = 12;
+  google.protobuf.Timestamp date_created = 13;
+  google.protobuf.Timestamp date_updated = 14;
+  string category_id = 15;
+  repeated ProductImage images = 16;
+  repeated ProductAttributeValue attributes = 17;
+  repeated ProductRecommendation recommendations = 18;
+}
+
+message ProductImage {
+  string id = 1;
+  string original = 2;
+  string caption = 3;
+  int32 display_order = 4;
+  google.protobuf.Timestamp date_created = 5;
+  string product_id = 6;
+}
+
+message ProductAttributeValue {
+  string id = 1;
+  string value_text = 2;
+  string value_integer = 3;
+  bool value_boolean = 4;
+  double value_float = 5;
+  string value_richtext = 6;
+  google.protobuf.Timestamp value_date = 7;
+  string value_file = 8;
+  string value_image = 9;
+  string entity_object_id = 10;
+  string attribute_id = 11;
+  string entity_content_type_id = 12;
+  string product_id = 13;
+  string value_option = 14;
+  google.protobuf.Timestamp value_datetime = 15;
+}
+
+message ProductRecommendation {
+  string id = 1;
+  int32 ranking = 2;
+  bool primary_id = 3;
+  string recommendation_id = 4;
+  string product_id = 5;
+}
+
+// Category related messages
+message Category {
+  string id = 1;
+  string path = 2;
+  int32 depth = 3;
+  int32 numchild = 4;
+  string name = 5;
+  string description = 6;
+  string image = 7;
+  string slug = 8;
+  bool ancestors_are_public = 9;
+  bool is_public = 10;
+  string meta_description = 11;
+  string meta_title = 12;
+}
+
+// Product attribute related messages
+message ProductAttribute {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string type = 4;
+  bool required = 5;
+  string option_group_id = 6;
+  string product_class_id = 7;
+}
+
+message AttributeOption {
+  string id = 1;
+  string name = 2;
+  string option_group_id = 3;
+}
+
+message AttributeOptionGroup {
+  string id = 1;
+  string name = 2;
+}
+
+message ProductReview {
+  string id = 1;
+  double score = 2;
+  string title = 3;
+  string body = 4;
+  string name = 5;
+  string email = 6;
+  string homepage = 7;
+  string status = 8;
+  int32 total_votes = 9;
+  int32 delta_votes = 10;
+  google.protobuf.Timestamp date_created = 11;
+  string product_id = 12;
+  string user_id = 13;
+}
+
+message ProductReviewVote {
+  string id = 1;
+  int32 delta = 2;
+  google.protobuf.Timestamp date_created = 3;
+  string review_id = 4;
+  string user_id = 5;
+}
+
+message ProductInventory {
+  string id = 1;
+  int32 num_in_stock = 2;
+  int32 num_allocated = 3;
+  int32 low_stock_threshold = 4;
+  google.protobuf.Timestamp date_created = 5;
+  google.protobuf.Timestamp date_updated = 6;
+  string partner_id = 7;
+  string product_id = 8;
+}
+
+message GetProductRequest {
+  string id = 1;
+}
+
+message ListProductsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string category_id = 3;
+  bool is_public = 4;
+  string search_query = 5;
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message CreateProductRequest {
+  Product product = 1;
+}
+
+message UpdateProductRequest {
+  Product product = 1;
+  repeated string update_mask = 2;
+}
+
+message DeleteProductRequest {
+  string id = 1;
+}
+
+message GetCategoryRequest {
+  string id = 1;
+}
+
+message ListCategoriesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  int32 depth = 3;
+  bool is_public = 4;
+}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message GetProductAttributeRequest {
+  string id = 1;
+}
+
+message ListProductAttributesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string product_class_id = 3;
+}
+
+message ListProductAttributesResponse {
+  repeated ProductAttribute attributes = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message GetProductReviewRequest {
+  string id = 1;
+  string product_id = 2;
+}
+
+message ListProductReviewsRequest {
+  string product_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+  string status = 4;
+}
+
+message ListProductReviewsResponse {
+  repeated ProductReview reviews = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message CreateProductReviewRequest {
+  string product_id = 1;
+  ProductReview review = 2;
+}
+
+message GetProductInventoryRequest {
+  string product_id = 1;
+}

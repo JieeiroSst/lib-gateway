@@ -1,0 +1,184 @@
+syntax = "proto3";
+package voucher;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "./pb";
+
+message Voucher {
+  int64 id = 1;
+  string name = 2;
+  string code = 3;
+  string usage = 4;
+  google.protobuf.Timestamp start_datetime = 5;
+  google.protobuf.Timestamp end_datetime = 6;
+  int32 num_basket_additions = 7;
+  int32 num_orders = 8;
+  double total_discount = 9;
+  google.protobuf.Timestamp date_created = 10;
+  int64 voucher_set_id = 11;
+}
+
+message VoucherSet {
+  int64 id = 1;
+  string name = 2;
+  int32 count = 3;
+  int32 code_length = 4;
+  string description = 5;
+  google.protobuf.Timestamp date_created = 6;
+  google.protobuf.Timestamp start_datetime = 7;
+  google.protobuf.Timestamp end_datetime = 8;
+  int64 offer_id = 9;
+}
+
+message VoucherOffer {
+  int64 id = 1;
+  int64 voucher_id = 2;
+  int64 conditional_offer_id = 3;
+}
+
+message VoucherApplication {
+  int64 id = 1;
+  google.protobuf.Timestamp date_created = 2;
+  int64 order_id = 3;
+  int64 user_id = 4;
+  int64 voucher_id = 5;
+}
+
+message BasketVoucher {
+  int64 id = 1;
+  int64 basket_id = 2;
+  int64 voucher_id = 3;
+}
+
+message CreateVoucherRequest {
+  Voucher voucher = 1;
+}
+
+message GetVoucherRequest {
+  int64 id = 1;
+}
+
+message UpdateVoucherRequest {
+  Voucher voucher = 1;
+}
+
+message DeleteVoucherRequest {
+  int64 id = 1;
+}
+
+message ListVouchersRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string filter = 3;
+}
+
+message ListVouchersResponse {
+  repeated Voucher vouchers = 1;
+  string next_page_token = 2;
+}
+
+message CreateVoucherSetRequest {
+  VoucherSet voucher_set = 1;
+}
+
+message GetVoucherSetRequest {
+  int64 id = 1;
+}
+
+message ApplyVoucherRequest {
+  string code = 1;
+  int64 basket_id = 2;
+  int64 user_id = 3;
+}
+
+message ApplyVoucherResponse {
+  bool success = 1;
+  string message = 2;
+  double discount_amount = 3;
+}
+
+message ValidateVoucherRequest {
+  string code = 1;
+}
+
+message ValidateVoucherResponse {
+  bool valid = 1;
+  string message = 2;
+  Voucher voucher = 3;
+}
+
+service VoucherService {
+  rpc CreateVoucher(CreateVoucherRequest) returns (Voucher) {
+    option (google.api.http) = {
+      post: "/v1/vouchers"
+      body: "*"
+    };
+  }
+  
+  rpc GetVoucher(GetVoucherRequest) returns (Voucher) {
+    option (google.api.http) = {
+      get: "/v1/vouchers/{id}"
+    };
+  }
+  
+  rpc UpdateVoucher(UpdateVoucherRequest) returns (Voucher) {
+    option (google.api.http) = {
+      put: "/v1/vouchers/{voucher.id}"
+      body: "voucher"
+    };
+  }
+  
+  rpc DeleteVoucher(DeleteVoucherRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/vouchers/{id}"
+    };
+  }
+  
+  rpc ListVouchers(ListVouchersRequest) returns (ListVouchersResponse) {
+    option (google.api.http) = {
+      get: "/v1/vouchers"
+    };
+  }
+  
+  rpc CreateVoucherSet(CreateVoucherSetRequest) returns (VoucherSet) {
+    option (google.api.http) = {
+      post: "/v1/voucher-sets"
+      body: "*"
+    };
+  }
+  
+  rpc GetVoucherSet(GetVoucherSetRequest) returns (VoucherSet) {
+    option (google.api.http) = {
+      get: "/v1/voucher-sets/{id}"
+    };
+  }
+  
+  rpc ApplyVoucher(ApplyVoucherRequest) returns (ApplyVoucherResponse) {
+    option (google.api.http) = {
+      post: "/v1/vouchers/apply"
+      body: "*"
+    };
+  }
+  
+  rpc ValidateVoucher(ValidateVoucherRequest) returns (ValidateVoucherResponse) {
+    option (google.api.http) = {
+      post: "/v1/vouchers/validate"
+      body: "*"
+    };
+  }
+  
+  rpc GetVouchersByBasket(GetVoucherRequest) returns (ListVouchersResponse) {
+    option (google.api.http) = {
+      get: "/v1/baskets/{id}/vouchers"
+    };
+  }
+  
+  rpc GetVouchersByUser(GetVoucherRequest) returns (ListVouchersResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{id}/vouchers"
+    };
+  }
+}
