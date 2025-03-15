@@ -1,0 +1,221 @@
+syntax = "proto3";
+
+package bookstore;
+
+option go_package = "./pd";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+message Book {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string isbn = 4;
+  repeated string author_ids = 5;
+  string category_id = 6;
+  double price = 7;
+  google.protobuf.Timestamp published_date = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+message Author {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string biography = 4;
+  google.protobuf.Timestamp birth_date = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string parent_category_id = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message GetBookRequest {
+  string id = 1;
+}
+
+message ListBooksRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string author_id = 3;
+  string category_id = 4;
+}
+
+message CreateBookRequest {
+  Book book = 1;
+}
+
+message UpdateBookRequest {
+  Book book = 1;
+}
+
+message DeleteBookRequest {
+  string id = 1;
+}
+
+message GetAuthorRequest {
+  string id = 1;
+}
+
+message ListAuthorsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message CreateAuthorRequest {
+  Author author = 1;
+}
+
+message UpdateAuthorRequest {
+  Author author = 1;
+}
+
+message DeleteAuthorRequest {
+  string id = 1;
+}
+
+message GetCategoryRequest {
+  string id = 1;
+}
+
+message ListCategoriesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  string parent_category_id = 3;
+}
+
+message CreateCategoryRequest {
+  Category category = 1;
+}
+
+message UpdateCategoryRequest {
+  Category category = 1;
+}
+
+message DeleteCategoryRequest {
+  string id = 1;
+}
+
+message ListBooksResponse {
+  repeated Book books = 1;
+  string next_page_token = 2;
+}
+
+message ListAuthorsResponse {
+  repeated Author authors = 1;
+  string next_page_token = 2;
+}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+  string next_page_token = 2;
+}
+
+service BookService {
+  rpc GetBook(GetBookRequest) returns (Book) {
+    option (google.api.http) = {
+      get: "/v1/books/{id}"
+    };
+  }
+  
+  rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
+    option (google.api.http) = {
+      get: "/v1/books"
+    };
+  }
+  
+  rpc CreateBook(CreateBookRequest) returns (Book) {
+    option (google.api.http) = {
+      post: "/v1/books"
+      body: "book"
+    };
+  }
+  
+  rpc UpdateBook(UpdateBookRequest) returns (Book) {
+    option (google.api.http) = {
+      put: "/v1/books/{book.id}"
+      body: "book"
+    };
+  }
+  
+  rpc DeleteBook(DeleteBookRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/books/{id}"
+    };
+  }
+
+  rpc GetCategory(GetCategoryRequest) returns (Category) {
+    option (google.api.http) = {
+      get: "/v1/categories/{id}"
+    };
+  }
+  
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse) {
+    option (google.api.http) = {
+      get: "/v1/categories"
+    };
+  }
+  
+  rpc CreateCategory(CreateCategoryRequest) returns (Category) {
+    option (google.api.http) = {
+      post: "/v1/categories"
+      body: "category"
+    };
+  }
+  
+  rpc UpdateCategory(UpdateCategoryRequest) returns (Category) {
+    option (google.api.http) = {
+      put: "/v1/categories/{category.id}"
+      body: "category"
+    };
+  }
+  
+  rpc DeleteCategory(DeleteCategoryRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/categories/{id}"
+    };
+  }
+
+  rpc GetAuthor(GetAuthorRequest) returns (Author) {
+    option (google.api.http) = {
+      get: "/v1/authors/{id}"
+    };
+  }
+  
+  rpc ListAuthors(ListAuthorsRequest) returns (ListAuthorsResponse) {
+    option (google.api.http) = {
+      get: "/v1/authors"
+    };
+  }
+  
+  rpc CreateAuthor(CreateAuthorRequest) returns (Author) {
+    option (google.api.http) = {
+      post: "/v1/authors"
+      body: "author"
+    };
+  }
+  
+  rpc UpdateAuthor(UpdateAuthorRequest) returns (Author) {
+    option (google.api.http) = {
+      put: "/v1/authors/{author.id}"
+      body: "author"
+    };
+  }
+  
+  rpc DeleteAuthor(DeleteAuthorRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/authors/{id}"
+    };
+  }
+}
+

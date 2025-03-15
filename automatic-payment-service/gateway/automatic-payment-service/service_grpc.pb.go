@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,681 +20,823 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SubscriptionService_CreateUser_FullMethodName              = "/subscription.SubscriptionService/CreateUser"
-	SubscriptionService_GetUser_FullMethodName                 = "/subscription.SubscriptionService/GetUser"
-	SubscriptionService_UpdateUser_FullMethodName              = "/subscription.SubscriptionService/UpdateUser"
-	SubscriptionService_ListSubscriptionPlans_FullMethodName   = "/subscription.SubscriptionService/ListSubscriptionPlans"
-	SubscriptionService_GetSubscriptionPlan_FullMethodName     = "/subscription.SubscriptionService/GetSubscriptionPlan"
-	SubscriptionService_CreateSubscription_FullMethodName      = "/subscription.SubscriptionService/CreateSubscription"
-	SubscriptionService_GetSubscription_FullMethodName         = "/subscription.SubscriptionService/GetSubscription"
-	SubscriptionService_CancelSubscription_FullMethodName      = "/subscription.SubscriptionService/CancelSubscription"
-	SubscriptionService_RenewSubscription_FullMethodName       = "/subscription.SubscriptionService/RenewSubscription"
-	SubscriptionService_AddPaymentMethod_FullMethodName        = "/subscription.SubscriptionService/AddPaymentMethod"
-	SubscriptionService_ListPaymentMethods_FullMethodName      = "/subscription.SubscriptionService/ListPaymentMethods"
-	SubscriptionService_SetDefaultPaymentMethod_FullMethodName = "/subscription.SubscriptionService/SetDefaultPaymentMethod"
-	SubscriptionService_GetTransaction_FullMethodName          = "/subscription.SubscriptionService/GetTransaction"
-	SubscriptionService_ListTransactions_FullMethodName        = "/subscription.SubscriptionService/ListTransactions"
-	SubscriptionService_GetInvoice_FullMethodName              = "/subscription.SubscriptionService/GetInvoice"
-	SubscriptionService_ListInvoices_FullMethodName            = "/subscription.SubscriptionService/ListInvoices"
+	PaymentGatewayService_CreateSubscription_FullMethodName            = "/payment.PaymentGatewayService/CreateSubscription"
+	PaymentGatewayService_GetSubscription_FullMethodName               = "/payment.PaymentGatewayService/GetSubscription"
+	PaymentGatewayService_UpdateSubscriptionPlan_FullMethodName        = "/payment.PaymentGatewayService/UpdateSubscriptionPlan"
+	PaymentGatewayService_CancelSubscription_FullMethodName            = "/payment.PaymentGatewayService/CancelSubscription"
+	PaymentGatewayService_ReactivateSubscription_FullMethodName        = "/payment.PaymentGatewayService/ReactivateSubscription"
+	PaymentGatewayService_AddPaymentMethod_FullMethodName              = "/payment.PaymentGatewayService/AddPaymentMethod"
+	PaymentGatewayService_GetPaymentMethods_FullMethodName             = "/payment.PaymentGatewayService/GetPaymentMethods"
+	PaymentGatewayService_UpdatePaymentMethod_FullMethodName           = "/payment.PaymentGatewayService/UpdatePaymentMethod"
+	PaymentGatewayService_DeletePaymentMethod_FullMethodName           = "/payment.PaymentGatewayService/DeletePaymentMethod"
+	PaymentGatewayService_SetDefaultPaymentMethod_FullMethodName       = "/payment.PaymentGatewayService/SetDefaultPaymentMethod"
+	PaymentGatewayService_ProcessPayment_FullMethodName                = "/payment.PaymentGatewayService/ProcessPayment"
+	PaymentGatewayService_GetTransactionHistory_FullMethodName         = "/payment.PaymentGatewayService/GetTransactionHistory"
+	PaymentGatewayService_GetTransactionDetails_FullMethodName         = "/payment.PaymentGatewayService/GetTransactionDetails"
+	PaymentGatewayService_RefundTransaction_FullMethodName             = "/payment.PaymentGatewayService/RefundTransaction"
+	PaymentGatewayService_GetInvoice_FullMethodName                    = "/payment.PaymentGatewayService/GetInvoice"
+	PaymentGatewayService_GetInvoiceList_FullMethodName                = "/payment.PaymentGatewayService/GetInvoiceList"
+	PaymentGatewayService_GenerateInvoicePdf_FullMethodName            = "/payment.PaymentGatewayService/GenerateInvoicePdf"
+	PaymentGatewayService_GetSubscriptionPlans_FullMethodName          = "/payment.PaymentGatewayService/GetSubscriptionPlans"
+	PaymentGatewayService_ProcessAutoRenewals_FullMethodName           = "/payment.PaymentGatewayService/ProcessAutoRenewals"
+	PaymentGatewayService_SendSubscriptionNotifications_FullMethodName = "/payment.PaymentGatewayService/SendSubscriptionNotifications"
 )
 
-// SubscriptionServiceClient is the client API for SubscriptionService service.
+// PaymentGatewayServiceClient is the client API for PaymentGatewayService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type SubscriptionServiceClient interface {
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
-	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
-	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
-	// Subscription Plans
-	ListSubscriptionPlans(ctx context.Context, in *ListSubscriptionPlansRequest, opts ...grpc.CallOption) (*ListSubscriptionPlansResponse, error)
-	GetSubscriptionPlan(ctx context.Context, in *GetSubscriptionPlanRequest, opts ...grpc.CallOption) (*SubscriptionPlanResponse, error)
-	// Subscriptions
+type PaymentGatewayServiceClient interface {
 	CreateSubscription(ctx context.Context, in *CreateSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error)
 	GetSubscription(ctx context.Context, in *GetSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error)
+	UpdateSubscriptionPlan(ctx context.Context, in *UpdateSubscriptionPlanRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error)
 	CancelSubscription(ctx context.Context, in *CancelSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error)
-	RenewSubscription(ctx context.Context, in *RenewSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error)
-	// Payment Methods
+	ReactivateSubscription(ctx context.Context, in *ReactivateSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error)
 	AddPaymentMethod(ctx context.Context, in *AddPaymentMethodRequest, opts ...grpc.CallOption) (*PaymentMethodResponse, error)
-	ListPaymentMethods(ctx context.Context, in *ListPaymentMethodsRequest, opts ...grpc.CallOption) (*ListPaymentMethodsResponse, error)
+	GetPaymentMethods(ctx context.Context, in *GetPaymentMethodsRequest, opts ...grpc.CallOption) (*PaymentMethodsListResponse, error)
+	UpdatePaymentMethod(ctx context.Context, in *UpdatePaymentMethodRequest, opts ...grpc.CallOption) (*PaymentMethodResponse, error)
+	DeletePaymentMethod(ctx context.Context, in *DeletePaymentMethodRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	SetDefaultPaymentMethod(ctx context.Context, in *SetDefaultPaymentMethodRequest, opts ...grpc.CallOption) (*PaymentMethodResponse, error)
-	// Transactions
-	GetTransaction(ctx context.Context, in *GetTransactionRequest, opts ...grpc.CallOption) (*TransactionResponse, error)
-	ListTransactions(ctx context.Context, in *ListTransactionsRequest, opts ...grpc.CallOption) (*ListTransactionsResponse, error)
-	// Invoices
+	ProcessPayment(ctx context.Context, in *ProcessPaymentRequest, opts ...grpc.CallOption) (*TransactionResponse, error)
+	GetTransactionHistory(ctx context.Context, in *GetTransactionHistoryRequest, opts ...grpc.CallOption) (*TransactionListResponse, error)
+	GetTransactionDetails(ctx context.Context, in *GetTransactionDetailsRequest, opts ...grpc.CallOption) (*TransactionResponse, error)
+	RefundTransaction(ctx context.Context, in *RefundTransactionRequest, opts ...grpc.CallOption) (*TransactionResponse, error)
 	GetInvoice(ctx context.Context, in *GetInvoiceRequest, opts ...grpc.CallOption) (*InvoiceResponse, error)
-	ListInvoices(ctx context.Context, in *ListInvoicesRequest, opts ...grpc.CallOption) (*ListInvoicesResponse, error)
+	GetInvoiceList(ctx context.Context, in *GetInvoiceListRequest, opts ...grpc.CallOption) (*InvoiceListResponse, error)
+	GenerateInvoicePdf(ctx context.Context, in *GenerateInvoicePdfRequest, opts ...grpc.CallOption) (*InvoicePdfResponse, error)
+	GetSubscriptionPlans(ctx context.Context, in *GetSubscriptionPlansRequest, opts ...grpc.CallOption) (*SubscriptionPlansResponse, error)
+	ProcessAutoRenewals(ctx context.Context, in *ProcessAutoRenewalsRequest, opts ...grpc.CallOption) (*BatchProcessResponse, error)
+	SendSubscriptionNotifications(ctx context.Context, in *SendSubscriptionNotificationsRequest, opts ...grpc.CallOption) (*BatchProcessResponse, error)
 }
 
-type subscriptionServiceClient struct {
+type paymentGatewayServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewSubscriptionServiceClient(cc grpc.ClientConnInterface) SubscriptionServiceClient {
-	return &subscriptionServiceClient{cc}
+func NewPaymentGatewayServiceClient(cc grpc.ClientConnInterface) PaymentGatewayServiceClient {
+	return &paymentGatewayServiceClient{cc}
 }
 
-func (c *subscriptionServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_CreateUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *subscriptionServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_GetUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *subscriptionServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_UpdateUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *subscriptionServiceClient) ListSubscriptionPlans(ctx context.Context, in *ListSubscriptionPlansRequest, opts ...grpc.CallOption) (*ListSubscriptionPlansResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListSubscriptionPlansResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_ListSubscriptionPlans_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *subscriptionServiceClient) GetSubscriptionPlan(ctx context.Context, in *GetSubscriptionPlanRequest, opts ...grpc.CallOption) (*SubscriptionPlanResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SubscriptionPlanResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_GetSubscriptionPlan_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *subscriptionServiceClient) CreateSubscription(ctx context.Context, in *CreateSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error) {
+func (c *paymentGatewayServiceClient) CreateSubscription(ctx context.Context, in *CreateSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SubscriptionResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_CreateSubscription_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_CreateSubscription_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) GetSubscription(ctx context.Context, in *GetSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error) {
+func (c *paymentGatewayServiceClient) GetSubscription(ctx context.Context, in *GetSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SubscriptionResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_GetSubscription_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_GetSubscription_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) CancelSubscription(ctx context.Context, in *CancelSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error) {
+func (c *paymentGatewayServiceClient) UpdateSubscriptionPlan(ctx context.Context, in *UpdateSubscriptionPlanRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SubscriptionResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_CancelSubscription_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_UpdateSubscriptionPlan_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) RenewSubscription(ctx context.Context, in *RenewSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error) {
+func (c *paymentGatewayServiceClient) CancelSubscription(ctx context.Context, in *CancelSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SubscriptionResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_RenewSubscription_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_CancelSubscription_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) AddPaymentMethod(ctx context.Context, in *AddPaymentMethodRequest, opts ...grpc.CallOption) (*PaymentMethodResponse, error) {
+func (c *paymentGatewayServiceClient) ReactivateSubscription(ctx context.Context, in *ReactivateSubscriptionRequest, opts ...grpc.CallOption) (*SubscriptionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SubscriptionResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_ReactivateSubscription_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentGatewayServiceClient) AddPaymentMethod(ctx context.Context, in *AddPaymentMethodRequest, opts ...grpc.CallOption) (*PaymentMethodResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PaymentMethodResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_AddPaymentMethod_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_AddPaymentMethod_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) ListPaymentMethods(ctx context.Context, in *ListPaymentMethodsRequest, opts ...grpc.CallOption) (*ListPaymentMethodsResponse, error) {
+func (c *paymentGatewayServiceClient) GetPaymentMethods(ctx context.Context, in *GetPaymentMethodsRequest, opts ...grpc.CallOption) (*PaymentMethodsListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListPaymentMethodsResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_ListPaymentMethods_FullMethodName, in, out, cOpts...)
+	out := new(PaymentMethodsListResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_GetPaymentMethods_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) SetDefaultPaymentMethod(ctx context.Context, in *SetDefaultPaymentMethodRequest, opts ...grpc.CallOption) (*PaymentMethodResponse, error) {
+func (c *paymentGatewayServiceClient) UpdatePaymentMethod(ctx context.Context, in *UpdatePaymentMethodRequest, opts ...grpc.CallOption) (*PaymentMethodResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PaymentMethodResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_SetDefaultPaymentMethod_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_UpdatePaymentMethod_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) GetTransaction(ctx context.Context, in *GetTransactionRequest, opts ...grpc.CallOption) (*TransactionResponse, error) {
+func (c *paymentGatewayServiceClient) DeletePaymentMethod(ctx context.Context, in *DeletePaymentMethodRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_DeletePaymentMethod_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentGatewayServiceClient) SetDefaultPaymentMethod(ctx context.Context, in *SetDefaultPaymentMethodRequest, opts ...grpc.CallOption) (*PaymentMethodResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PaymentMethodResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_SetDefaultPaymentMethod_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentGatewayServiceClient) ProcessPayment(ctx context.Context, in *ProcessPaymentRequest, opts ...grpc.CallOption) (*TransactionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TransactionResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_GetTransaction_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_ProcessPayment_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) ListTransactions(ctx context.Context, in *ListTransactionsRequest, opts ...grpc.CallOption) (*ListTransactionsResponse, error) {
+func (c *paymentGatewayServiceClient) GetTransactionHistory(ctx context.Context, in *GetTransactionHistoryRequest, opts ...grpc.CallOption) (*TransactionListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListTransactionsResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_ListTransactions_FullMethodName, in, out, cOpts...)
+	out := new(TransactionListResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_GetTransactionHistory_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) GetInvoice(ctx context.Context, in *GetInvoiceRequest, opts ...grpc.CallOption) (*InvoiceResponse, error) {
+func (c *paymentGatewayServiceClient) GetTransactionDetails(ctx context.Context, in *GetTransactionDetailsRequest, opts ...grpc.CallOption) (*TransactionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TransactionResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_GetTransactionDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentGatewayServiceClient) RefundTransaction(ctx context.Context, in *RefundTransactionRequest, opts ...grpc.CallOption) (*TransactionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TransactionResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_RefundTransaction_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentGatewayServiceClient) GetInvoice(ctx context.Context, in *GetInvoiceRequest, opts ...grpc.CallOption) (*InvoiceResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(InvoiceResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_GetInvoice_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_GetInvoice_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) ListInvoices(ctx context.Context, in *ListInvoicesRequest, opts ...grpc.CallOption) (*ListInvoicesResponse, error) {
+func (c *paymentGatewayServiceClient) GetInvoiceList(ctx context.Context, in *GetInvoiceListRequest, opts ...grpc.CallOption) (*InvoiceListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListInvoicesResponse)
-	err := c.cc.Invoke(ctx, SubscriptionService_ListInvoices_FullMethodName, in, out, cOpts...)
+	out := new(InvoiceListResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_GetInvoiceList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// SubscriptionServiceServer is the server API for SubscriptionService service.
-// All implementations must embed UnimplementedSubscriptionServiceServer
+func (c *paymentGatewayServiceClient) GenerateInvoicePdf(ctx context.Context, in *GenerateInvoicePdfRequest, opts ...grpc.CallOption) (*InvoicePdfResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(InvoicePdfResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_GenerateInvoicePdf_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentGatewayServiceClient) GetSubscriptionPlans(ctx context.Context, in *GetSubscriptionPlansRequest, opts ...grpc.CallOption) (*SubscriptionPlansResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SubscriptionPlansResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_GetSubscriptionPlans_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentGatewayServiceClient) ProcessAutoRenewals(ctx context.Context, in *ProcessAutoRenewalsRequest, opts ...grpc.CallOption) (*BatchProcessResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BatchProcessResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_ProcessAutoRenewals_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentGatewayServiceClient) SendSubscriptionNotifications(ctx context.Context, in *SendSubscriptionNotificationsRequest, opts ...grpc.CallOption) (*BatchProcessResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BatchProcessResponse)
+	err := c.cc.Invoke(ctx, PaymentGatewayService_SendSubscriptionNotifications_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// PaymentGatewayServiceServer is the server API for PaymentGatewayService service.
+// All implementations must embed UnimplementedPaymentGatewayServiceServer
 // for forward compatibility.
-type SubscriptionServiceServer interface {
-	CreateUser(context.Context, *CreateUserRequest) (*UserResponse, error)
-	GetUser(context.Context, *GetUserRequest) (*UserResponse, error)
-	UpdateUser(context.Context, *UpdateUserRequest) (*UserResponse, error)
-	// Subscription Plans
-	ListSubscriptionPlans(context.Context, *ListSubscriptionPlansRequest) (*ListSubscriptionPlansResponse, error)
-	GetSubscriptionPlan(context.Context, *GetSubscriptionPlanRequest) (*SubscriptionPlanResponse, error)
-	// Subscriptions
+type PaymentGatewayServiceServer interface {
 	CreateSubscription(context.Context, *CreateSubscriptionRequest) (*SubscriptionResponse, error)
 	GetSubscription(context.Context, *GetSubscriptionRequest) (*SubscriptionResponse, error)
+	UpdateSubscriptionPlan(context.Context, *UpdateSubscriptionPlanRequest) (*SubscriptionResponse, error)
 	CancelSubscription(context.Context, *CancelSubscriptionRequest) (*SubscriptionResponse, error)
-	RenewSubscription(context.Context, *RenewSubscriptionRequest) (*SubscriptionResponse, error)
-	// Payment Methods
+	ReactivateSubscription(context.Context, *ReactivateSubscriptionRequest) (*SubscriptionResponse, error)
 	AddPaymentMethod(context.Context, *AddPaymentMethodRequest) (*PaymentMethodResponse, error)
-	ListPaymentMethods(context.Context, *ListPaymentMethodsRequest) (*ListPaymentMethodsResponse, error)
+	GetPaymentMethods(context.Context, *GetPaymentMethodsRequest) (*PaymentMethodsListResponse, error)
+	UpdatePaymentMethod(context.Context, *UpdatePaymentMethodRequest) (*PaymentMethodResponse, error)
+	DeletePaymentMethod(context.Context, *DeletePaymentMethodRequest) (*emptypb.Empty, error)
 	SetDefaultPaymentMethod(context.Context, *SetDefaultPaymentMethodRequest) (*PaymentMethodResponse, error)
-	// Transactions
-	GetTransaction(context.Context, *GetTransactionRequest) (*TransactionResponse, error)
-	ListTransactions(context.Context, *ListTransactionsRequest) (*ListTransactionsResponse, error)
-	// Invoices
+	ProcessPayment(context.Context, *ProcessPaymentRequest) (*TransactionResponse, error)
+	GetTransactionHistory(context.Context, *GetTransactionHistoryRequest) (*TransactionListResponse, error)
+	GetTransactionDetails(context.Context, *GetTransactionDetailsRequest) (*TransactionResponse, error)
+	RefundTransaction(context.Context, *RefundTransactionRequest) (*TransactionResponse, error)
 	GetInvoice(context.Context, *GetInvoiceRequest) (*InvoiceResponse, error)
-	ListInvoices(context.Context, *ListInvoicesRequest) (*ListInvoicesResponse, error)
-	mustEmbedUnimplementedSubscriptionServiceServer()
+	GetInvoiceList(context.Context, *GetInvoiceListRequest) (*InvoiceListResponse, error)
+	GenerateInvoicePdf(context.Context, *GenerateInvoicePdfRequest) (*InvoicePdfResponse, error)
+	GetSubscriptionPlans(context.Context, *GetSubscriptionPlansRequest) (*SubscriptionPlansResponse, error)
+	ProcessAutoRenewals(context.Context, *ProcessAutoRenewalsRequest) (*BatchProcessResponse, error)
+	SendSubscriptionNotifications(context.Context, *SendSubscriptionNotificationsRequest) (*BatchProcessResponse, error)
+	mustEmbedUnimplementedPaymentGatewayServiceServer()
 }
 
-// UnimplementedSubscriptionServiceServer must be embedded to have
+// UnimplementedPaymentGatewayServiceServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedSubscriptionServiceServer struct{}
+type UnimplementedPaymentGatewayServiceServer struct{}
 
-func (UnimplementedSubscriptionServiceServer) CreateUser(context.Context, *CreateUserRequest) (*UserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
-}
-func (UnimplementedSubscriptionServiceServer) GetUser(context.Context, *GetUserRequest) (*UserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
-}
-func (UnimplementedSubscriptionServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*UserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
-}
-func (UnimplementedSubscriptionServiceServer) ListSubscriptionPlans(context.Context, *ListSubscriptionPlansRequest) (*ListSubscriptionPlansResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListSubscriptionPlans not implemented")
-}
-func (UnimplementedSubscriptionServiceServer) GetSubscriptionPlan(context.Context, *GetSubscriptionPlanRequest) (*SubscriptionPlanResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSubscriptionPlan not implemented")
-}
-func (UnimplementedSubscriptionServiceServer) CreateSubscription(context.Context, *CreateSubscriptionRequest) (*SubscriptionResponse, error) {
+func (UnimplementedPaymentGatewayServiceServer) CreateSubscription(context.Context, *CreateSubscriptionRequest) (*SubscriptionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSubscription not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) GetSubscription(context.Context, *GetSubscriptionRequest) (*SubscriptionResponse, error) {
+func (UnimplementedPaymentGatewayServiceServer) GetSubscription(context.Context, *GetSubscriptionRequest) (*SubscriptionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSubscription not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) CancelSubscription(context.Context, *CancelSubscriptionRequest) (*SubscriptionResponse, error) {
+func (UnimplementedPaymentGatewayServiceServer) UpdateSubscriptionPlan(context.Context, *UpdateSubscriptionPlanRequest) (*SubscriptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSubscriptionPlan not implemented")
+}
+func (UnimplementedPaymentGatewayServiceServer) CancelSubscription(context.Context, *CancelSubscriptionRequest) (*SubscriptionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelSubscription not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) RenewSubscription(context.Context, *RenewSubscriptionRequest) (*SubscriptionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RenewSubscription not implemented")
+func (UnimplementedPaymentGatewayServiceServer) ReactivateSubscription(context.Context, *ReactivateSubscriptionRequest) (*SubscriptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReactivateSubscription not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) AddPaymentMethod(context.Context, *AddPaymentMethodRequest) (*PaymentMethodResponse, error) {
+func (UnimplementedPaymentGatewayServiceServer) AddPaymentMethod(context.Context, *AddPaymentMethodRequest) (*PaymentMethodResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddPaymentMethod not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) ListPaymentMethods(context.Context, *ListPaymentMethodsRequest) (*ListPaymentMethodsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListPaymentMethods not implemented")
+func (UnimplementedPaymentGatewayServiceServer) GetPaymentMethods(context.Context, *GetPaymentMethodsRequest) (*PaymentMethodsListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPaymentMethods not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) SetDefaultPaymentMethod(context.Context, *SetDefaultPaymentMethodRequest) (*PaymentMethodResponse, error) {
+func (UnimplementedPaymentGatewayServiceServer) UpdatePaymentMethod(context.Context, *UpdatePaymentMethodRequest) (*PaymentMethodResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePaymentMethod not implemented")
+}
+func (UnimplementedPaymentGatewayServiceServer) DeletePaymentMethod(context.Context, *DeletePaymentMethodRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePaymentMethod not implemented")
+}
+func (UnimplementedPaymentGatewayServiceServer) SetDefaultPaymentMethod(context.Context, *SetDefaultPaymentMethodRequest) (*PaymentMethodResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetDefaultPaymentMethod not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) GetTransaction(context.Context, *GetTransactionRequest) (*TransactionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTransaction not implemented")
+func (UnimplementedPaymentGatewayServiceServer) ProcessPayment(context.Context, *ProcessPaymentRequest) (*TransactionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProcessPayment not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) ListTransactions(context.Context, *ListTransactionsRequest) (*ListTransactionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListTransactions not implemented")
+func (UnimplementedPaymentGatewayServiceServer) GetTransactionHistory(context.Context, *GetTransactionHistoryRequest) (*TransactionListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTransactionHistory not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) GetInvoice(context.Context, *GetInvoiceRequest) (*InvoiceResponse, error) {
+func (UnimplementedPaymentGatewayServiceServer) GetTransactionDetails(context.Context, *GetTransactionDetailsRequest) (*TransactionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTransactionDetails not implemented")
+}
+func (UnimplementedPaymentGatewayServiceServer) RefundTransaction(context.Context, *RefundTransactionRequest) (*TransactionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefundTransaction not implemented")
+}
+func (UnimplementedPaymentGatewayServiceServer) GetInvoice(context.Context, *GetInvoiceRequest) (*InvoiceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetInvoice not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) ListInvoices(context.Context, *ListInvoicesRequest) (*ListInvoicesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListInvoices not implemented")
+func (UnimplementedPaymentGatewayServiceServer) GetInvoiceList(context.Context, *GetInvoiceListRequest) (*InvoiceListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetInvoiceList not implemented")
 }
-func (UnimplementedSubscriptionServiceServer) mustEmbedUnimplementedSubscriptionServiceServer() {}
-func (UnimplementedSubscriptionServiceServer) testEmbeddedByValue()                             {}
+func (UnimplementedPaymentGatewayServiceServer) GenerateInvoicePdf(context.Context, *GenerateInvoicePdfRequest) (*InvoicePdfResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateInvoicePdf not implemented")
+}
+func (UnimplementedPaymentGatewayServiceServer) GetSubscriptionPlans(context.Context, *GetSubscriptionPlansRequest) (*SubscriptionPlansResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSubscriptionPlans not implemented")
+}
+func (UnimplementedPaymentGatewayServiceServer) ProcessAutoRenewals(context.Context, *ProcessAutoRenewalsRequest) (*BatchProcessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProcessAutoRenewals not implemented")
+}
+func (UnimplementedPaymentGatewayServiceServer) SendSubscriptionNotifications(context.Context, *SendSubscriptionNotificationsRequest) (*BatchProcessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendSubscriptionNotifications not implemented")
+}
+func (UnimplementedPaymentGatewayServiceServer) mustEmbedUnimplementedPaymentGatewayServiceServer() {}
+func (UnimplementedPaymentGatewayServiceServer) testEmbeddedByValue()                               {}
 
-// UnsafeSubscriptionServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to SubscriptionServiceServer will
+// UnsafePaymentGatewayServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PaymentGatewayServiceServer will
 // result in compilation errors.
-type UnsafeSubscriptionServiceServer interface {
-	mustEmbedUnimplementedSubscriptionServiceServer()
+type UnsafePaymentGatewayServiceServer interface {
+	mustEmbedUnimplementedPaymentGatewayServiceServer()
 }
 
-func RegisterSubscriptionServiceServer(s grpc.ServiceRegistrar, srv SubscriptionServiceServer) {
-	// If the following call pancis, it indicates UnimplementedSubscriptionServiceServer was
+func RegisterPaymentGatewayServiceServer(s grpc.ServiceRegistrar, srv PaymentGatewayServiceServer) {
+	// If the following call pancis, it indicates UnimplementedPaymentGatewayServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&SubscriptionService_ServiceDesc, srv)
+	s.RegisterService(&PaymentGatewayService_ServiceDesc, srv)
 }
 
-func _SubscriptionService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).CreateUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SubscriptionService_CreateUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SubscriptionService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).GetUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SubscriptionService_GetUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).GetUser(ctx, req.(*GetUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SubscriptionService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).UpdateUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SubscriptionService_UpdateUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SubscriptionService_ListSubscriptionPlans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListSubscriptionPlansRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).ListSubscriptionPlans(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SubscriptionService_ListSubscriptionPlans_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).ListSubscriptionPlans(ctx, req.(*ListSubscriptionPlansRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SubscriptionService_GetSubscriptionPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSubscriptionPlanRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).GetSubscriptionPlan(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SubscriptionService_GetSubscriptionPlan_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).GetSubscriptionPlan(ctx, req.(*GetSubscriptionPlanRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SubscriptionService_CreateSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentGatewayService_CreateSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateSubscriptionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).CreateSubscription(ctx, in)
+		return srv.(PaymentGatewayServiceServer).CreateSubscription(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_CreateSubscription_FullMethodName,
+		FullMethod: PaymentGatewayService_CreateSubscription_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).CreateSubscription(ctx, req.(*CreateSubscriptionRequest))
+		return srv.(PaymentGatewayServiceServer).CreateSubscription(ctx, req.(*CreateSubscriptionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_GetSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentGatewayService_GetSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetSubscriptionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).GetSubscription(ctx, in)
+		return srv.(PaymentGatewayServiceServer).GetSubscription(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_GetSubscription_FullMethodName,
+		FullMethod: PaymentGatewayService_GetSubscription_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).GetSubscription(ctx, req.(*GetSubscriptionRequest))
+		return srv.(PaymentGatewayServiceServer).GetSubscription(ctx, req.(*GetSubscriptionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_CancelSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentGatewayService_UpdateSubscriptionPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSubscriptionPlanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentGatewayServiceServer).UpdateSubscriptionPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentGatewayService_UpdateSubscriptionPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentGatewayServiceServer).UpdateSubscriptionPlan(ctx, req.(*UpdateSubscriptionPlanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentGatewayService_CancelSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CancelSubscriptionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).CancelSubscription(ctx, in)
+		return srv.(PaymentGatewayServiceServer).CancelSubscription(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_CancelSubscription_FullMethodName,
+		FullMethod: PaymentGatewayService_CancelSubscription_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).CancelSubscription(ctx, req.(*CancelSubscriptionRequest))
+		return srv.(PaymentGatewayServiceServer).CancelSubscription(ctx, req.(*CancelSubscriptionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_RenewSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RenewSubscriptionRequest)
+func _PaymentGatewayService_ReactivateSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReactivateSubscriptionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).RenewSubscription(ctx, in)
+		return srv.(PaymentGatewayServiceServer).ReactivateSubscription(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_RenewSubscription_FullMethodName,
+		FullMethod: PaymentGatewayService_ReactivateSubscription_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).RenewSubscription(ctx, req.(*RenewSubscriptionRequest))
+		return srv.(PaymentGatewayServiceServer).ReactivateSubscription(ctx, req.(*ReactivateSubscriptionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_AddPaymentMethod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentGatewayService_AddPaymentMethod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddPaymentMethodRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).AddPaymentMethod(ctx, in)
+		return srv.(PaymentGatewayServiceServer).AddPaymentMethod(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_AddPaymentMethod_FullMethodName,
+		FullMethod: PaymentGatewayService_AddPaymentMethod_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).AddPaymentMethod(ctx, req.(*AddPaymentMethodRequest))
+		return srv.(PaymentGatewayServiceServer).AddPaymentMethod(ctx, req.(*AddPaymentMethodRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_ListPaymentMethods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListPaymentMethodsRequest)
+func _PaymentGatewayService_GetPaymentMethods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPaymentMethodsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).ListPaymentMethods(ctx, in)
+		return srv.(PaymentGatewayServiceServer).GetPaymentMethods(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_ListPaymentMethods_FullMethodName,
+		FullMethod: PaymentGatewayService_GetPaymentMethods_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).ListPaymentMethods(ctx, req.(*ListPaymentMethodsRequest))
+		return srv.(PaymentGatewayServiceServer).GetPaymentMethods(ctx, req.(*GetPaymentMethodsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_SetDefaultPaymentMethod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentGatewayService_UpdatePaymentMethod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePaymentMethodRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentGatewayServiceServer).UpdatePaymentMethod(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentGatewayService_UpdatePaymentMethod_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentGatewayServiceServer).UpdatePaymentMethod(ctx, req.(*UpdatePaymentMethodRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentGatewayService_DeletePaymentMethod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePaymentMethodRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentGatewayServiceServer).DeletePaymentMethod(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentGatewayService_DeletePaymentMethod_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentGatewayServiceServer).DeletePaymentMethod(ctx, req.(*DeletePaymentMethodRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentGatewayService_SetDefaultPaymentMethod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SetDefaultPaymentMethodRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).SetDefaultPaymentMethod(ctx, in)
+		return srv.(PaymentGatewayServiceServer).SetDefaultPaymentMethod(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_SetDefaultPaymentMethod_FullMethodName,
+		FullMethod: PaymentGatewayService_SetDefaultPaymentMethod_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).SetDefaultPaymentMethod(ctx, req.(*SetDefaultPaymentMethodRequest))
+		return srv.(PaymentGatewayServiceServer).SetDefaultPaymentMethod(ctx, req.(*SetDefaultPaymentMethodRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_GetTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTransactionRequest)
+func _PaymentGatewayService_ProcessPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProcessPaymentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).GetTransaction(ctx, in)
+		return srv.(PaymentGatewayServiceServer).ProcessPayment(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_GetTransaction_FullMethodName,
+		FullMethod: PaymentGatewayService_ProcessPayment_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).GetTransaction(ctx, req.(*GetTransactionRequest))
+		return srv.(PaymentGatewayServiceServer).ProcessPayment(ctx, req.(*ProcessPaymentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_ListTransactions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListTransactionsRequest)
+func _PaymentGatewayService_GetTransactionHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTransactionHistoryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).ListTransactions(ctx, in)
+		return srv.(PaymentGatewayServiceServer).GetTransactionHistory(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_ListTransactions_FullMethodName,
+		FullMethod: PaymentGatewayService_GetTransactionHistory_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).ListTransactions(ctx, req.(*ListTransactionsRequest))
+		return srv.(PaymentGatewayServiceServer).GetTransactionHistory(ctx, req.(*GetTransactionHistoryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_GetInvoice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PaymentGatewayService_GetTransactionDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTransactionDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentGatewayServiceServer).GetTransactionDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentGatewayService_GetTransactionDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentGatewayServiceServer).GetTransactionDetails(ctx, req.(*GetTransactionDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentGatewayService_RefundTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefundTransactionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentGatewayServiceServer).RefundTransaction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentGatewayService_RefundTransaction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentGatewayServiceServer).RefundTransaction(ctx, req.(*RefundTransactionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentGatewayService_GetInvoice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetInvoiceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).GetInvoice(ctx, in)
+		return srv.(PaymentGatewayServiceServer).GetInvoice(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_GetInvoice_FullMethodName,
+		FullMethod: PaymentGatewayService_GetInvoice_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).GetInvoice(ctx, req.(*GetInvoiceRequest))
+		return srv.(PaymentGatewayServiceServer).GetInvoice(ctx, req.(*GetInvoiceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SubscriptionService_ListInvoices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListInvoicesRequest)
+func _PaymentGatewayService_GetInvoiceList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetInvoiceListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).ListInvoices(ctx, in)
+		return srv.(PaymentGatewayServiceServer).GetInvoiceList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SubscriptionService_ListInvoices_FullMethodName,
+		FullMethod: PaymentGatewayService_GetInvoiceList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).ListInvoices(ctx, req.(*ListInvoicesRequest))
+		return srv.(PaymentGatewayServiceServer).GetInvoiceList(ctx, req.(*GetInvoiceListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// SubscriptionService_ServiceDesc is the grpc.ServiceDesc for SubscriptionService service.
+func _PaymentGatewayService_GenerateInvoicePdf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateInvoicePdfRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentGatewayServiceServer).GenerateInvoicePdf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentGatewayService_GenerateInvoicePdf_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentGatewayServiceServer).GenerateInvoicePdf(ctx, req.(*GenerateInvoicePdfRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentGatewayService_GetSubscriptionPlans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSubscriptionPlansRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentGatewayServiceServer).GetSubscriptionPlans(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentGatewayService_GetSubscriptionPlans_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentGatewayServiceServer).GetSubscriptionPlans(ctx, req.(*GetSubscriptionPlansRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentGatewayService_ProcessAutoRenewals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProcessAutoRenewalsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentGatewayServiceServer).ProcessAutoRenewals(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentGatewayService_ProcessAutoRenewals_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentGatewayServiceServer).ProcessAutoRenewals(ctx, req.(*ProcessAutoRenewalsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentGatewayService_SendSubscriptionNotifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendSubscriptionNotificationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentGatewayServiceServer).SendSubscriptionNotifications(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentGatewayService_SendSubscriptionNotifications_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentGatewayServiceServer).SendSubscriptionNotifications(ctx, req.(*SendSubscriptionNotificationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// PaymentGatewayService_ServiceDesc is the grpc.ServiceDesc for PaymentGatewayService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var SubscriptionService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "subscription.SubscriptionService",
-	HandlerType: (*SubscriptionServiceServer)(nil),
+var PaymentGatewayService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "payment.PaymentGatewayService",
+	HandlerType: (*PaymentGatewayServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateUser",
-			Handler:    _SubscriptionService_CreateUser_Handler,
-		},
-		{
-			MethodName: "GetUser",
-			Handler:    _SubscriptionService_GetUser_Handler,
-		},
-		{
-			MethodName: "UpdateUser",
-			Handler:    _SubscriptionService_UpdateUser_Handler,
-		},
-		{
-			MethodName: "ListSubscriptionPlans",
-			Handler:    _SubscriptionService_ListSubscriptionPlans_Handler,
-		},
-		{
-			MethodName: "GetSubscriptionPlan",
-			Handler:    _SubscriptionService_GetSubscriptionPlan_Handler,
-		},
-		{
 			MethodName: "CreateSubscription",
-			Handler:    _SubscriptionService_CreateSubscription_Handler,
+			Handler:    _PaymentGatewayService_CreateSubscription_Handler,
 		},
 		{
 			MethodName: "GetSubscription",
-			Handler:    _SubscriptionService_GetSubscription_Handler,
+			Handler:    _PaymentGatewayService_GetSubscription_Handler,
+		},
+		{
+			MethodName: "UpdateSubscriptionPlan",
+			Handler:    _PaymentGatewayService_UpdateSubscriptionPlan_Handler,
 		},
 		{
 			MethodName: "CancelSubscription",
-			Handler:    _SubscriptionService_CancelSubscription_Handler,
+			Handler:    _PaymentGatewayService_CancelSubscription_Handler,
 		},
 		{
-			MethodName: "RenewSubscription",
-			Handler:    _SubscriptionService_RenewSubscription_Handler,
+			MethodName: "ReactivateSubscription",
+			Handler:    _PaymentGatewayService_ReactivateSubscription_Handler,
 		},
 		{
 			MethodName: "AddPaymentMethod",
-			Handler:    _SubscriptionService_AddPaymentMethod_Handler,
+			Handler:    _PaymentGatewayService_AddPaymentMethod_Handler,
 		},
 		{
-			MethodName: "ListPaymentMethods",
-			Handler:    _SubscriptionService_ListPaymentMethods_Handler,
+			MethodName: "GetPaymentMethods",
+			Handler:    _PaymentGatewayService_GetPaymentMethods_Handler,
+		},
+		{
+			MethodName: "UpdatePaymentMethod",
+			Handler:    _PaymentGatewayService_UpdatePaymentMethod_Handler,
+		},
+		{
+			MethodName: "DeletePaymentMethod",
+			Handler:    _PaymentGatewayService_DeletePaymentMethod_Handler,
 		},
 		{
 			MethodName: "SetDefaultPaymentMethod",
-			Handler:    _SubscriptionService_SetDefaultPaymentMethod_Handler,
+			Handler:    _PaymentGatewayService_SetDefaultPaymentMethod_Handler,
 		},
 		{
-			MethodName: "GetTransaction",
-			Handler:    _SubscriptionService_GetTransaction_Handler,
+			MethodName: "ProcessPayment",
+			Handler:    _PaymentGatewayService_ProcessPayment_Handler,
 		},
 		{
-			MethodName: "ListTransactions",
-			Handler:    _SubscriptionService_ListTransactions_Handler,
+			MethodName: "GetTransactionHistory",
+			Handler:    _PaymentGatewayService_GetTransactionHistory_Handler,
+		},
+		{
+			MethodName: "GetTransactionDetails",
+			Handler:    _PaymentGatewayService_GetTransactionDetails_Handler,
+		},
+		{
+			MethodName: "RefundTransaction",
+			Handler:    _PaymentGatewayService_RefundTransaction_Handler,
 		},
 		{
 			MethodName: "GetInvoice",
-			Handler:    _SubscriptionService_GetInvoice_Handler,
+			Handler:    _PaymentGatewayService_GetInvoice_Handler,
 		},
 		{
-			MethodName: "ListInvoices",
-			Handler:    _SubscriptionService_ListInvoices_Handler,
+			MethodName: "GetInvoiceList",
+			Handler:    _PaymentGatewayService_GetInvoiceList_Handler,
+		},
+		{
+			MethodName: "GenerateInvoicePdf",
+			Handler:    _PaymentGatewayService_GenerateInvoicePdf_Handler,
+		},
+		{
+			MethodName: "GetSubscriptionPlans",
+			Handler:    _PaymentGatewayService_GetSubscriptionPlans_Handler,
+		},
+		{
+			MethodName: "ProcessAutoRenewals",
+			Handler:    _PaymentGatewayService_ProcessAutoRenewals_Handler,
+		},
+		{
+			MethodName: "SendSubscriptionNotifications",
+			Handler:    _PaymentGatewayService_SendSubscriptionNotifications_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

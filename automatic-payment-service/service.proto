@@ -1,236 +1,220 @@
 syntax = "proto3";
 
-package subscription;
+package payment;
 
-import "google/api/annotations.proto";
+option go_package = "paymentgateway/pb";
+
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
 
-option go_package = "./pb";
-
-service SubscriptionService {
-  rpc CreateUser(CreateUserRequest) returns (UserResponse) {
-    option (google.api.http) = {
-      post: "/api/v1/users"
-      body: "*"
-    };
-  }
-  
-  rpc GetUser(GetUserRequest) returns (UserResponse) {
-    option (google.api.http) = {
-      get: "/api/v1/users/{user_id}"
-    };
-  }
-  
-  rpc UpdateUser(UpdateUserRequest) returns (UserResponse) {
-    option (google.api.http) = {
-      put: "/api/v1/users/{user_id}"
-      body: "*"
-    };
-  }
-  
-  // Subscription Plans
-  rpc ListSubscriptionPlans(ListSubscriptionPlansRequest) returns (ListSubscriptionPlansResponse) {
-    option (google.api.http) = {
-      get: "/api/v1/subscription-plans"
-    };
-  }
-  
-  rpc GetSubscriptionPlan(GetSubscriptionPlanRequest) returns (SubscriptionPlanResponse) {
-    option (google.api.http) = {
-      get: "/api/v1/subscription-plans/{plan_id}"
-    };
-  }
-  
-  // Subscriptions
+service PaymentGatewayService {
   rpc CreateSubscription(CreateSubscriptionRequest) returns (SubscriptionResponse) {
     option (google.api.http) = {
-      post: "/api/v1/subscriptions"
+      post: "/v1/subscriptions"
       body: "*"
     };
   }
-  
   rpc GetSubscription(GetSubscriptionRequest) returns (SubscriptionResponse) {
     option (google.api.http) = {
-      get: "/api/v1/subscriptions/{subscription_id}"
+      get: "/v1/subscriptions/{subscription_id}"
     };
   }
-  
+  rpc UpdateSubscriptionPlan(UpdateSubscriptionPlanRequest) returns (SubscriptionResponse) {
+    option (google.api.http) = {
+      put: "/v1/subscriptions/{subscription_id}"
+      body: "*"
+    };
+  }
   rpc CancelSubscription(CancelSubscriptionRequest) returns (SubscriptionResponse) {
-    option (google.api.http) = {
-      post: "/api/v1/subscriptions/{subscription_id}/cancel"
+    option(google.api.http) = {
+      delete: "/v1/subscriptions/{subscription_id}"
+    };
+  }
+  rpc ReactivateSubscription(ReactivateSubscriptionRequest) returns (SubscriptionResponse) {
+    option(google.api.http) = {
+      post: "/v1/subscriptions/{subscription_id}/reactivate"
       body: "*"
     };
   }
   
-  rpc RenewSubscription(RenewSubscriptionRequest) returns (SubscriptionResponse) {
-    option (google.api.http) = {
-      post: "/api/v1/subscriptions/{subscription_id}/renew"
-      body: "*"
-    };
-  }
-  
-  // Payment Methods
   rpc AddPaymentMethod(AddPaymentMethodRequest) returns (PaymentMethodResponse) {
     option (google.api.http) = {
-      post: "/api/v1/payment-methods"
+      post: "/v1/payment-methods"
       body: "*"
     };
   }
-  
-  rpc ListPaymentMethods(ListPaymentMethodsRequest) returns (ListPaymentMethodsResponse) {
+  rpc GetPaymentMethods(GetPaymentMethodsRequest) returns (PaymentMethodsListResponse) {
     option (google.api.http) = {
-      get: "/api/v1/users/{user_id}/payment-methods"
+      get: "/v1/payment-methods"
     };
   }
-  
+  rpc UpdatePaymentMethod(UpdatePaymentMethodRequest) returns (PaymentMethodResponse) {
+    option (google.api.http) = {
+      put: "/v1/payment-methods/{payment_method_id}"
+      body: "*"
+    };
+  }
+  rpc DeletePaymentMethod(DeletePaymentMethodRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/payment-methods/{payment_method_id}"
+    };
+  }
   rpc SetDefaultPaymentMethod(SetDefaultPaymentMethodRequest) returns (PaymentMethodResponse) {
     option (google.api.http) = {
-      post: "/api/v1/payment-methods/{payment_method_id}/set-default"
+      post: "/v1/payment-methods/{payment_method_id}/default"
+    };
+  }
+  
+  rpc ProcessPayment(ProcessPaymentRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      post: "/v1/transactions"
+      body: "*"
+    };
+  }
+  rpc GetTransactionHistory(GetTransactionHistoryRequest) returns (TransactionListResponse) {
+    option (google.api.http) = {
+      get: "/v1/transactions"
+    };
+  }
+  rpc GetTransactionDetails(GetTransactionDetailsRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      get: "/v1/transactions/{transaction_id}"
+    };
+  }
+  rpc RefundTransaction(RefundTransactionRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      post: "/v1/transactions/{transaction_id}/refund"
       body: "*"
     };
   }
   
-  // Transactions
-  rpc GetTransaction(GetTransactionRequest) returns (TransactionResponse) {
-    option (google.api.http) = {
-      get: "/api/v1/transactions/{transaction_id}"
-    };
-  }
-  
-  rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse) {
-    option (google.api.http) = {
-      get: "/api/v1/users/{user_id}/transactions"
-    };
-  }
-  
-  // Invoices
   rpc GetInvoice(GetInvoiceRequest) returns (InvoiceResponse) {
     option (google.api.http) = {
-      get: "/api/v1/invoices/{invoice_id}"
+      get: "/v1/invoices/{invoice_id}"
+    };
+  }
+  rpc GetInvoiceList(GetInvoiceListRequest) returns (InvoiceListResponse) {
+    option (google.api.http) = {
+      get: "/v1/invoices"
+    };
+  }
+  rpc GenerateInvoicePdf(GenerateInvoicePdfRequest) returns (InvoicePdfResponse) {
+    option (google.api.http) = {
+      post: "/v1/invoices/{invoice_id}/pdf"
+      body: "*"
     };
   }
   
-  rpc ListInvoices(ListInvoicesRequest) returns (ListInvoicesResponse) {
+  rpc GetSubscriptionPlans(GetSubscriptionPlansRequest) returns (SubscriptionPlansResponse) {
     option (google.api.http) = {
-      get: "/api/v1/users/{user_id}/invoices"
+      get: "/v1/plans"
+    };
+  }
+  
+  rpc ProcessAutoRenewals(ProcessAutoRenewalsRequest) returns (BatchProcessResponse) {
+    option (google.api.http) = {
+      post: "/v1/auto-renewals"
+      body: "*"
+    };
+  }
+  rpc SendSubscriptionNotifications(SendSubscriptionNotificationsRequest) returns (BatchProcessResponse){
+    option (google.api.http) = {
+      post: "/v1/notifications"
+      body: "*"
     };
   }
 }
 
-// User related messages
-message CreateUserRequest {
-  string email = 1;
-  string password = 2;
-  string first_name = 3;
-  string last_name = 4;
-  string phone = 5;
-}
-
-message GetUserRequest {
-  string user_id = 1;
-}
-
-message UpdateUserRequest {
-  string user_id = 1;
-  string email = 2;
-  string first_name = 3;
-  string last_name = 4;
-  string phone = 5;
-}
-
-message UserResponse {
-  string user_id = 1;
-  string email = 2;
-  string first_name = 3;
-  string last_name = 4;
-  string phone = 5;
-  string status = 6;
-  google.protobuf.Timestamp created_at = 7;
-  google.protobuf.Timestamp updated_at = 8;
-}
-
-// Subscription Plan related messages
-message ListSubscriptionPlansRequest {
-  int32 page_size = 1;
-  string page_token = 2;
-  bool include_inactive = 3;
-}
-
-message GetSubscriptionPlanRequest {
-  string plan_id = 1;
-}
-
-message SubscriptionPlanResponse {
-  string plan_id = 1;
-  string name = 2;
-  string description = 3;
-  double price = 4;
-  string billing_cycle = 5;
-  map<string, string> features = 6;
-  bool is_active = 7;
-  google.protobuf.Timestamp created_at = 8;
-  google.protobuf.Timestamp updated_at = 9;
-}
-
-message ListSubscriptionPlansResponse {
-  repeated SubscriptionPlanResponse plans = 1;
-  string next_page_token = 2;
-}
-
-// Subscription related messages
 message CreateSubscriptionRequest {
   string user_id = 1;
   string plan_id = 2;
   string payment_method_id = 3;
   bool auto_renewal = 4;
+  bool apply_trial = 5;
+  string promo_code = 6;
 }
 
 message GetSubscriptionRequest {
   string subscription_id = 1;
+  string user_id = 2; 
+}
+
+message UpdateSubscriptionPlanRequest {
+  string subscription_id = 1;
+  string user_id = 2; 
+  string new_plan_id = 3;
+  string payment_method_id = 4;
+  bool prorate = 5;
 }
 
 message CancelSubscriptionRequest {
   string subscription_id = 1;
-  string cancellation_reason = 2;
-  bool cancel_immediately = 3;
+  string user_id = 2; 
+  bool cancel_immediately = 3 ;
+  string cancellation_reason = 4;
 }
 
-message RenewSubscriptionRequest {
+message ReactivateSubscriptionRequest {
   string subscription_id = 1;
-  string payment_method_id = 2;
+  string user_id = 2; 
+  string payment_method_id = 3;
 }
 
 message SubscriptionResponse {
   string subscription_id = 1;
   string user_id = 2;
   string plan_id = 3;
-  string status = 4;
-  google.protobuf.Timestamp start_date = 5;
-  google.protobuf.Timestamp end_date = 6;
-  bool auto_renewal = 7;
-  google.protobuf.Timestamp trial_end_date = 8;
-  google.protobuf.Timestamp next_billing_date = 9;
-  google.protobuf.Timestamp created_at = 10;
-  google.protobuf.Timestamp updated_at = 11;
-  SubscriptionPlanResponse plan = 12;
+  string plan_name = 4;
+  string status = 5; 
+  google.protobuf.Timestamp start_date = 6;
+  google.protobuf.Timestamp end_date = 7;
+  bool auto_renewal = 8;
+  google.protobuf.Timestamp trial_end_date = 9;
+  google.protobuf.Timestamp next_billing_date = 10;
+  double recurring_amount = 11;
+  string currency = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
 }
 
-// Payment Method related messages
 message AddPaymentMethodRequest {
   string user_id = 1;
   string provider = 2;
-  string token_id = 3;
-  bool set_as_default = 4;
+  string token_id = 3; 
+  bool set_as_default = 4 ;
+  BillingAddress billing_address = 5;
 }
 
-message ListPaymentMethodsRequest {
+message BillingAddress {
+  string name = 1;
+  string line1 = 2;
+  string line2 = 3;
+  string city = 4;
+  string state = 5;
+  string postal_code = 6;
+  string country = 7;
+}
+
+message GetPaymentMethodsRequest {
   string user_id = 1;
+}
+
+message UpdatePaymentMethodRequest {
+  string payment_method_id = 1;
+  string user_id = 2; 
+  string expiry_date = 3;
+  BillingAddress billing_address = 4;
+}
+
+message DeletePaymentMethodRequest {
+  string payment_method_id = 1;
+  string user_id = 2;
 }
 
 message SetDefaultPaymentMethodRequest {
   string payment_method_id = 1;
-  string user_id = 2;
+  string user_id = 2; 
 }
 
 message PaymentMethodResponse {
@@ -240,51 +224,89 @@ message PaymentMethodResponse {
   string last_four_digits = 4;
   string expiry_date = 5;
   bool is_default = 6;
-  google.protobuf.Timestamp created_at = 7;
-  google.protobuf.Timestamp updated_at = 8;
+  BillingAddress billing_address = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
 }
 
-message ListPaymentMethodsResponse {
+message PaymentMethodsListResponse {
   repeated PaymentMethodResponse payment_methods = 1;
 }
 
-// Transaction related messages
-message GetTransactionRequest {
-  string transaction_id = 1;
+message ProcessPaymentRequest {
+  string subscription_id = 1;
+  string payment_method_id = 2;
+  double amount = 3;
+  string currency = 4;
+  string description = 5;
 }
 
-message ListTransactionsRequest {
+message GetTransactionHistoryRequest {
   string user_id = 1;
-  int32 page_size = 2;
-  string page_token = 3;
+  int32 page = 2;
+  int32 page_size = 3;
+  string status_filter = 4;
+  google.protobuf.Timestamp start_date = 5;
+  google.protobuf.Timestamp end_date = 6;
+}
+
+message GetTransactionDetailsRequest {
+  string transaction_id = 1;
+  string user_id = 2; 
+}
+
+message RefundTransactionRequest {
+  string transaction_id = 1;
+  string user_id = 2; 
+  double amount = 3;
+  string reason = 4;
 }
 
 message TransactionResponse {
   string transaction_id = 1;
   string subscription_id = 2;
-  string payment_method_id = 3;
-  double amount = 4;
-  string currency = 5;
-  string status = 6;
-  string gateway_transaction_id = 7;
-  string error_message = 8;
-  google.protobuf.Timestamp created_at = 9;
+  string user_id = 3;
+  string payment_method_id = 4;
+  double amount = 5;
+  string currency = 6;
+  string status = 7; 
+  string gateway_transaction_id = 8;
+  string error_message = 9;
+  google.protobuf.Timestamp created_at = 10;
+  PaymentMethodDetails payment_method = 11;
 }
 
-message ListTransactionsResponse {
+message PaymentMethodDetails {
+  string provider = 1;
+  string last_four_digits = 2;
+  string expiry_date = 3;
+}
+
+message TransactionListResponse {
   repeated TransactionResponse transactions = 1;
-  string next_page_token = 2;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
 }
 
 // Invoice related messages
 message GetInvoiceRequest {
   string invoice_id = 1;
+  string user_id = 2; // For validation
 }
 
-message ListInvoicesRequest {
+message GetInvoiceListRequest {
   string user_id = 1;
-  int32 page_size = 2;
-  string page_token = 3;
+  int32 page = 2;
+  int32 page_size = 3;
+  string status_filter = 4;
+  google.protobuf.Timestamp start_date = 5;
+  google.protobuf.Timestamp end_date = 6;
+}
+
+message GenerateInvoicePdfRequest {
+  string invoice_id = 1;
+  string user_id = 2;
 }
 
 message InvoiceResponse {
@@ -299,10 +321,73 @@ message InvoiceResponse {
   google.protobuf.Timestamp due_date = 9;
   google.protobuf.Timestamp paid_date = 10;
   string invoice_number = 11;
-  google.protobuf.Timestamp created_at = 12;
+  string plan_name = 12;
+  string currency = 13;
+  google.protobuf.Timestamp created_at = 14;
+  BillingDetails billing_details = 15;
 }
 
-message ListInvoicesResponse {
+message BillingDetails {
+  string name = 1;
+  string email = 2;
+  BillingAddress address = 3;
+}
+
+message InvoiceListResponse {
   repeated InvoiceResponse invoices = 1;
-  string next_page_token = 2;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message InvoicePdfResponse {
+  string invoice_id = 1;
+  bytes pdf_content = 2;
+  string filename = 3;
+}
+
+message GetSubscriptionPlansRequest {
+  bool include_inactive = 1 ;
+}
+
+message SubscriptionPlan {
+  string plan_id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  string currency = 5;
+  string billing_cycle = 6; 
+  int32 trial_days = 7;
+  bool is_active = 8;
+  repeated PlanFeature features = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+message PlanFeature {
+  string name = 1;
+  string description = 2;
+  string value = 3;
+}
+
+message SubscriptionPlansResponse {
+  repeated SubscriptionPlan plans = 1;
+}
+
+// System operation messages
+message ProcessAutoRenewalsRequest {
+  int32 batch_size = 1;
+}
+
+message SendSubscriptionNotificationsRequest {
+  string notification_type = 1;
+  int32 days_threshold = 2;
+  int32 batch_size = 3 ;
+}
+
+message BatchProcessResponse {
+  int32 processed_count = 1;
+  int32 success_count = 2;
+  int32 failed_count = 3;
+  repeated string error_details = 4;
 }

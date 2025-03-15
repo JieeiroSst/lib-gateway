@@ -1,0 +1,171 @@
+syntax = "proto3";
+
+package basket;
+
+option go_package = "./proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service BasketService {
+  rpc CreateBasket(CreateBasketRequest) returns (BasketResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/baskets"
+      body: "*"
+    };
+  }
+
+  rpc GetBasket(GetBasketRequest) returns (BasketResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/baskets/{basket_id}"
+    };
+  }
+
+  rpc GetUserBasket(GetUserBasketRequest) returns (BasketResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/users/{user_id}/basket"
+    };
+  }
+
+  rpc UpdateBasket(UpdateBasketRequest) returns (BasketResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/baskets/{basket.id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteBasket(DeleteBasketRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/baskets/{basket_id}"
+    };
+  }
+
+  rpc AddItemToBasket(AddItemToBasketRequest) returns (BasketItemResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/baskets/{basket_id}/items"
+      body: "*"
+    };
+  }
+
+  rpc UpdateBasketItem(UpdateBasketItemRequest) returns (BasketItemResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/baskets/{basket_id}/items/{item_id}"
+      body: "*"
+    };
+  }
+
+  rpc RemoveItemFromBasket(RemoveItemFromBasketRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/baskets/{basket_id}/items/{item_id}"
+    };
+  }
+
+  rpc ClearBasket(ClearBasketRequest) returns (BasketResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/baskets/{basket_id}/items"
+    };
+  }
+
+  rpc ApplyCoupon(ApplyCouponRequest) returns (BasketResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/baskets/{basket_id}/coupons"
+      body: "*"
+    };
+  }
+
+  rpc RemoveCoupon(RemoveCouponRequest) returns (BasketResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/baskets/{basket_id}/coupons/{coupon_id}"
+    };
+  }
+}
+
+message CreateBasketRequest {
+  string user_id = 1;
+}
+
+message GetBasketRequest {
+  string basket_id = 1;
+}
+
+message GetUserBasketRequest {
+  string user_id = 1;
+}
+
+message UpdateBasketRequest {
+  Basket basket = 1;
+}
+
+message DeleteBasketRequest {
+  string basket_id = 1;
+}
+
+message AddItemToBasketRequest {
+  string basket_id = 1;
+  BasketItem item = 2;
+}
+
+message UpdateBasketItemRequest {
+  string basket_id = 1;
+  string item_id = 2;
+  BasketItem item = 3;
+}
+
+message RemoveItemFromBasketRequest {
+  string basket_id = 1;
+  string item_id = 2;
+}
+
+message ClearBasketRequest {
+  string basket_id = 1;
+}
+
+message ApplyCouponRequest {
+  string basket_id = 1;
+  string coupon_code = 2;
+}
+
+message RemoveCouponRequest {
+  string basket_id = 1;
+  string coupon_id = 2;
+}
+
+message Basket {
+  string id = 1;
+  string user_id = 2;
+  repeated BasketItem items = 3;
+  string status = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  double total_price = 7;
+  double discounted_price = 8;
+  repeated Coupon applied_coupons = 9;
+}
+
+message BasketItem {
+  string id = 1;
+  string basket_id = 2;
+  string product_id = 3;
+  string name = 4;
+  double price = 5;
+  int32 quantity = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+message Coupon {
+  string id = 1;
+  string code = 2;
+  string type = 3; 
+  double value = 4;
+  google.protobuf.Timestamp expires_at = 5;
+}
+
+message BasketResponse {
+  Basket basket = 1;
+}
+
+message BasketItemResponse {
+  BasketItem item = 1;
+}

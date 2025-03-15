@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+package bookbuyer;
+
+option go_package = "github.com/example/bookbuyer";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service BookBuyerService {
+  rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
+    option (google.api.http) = {
+      get: "/v1/books"
+    };
+  }
+
+  rpc GetBook(GetBookRequest) returns (Book) {
+    option (google.api.http) = {
+      get: "/v1/books/{book_id}"
+    };
+  }
+
+  rpc SearchBooks(SearchBooksRequest) returns (ListBooksResponse) {
+    option (google.api.http) = {
+      get: "/v1/books:search"
+    };
+  }
+
+  rpc PurchaseBook(PurchaseBookRequest) returns (PurchaseBookResponse) {
+    option (google.api.http) = {
+      post: "/v1/books/{book_id}:purchase"
+      body: "*"
+    };
+  }
+
+  rpc GetUserPurchases(GetUserPurchasesRequest) returns (ListBooksResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{user_id}/purchases"
+    };
+  }
+
+  rpc CreateWishlist(CreateWishlistRequest) returns (Wishlist) {
+    option (google.api.http) = {
+      post: "/v1/users/{user_id}/wishlists"
+      body: "wishlist"
+    };
+  }
+
+  rpc AddToWishlist(AddToWishlistRequest) returns (Wishlist) {
+    option (google.api.http) = {
+      post: "/v1/users/{user_id}/wishlists/{wishlist_id}/books"
+      body: "*"
+    };
+  }
+
+  rpc RemoveFromWishlist(RemoveFromWishlistRequest) returns (Wishlist) {
+    option (google.api.http) = {
+      delete: "/v1/users/{user_id}/wishlists/{wishlist_id}/books/{book_id}"
+    };
+  }
+}
+
+message Book {
+  string book_id = 1;
+  string title = 2;
+  string author = 3;
+  string publisher = 4;
+  string isbn = 5;
+  google.protobuf.Timestamp publication_date = 6;
+  float price = 7;
+  string currency = 8;
+  int32 pages = 9;
+  repeated string genres = 10;
+  string description = 11;
+  float rating = 12;
+  int32 stock = 13;
+}
+
+message ListBooksRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListBooksResponse {
+  repeated Book books = 1;
+  string next_page_token = 2;
+  int32 total_books = 3;
+}
+
+message GetBookRequest {
+  string book_id = 1;
+}
+
+message SearchBooksRequest {
+  string query = 1;
+  repeated string genres = 2;
+  float min_price = 3;
+  float max_price = 4;
+  float min_rating = 5;
+  int32 page_size = 6;
+  string page_token = 7;
+}
+
+message PurchaseBookRequest {
+  string book_id = 1;
+  string user_id = 2;
+  PaymentInfo payment_info = 3;
+  ShippingAddress shipping_address = 4;
+}
+
+message PaymentInfo {
+  string payment_method_id = 1;
+  string transaction_id = 2;
+}
+
+message ShippingAddress {
+  string recipient_name = 1;
+  string street_address = 2;
+  string city = 3;
+  string state = 4;
+  string country = 5;
+  string postal_code = 6;
+  string phone_number = 7;
+}
+
+message PurchaseBookResponse {
+  string order_id = 1;
+  string transaction_id = 2;
+  Book book = 3;
+  float total_price = 4;
+  string currency = 5;
+  google.protobuf.Timestamp purchase_date = 6;
+  string estimated_delivery_date = 7;
+}
+
+message GetUserPurchasesRequest {
+  string user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message Wishlist {
+  string wishlist_id = 1;
+  string user_id = 2;
+  string name = 3;
+  string description = 4;
+  repeated Book books = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message CreateWishlistRequest {
+  string user_id = 1;
+  Wishlist wishlist = 2;
+}
+
+message AddToWishlistRequest {
+  string user_id = 1;
+  string wishlist_id = 2;
+  string book_id = 3;
+}
+
+message RemoveFromWishlistRequest {
+  string user_id = 1;
+  string wishlist_id = 2;
+  string book_id = 3;
+}

@@ -1,0 +1,495 @@
+syntax = "proto3";
+
+package address_country;
+
+option go_package = "./pb";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service AddressService {
+  rpc CreateCountry(CreateCountryRequest) returns (CountryResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/countries"
+      body: "*"
+    };
+  }
+
+  rpc GetCountry(GetCountryRequest) returns (CountryResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/countries/{id}"
+    };
+  }
+
+  rpc ListCountries(ListCountriesRequest) returns (ListCountriesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/countries"
+    };
+  }
+
+  rpc UpdateCountry(UpdateCountryRequest) returns (CountryResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/countries/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteCountry(DeleteCountryRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/countries/{id}"
+    };
+  }
+
+  rpc CreateProvince(CreateProvinceRequest) returns (ProvinceResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/provinces"
+      body: "*"
+    };
+  }
+
+  rpc GetProvince(GetProvinceRequest) returns (ProvinceResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/provinces/{id}"
+    };
+  }
+
+  rpc ListProvincesByCountry(ListProvincesByCountryRequest) returns (ListProvincesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/countries/{country_id}/provinces"
+    };
+  }
+
+  rpc UpdateProvince(UpdateProvinceRequest) returns (ProvinceResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/provinces/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteProvince(DeleteProvinceRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/provinces/{id}"
+    };
+  }
+
+  rpc CreateCity(CreateCityRequest) returns (CityResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/cities"
+      body: "*"
+    };
+  }
+
+  rpc GetCity(GetCityRequest) returns (CityResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/cities/{id}"
+    };
+  }
+
+  rpc ListCitiesByProvince(ListCitiesByProvinceRequest) returns (ListCitiesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/provinces/{province_id}/cities"
+    };
+  }
+
+  rpc UpdateCity(UpdateCityRequest) returns (CityResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/cities/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteCity(DeleteCityRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/cities/{id}"
+    };
+  }
+
+  rpc CreateDistrict(CreateDistrictRequest) returns (DistrictResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/districts"
+      body: "*"
+    };
+  }
+
+  rpc GetDistrict(GetDistrictRequest) returns (DistrictResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/districts/{id}"
+    };
+  }
+
+  rpc ListDistrictsByCity(ListDistrictsByCityRequest) returns (ListDistrictsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/cities/{city_id}/districts"
+    };
+  }
+
+  rpc UpdateDistrict(UpdateDistrictRequest) returns (DistrictResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/districts/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteDistrict(DeleteDistrictRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/districts/{id}"
+    };
+  }
+
+  rpc CreateVillage(CreateVillageRequest) returns (VillageResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/villages"
+      body: "*"
+    };
+  }
+
+  rpc GetVillage(GetVillageRequest) returns (VillageResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/villages/{id}"
+    };
+  }
+
+  rpc ListVillagesByDistrict(ListVillagesByDistrictRequest) returns (ListVillagesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/districts/{district_id}/villages"
+    };
+  }
+
+  rpc UpdateVillage(UpdateVillageRequest) returns (VillageResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/villages/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteVillage(DeleteVillageRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/villages/{id}"
+    };
+  }
+
+  rpc CreateAddress(CreateAddressRequest) returns (AddressResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/addresses"
+      body: "*"
+    };
+  }
+
+  rpc GetAddress(GetAddressRequest) returns (AddressResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/addresses/{id}"
+    };
+  }
+
+  rpc ListAddresses(ListAddressesRequest) returns (ListAddressesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/addresses"
+    };
+  }
+
+  rpc UpdateAddress(UpdateAddressRequest) returns (AddressResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/addresses/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteAddress(DeleteAddressRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/addresses/{id}"
+    };
+  }
+}
+
+message Country {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message CreateCountryRequest {
+  string name = 1;
+  string code = 2;
+}
+
+message GetCountryRequest {
+  string id = 1;
+}
+
+message UpdateCountryRequest {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+}
+
+message DeleteCountryRequest {
+  string id = 1;
+}
+
+message ListCountriesRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message CountryResponse {
+  Country country = 1;
+}
+
+message ListCountriesResponse {
+  repeated Country countries = 1;
+  int32 total = 2;
+}
+
+message Province {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string country_id = 4;
+  Country country = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message CreateProvinceRequest {
+  string name = 1;
+  string code = 2;
+  string country_id = 3;
+}
+
+message GetProvinceRequest {
+  string id = 1;
+}
+
+message UpdateProvinceRequest {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string country_id = 4;
+}
+
+message DeleteProvinceRequest {
+  string id = 1;
+}
+
+message ListProvincesByCountryRequest {
+  string country_id = 1;
+  int32 page = 2;
+  int32 limit = 3;
+}
+
+message ProvinceResponse {
+  Province province = 1;
+}
+
+message ListProvincesResponse {
+  repeated Province provinces = 1;
+  int32 total = 2;
+}
+
+message City {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string province_id = 4;
+  Province province = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message CreateCityRequest {
+  string name = 1;
+  string code = 2;
+  string province_id = 3;
+}
+
+message GetCityRequest {
+  string id = 1;
+}
+
+message UpdateCityRequest {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string province_id = 4;
+}
+
+message DeleteCityRequest {
+  string id = 1;
+}
+
+message ListCitiesByProvinceRequest {
+  string province_id = 1;
+  int32 page = 2;
+  int32 limit = 3;
+}
+
+message CityResponse {
+  City city = 1;
+}
+
+message ListCitiesResponse {
+  repeated City cities = 1;
+  int32 total = 2;
+}
+
+// District messages
+message District {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string city_id = 4;
+  City city = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message CreateDistrictRequest {
+  string name = 1;
+  string code = 2;
+  string city_id = 3;
+}
+
+message GetDistrictRequest {
+  string id = 1;
+}
+
+message UpdateDistrictRequest {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string city_id = 4;
+}
+
+message DeleteDistrictRequest {
+  string id = 1;
+}
+
+message ListDistrictsByCityRequest {
+  string city_id = 1;
+  int32 page = 2;
+  int32 limit = 3;
+}
+
+message DistrictResponse {
+  District district = 1;
+}
+
+message ListDistrictsResponse {
+  repeated District districts = 1;
+  int32 total = 2;
+}
+
+// Village/Ward messages
+message Village {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string district_id = 4;
+  District district = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message CreateVillageRequest {
+  string name = 1;
+  string code = 2;
+  string district_id = 3;
+}
+
+message GetVillageRequest {
+  string id = 1;
+}
+
+message UpdateVillageRequest {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string district_id = 4;
+}
+
+message DeleteVillageRequest {
+  string id = 1;
+}
+
+message ListVillagesByDistrictRequest {
+  string district_id = 1;
+  int32 page = 2;
+  int32 limit = 3;
+}
+
+message VillageResponse {
+  Village village = 1;
+}
+
+message ListVillagesResponse {
+  repeated Village villages = 1;
+  int32 total = 2;
+}
+
+message Address {
+  string id = 1;
+  string street_address = 2;
+  string postal_code = 3;
+  string village_id = 4;
+  string district_id = 5;
+  string city_id = 6;
+  string province_id = 7;
+  string country_id = 8;
+  string user_id = 9;
+  Village village = 10;
+  District district = 11;
+  City city = 12;
+  Province province = 13;
+  Country country = 14;
+  google.protobuf.Timestamp created_at = 15;
+  google.protobuf.Timestamp updated_at = 16;
+}
+
+message CreateAddressRequest {
+  string street_address = 1;
+  string postal_code = 2;
+  string village_id = 3;
+  string district_id = 4;
+  string city_id = 5;
+  string province_id = 6;
+  string country_id = 7;
+  string user_id = 8;
+}
+
+message GetAddressRequest {
+  string id = 1;
+}
+
+message UpdateAddressRequest {
+  string id = 1;
+  string street_address = 2;
+  string postal_code = 3;
+  string village_id = 4;
+  string district_id = 5;
+  string city_id = 6;
+  string province_id = 7;
+  string country_id = 8;
+  string user_id = 9;
+}
+
+message DeleteAddressRequest {
+  string id = 1;
+}
+
+message ListAddressesRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 limit = 3;
+}
+
+message AddressResponse {
+  Address address = 1;
+}
+
+message ListAddressesResponse {
+  repeated Address addresses = 1;
+  int32 total = 2;
+}

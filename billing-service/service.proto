@@ -1,0 +1,425 @@
+syntax = "proto3";
+
+package billing;
+
+option go_package = "./proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service SubscriptionService {
+  rpc CreateCustomer(CreateCustomerRequest) returns (CustomerResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/customers"
+      body: "*"
+    };
+  }
+  
+  rpc GetCustomer(GetCustomerRequest) returns (CustomerResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/customers/{customer_id}"
+    };
+  }
+  
+  rpc UpdateCustomer(UpdateCustomerRequest) returns (CustomerResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/customers/{customer_id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteCustomer(DeleteCustomerRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/customers/{customer_id}"
+    };
+  }
+  
+  rpc ListCustomers(ListCustomersRequest) returns (ListCustomersResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/customers"
+    };
+  }
+  
+  rpc CreatePlan(CreatePlanRequest) returns (PlanResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/plans"
+      body: "*"
+    };
+  }
+  
+  rpc GetPlan(GetPlanRequest) returns (PlanResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/plans/{plan_id}"
+    };
+  }
+  
+  rpc UpdatePlan(UpdatePlanRequest) returns (PlanResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/plans/{plan_id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeletePlan(DeletePlanRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/plans/{plan_id}"
+    };
+  }
+  
+  rpc ListPlans(ListPlansRequest) returns (ListPlansResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/plans"
+    };
+  }
+  
+  rpc CreateSubscription(CreateSubscriptionRequest) returns (SubscriptionResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/subscriptions"
+      body: "*"
+    };
+  }
+  
+  rpc GetSubscription(GetSubscriptionRequest) returns (SubscriptionResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/subscriptions/{subscription_id}"
+    };
+  }
+  
+  rpc UpdateSubscription(UpdateSubscriptionRequest) returns (SubscriptionResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/subscriptions/{subscription_id}"
+      body: "*"
+    };
+  }
+  
+  rpc CancelSubscription(CancelSubscriptionRequest) returns (SubscriptionResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/subscriptions/{subscription_id}/cancel"
+      body: "*"
+    };
+  }
+  
+  rpc ListSubscriptions(ListSubscriptionsRequest) returns (ListSubscriptionsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/subscriptions"
+    };
+  }
+  
+  // Invoice management
+  rpc CreateInvoice(CreateInvoiceRequest) returns (InvoiceResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/invoices"
+      body: "*"
+    };
+  }
+  
+  rpc GetInvoice(GetInvoiceRequest) returns (InvoiceResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/invoices/{invoice_id}"
+    };
+  }
+  
+  rpc UpdateInvoiceStatus(UpdateInvoiceStatusRequest) returns (InvoiceResponse) {
+    option (google.api.http) = {
+      patch: "/api/v1/invoices/{invoice_id}/status"
+      body: "*"
+    };
+  }
+  
+  rpc ListInvoices(ListInvoicesRequest) returns (ListInvoicesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/invoices"
+    };
+  }
+  
+  rpc CreateTransaction(CreateTransactionRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/transactions"
+      body: "*"
+    };
+  }
+  
+  rpc GetTransaction(GetTransactionRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/transactions/{transaction_id}"
+    };
+  }
+  
+  rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/transactions"
+    };
+  }
+}
+
+message Address {
+  string address_id = 1;
+  string line1 = 2;
+  string line2 = 3;
+  string city = 4;
+  string state_province = 5;
+  string postal_code = 6;
+  string country = 7;
+}
+
+message Customer {
+  string customer_id = 1;
+  string name = 2;
+  string company = 3;
+  string email = 4;
+  string phone_number = 5;
+  Address address = 6;
+}
+
+message CreateCustomerRequest {
+  string name = 1;
+  string company = 2;
+  string email = 3;
+  string phone_number = 4;
+  Address address = 5;
+}
+
+message GetCustomerRequest {
+  string customer_id = 1;
+}
+
+message UpdateCustomerRequest {
+  string customer_id = 1;
+  string name = 2;
+  string company = 3;
+  string email = 4;
+  string phone_number = 5;
+  Address address = 6;
+}
+
+message DeleteCustomerRequest {
+  string customer_id = 1;
+}
+
+message ListCustomersRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message CustomerResponse {
+  Customer customer = 1;
+}
+
+message ListCustomersResponse {
+  repeated Customer customers = 1;
+  string next_page_token = 2;
+}
+
+// Plan related messages
+message Plan {
+  string plan_id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  enum BillingCycle {
+    UNKNOWN = 0;
+    MONTHLY = 1;
+    QUARTERLY = 2;
+    SEMI_ANNUAL = 3;
+    ANNUAL = 4;
+  }
+  BillingCycle billing_cycle = 5;
+}
+
+message CreatePlanRequest {
+  string name = 1;
+  string description = 2;
+  double price = 3;
+  Plan.BillingCycle billing_cycle = 4;
+}
+
+message GetPlanRequest {
+  string plan_id = 1;
+}
+
+message UpdatePlanRequest {
+  string plan_id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  Plan.BillingCycle billing_cycle = 5;
+}
+
+message DeletePlanRequest {
+  string plan_id = 1;
+}
+
+message ListPlansRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message PlanResponse {
+  Plan plan = 1;
+}
+
+message ListPlansResponse {
+  repeated Plan plans = 1;
+  string next_page_token = 2;
+}
+
+// Subscription related messages
+message Subscription {
+  string subscription_id = 1;
+  string customer_id = 2;
+  string plan_id = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+  enum Status {
+    UNKNOWN = 0;
+    ACTIVE = 1;
+    CANCELED = 2;
+    PAUSED = 3;
+    EXPIRED = 4;
+    PENDING = 5;
+  }
+  Status status = 6;
+}
+
+message CreateSubscriptionRequest {
+  string customer_id = 1;
+  string plan_id = 2;
+  google.protobuf.Timestamp start_date = 3;
+  google.protobuf.Timestamp end_date = 4;
+}
+
+message GetSubscriptionRequest {
+  string subscription_id = 1;
+}
+
+message UpdateSubscriptionRequest {
+  string subscription_id = 1;
+  string plan_id = 2;
+  google.protobuf.Timestamp end_date = 3;
+  Subscription.Status status = 4;
+}
+
+message CancelSubscriptionRequest {
+  string subscription_id = 1;
+  google.protobuf.Timestamp cancellation_date = 2;
+  string cancellation_reason = 3;
+}
+
+message ListSubscriptionsRequest {
+  string customer_id = 1;
+  Subscription.Status status = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message SubscriptionResponse {
+  Subscription subscription = 1;
+}
+
+message ListSubscriptionsResponse {
+  repeated Subscription subscriptions = 1;
+  string next_page_token = 2;
+}
+
+message Invoice {
+  string invoice_id = 1;
+  string subscription_id = 2;
+  google.protobuf.Timestamp invoice_date = 3;
+  google.protobuf.Timestamp due_date = 4;
+  double amount = 5;
+  double tax = 6;
+  enum Status {
+    UNKNOWN = 0;
+    ISSUED = 1;
+    PAID = 2;
+    OVERDUE = 3;
+    CANCELED = 4;
+    REFUNDED = 5;
+  }
+  Status status = 7;
+}
+
+message CreateInvoiceRequest {
+  string subscription_id = 1;
+  google.protobuf.Timestamp invoice_date = 2;
+  google.protobuf.Timestamp due_date = 3;
+  double amount = 4;
+  double tax = 5;
+}
+
+message GetInvoiceRequest {
+  string invoice_id = 1;
+}
+
+message UpdateInvoiceStatusRequest {
+  string invoice_id = 1;
+  Invoice.Status status = 2;
+}
+
+message ListInvoicesRequest {
+  string subscription_id = 1;
+  Invoice.Status status = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message InvoiceResponse {
+  Invoice invoice = 1;
+}
+
+message ListInvoicesResponse {
+  repeated Invoice invoices = 1;
+  string next_page_token = 2;
+}
+
+message Transaction {
+  string transaction_id = 1;
+  string invoice_id = 2;
+  enum PaymentMethod {
+    PAYMENT_METHOD_UNKNOWN = 0;
+    PAYMENT_METHOD_CREDIT_CARD = 1;
+    PAYMENT_METHOD_PAYPAL = 2;
+    PAYMENT_METHOD_BANK_TRANSFER = 3;
+    PAYMENT_METHOD_CHECK = 4;
+    PAYMENT_METHOD_CRYPTO = 5;
+  }
+  PaymentMethod payment_method = 3;
+  google.protobuf.Timestamp transaction_date = 4;
+  double amount = 5;
+  enum Status {
+    TRANSACTION_UNKNOWN = 0;
+    TRANSACTION_SUCCESSFUL = 1;
+    TRANSACTION_FAILED = 2;
+    TRANSACTION_PENDING = 3;
+    TRANSACTION_REFUNDED = 4;
+  }
+  Status status = 6;
+}
+
+message CreateTransactionRequest {
+  string invoice_id = 1;
+  Transaction.PaymentMethod payment_method = 2;
+  google.protobuf.Timestamp transaction_date = 3;
+  double amount = 4;
+}
+
+message GetTransactionRequest {
+  string transaction_id = 1;
+}
+
+message ListTransactionsRequest {
+  string invoice_id = 1;
+  Transaction.Status status = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message TransactionResponse {
+  Transaction transaction = 1;
+}
+
+message ListTransactionsResponse {
+  repeated Transaction transactions = 1;
+  string next_page_token = 2;
+}

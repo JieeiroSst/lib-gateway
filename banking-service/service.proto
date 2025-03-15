@@ -1,0 +1,498 @@
+syntax = "proto3";
+
+package banking;
+
+option go_package = "./proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service BankingService {
+  // Person endpoints
+  rpc CreatePerson(Person) returns (Person) {
+    option (google.api.http) = {
+      post: "/api/v1/persons"
+      body: "*"
+    };
+  }
+  rpc GetPerson(GetPersonRequest) returns (Person) {
+    option (google.api.http) = {
+      get: "/api/v1/persons/{person_id}"
+    };
+  }
+  rpc UpdatePerson(Person) returns (Person) {
+    option (google.api.http) = {
+      put: "/api/v1/persons/{person_id}"
+      body: "*"
+    };
+  }
+  rpc DeletePerson(GetPersonRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/persons/{person_id}"
+    };
+  }
+  rpc ListPersons(ListPersonsRequest) returns (ListPersonsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/persons"
+    };
+  }
+
+  // Customer endpoints
+  rpc CreateCustomer(Customer) returns (Customer) {
+    option (google.api.http) = {
+      post: "/api/v1/customers"
+      body: "*"
+    };
+  }
+  rpc GetCustomer(GetCustomerRequest) returns (Customer) {
+    option (google.api.http) = {
+      get: "/api/v1/customers/{customer_id}"
+    };
+  }
+  rpc UpdateCustomer(Customer) returns (Customer) {
+    option (google.api.http) = {
+      put: "/api/v1/customers/{customer_id}"
+      body: "*"
+    };
+  }
+  rpc DeleteCustomer(GetCustomerRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/customers/{customer_id}"
+    };
+  }
+  rpc ListCustomers(ListCustomersRequest) returns (ListCustomersResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/customers"
+    };
+  }
+
+  // Employee endpoints
+  rpc CreateEmployee(Employee) returns (Employee) {
+    option (google.api.http) = {
+      post: "/api/v1/employees"
+      body: "*"
+    };
+  }
+  rpc GetEmployee(GetEmployeeRequest) returns (Employee) {
+    option (google.api.http) = {
+      get: "/api/v1/employees/{employee_id}"
+    };
+  }
+  rpc UpdateEmployee(Employee) returns (Employee) {
+    option (google.api.http) = {
+      put: "/api/v1/employees/{employee_id}"
+      body: "*"
+    };
+  }
+  rpc DeleteEmployee(GetEmployeeRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/employees/{employee_id}"
+    };
+  }
+  rpc ListEmployees(ListEmployeesRequest) returns (ListEmployeesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/employees"
+    };
+  }
+
+  // Branch endpoints
+  rpc CreateBranch(Branch) returns (Branch) {
+    option (google.api.http) = {
+      post: "/api/v1/branches"
+      body: "*"
+    };
+  }
+  rpc GetBranch(GetBranchRequest) returns (Branch) {
+    option (google.api.http) = {
+      get: "/api/v1/branches/{branch_id}"
+    };
+  }
+  rpc UpdateBranch(Branch) returns (Branch) {
+    option (google.api.http) = {
+      put: "/api/v1/branches/{branch_id}"
+      body: "*"
+    };
+  }
+  rpc DeleteBranch(GetBranchRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/branches/{branch_id}"
+    };
+  }
+  rpc ListBranches(ListBranchesRequest) returns (ListBranchesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/branches"
+    };
+  }
+
+  // Account endpoints
+  rpc CreateAccount(Account) returns (Account) {
+    option (google.api.http) = {
+      post: "/api/v1/accounts"
+      body: "*"
+    };
+  }
+  rpc GetAccount(GetAccountRequest) returns (Account) {
+    option (google.api.http) = {
+      get: "/api/v1/accounts/{account_id}"
+    };
+  }
+  rpc UpdateAccount(Account) returns (Account) {
+    option (google.api.http) = {
+      put: "/api/v1/accounts/{account_id}"
+      body: "*"
+    };
+  }
+  rpc DeleteAccount(GetAccountRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/accounts/{account_id}"
+    };
+  }
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/accounts"
+    };
+  }
+
+  // Transaction endpoints
+  rpc CreateTransaction(Transaction) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/api/v1/transactions"
+      body: "*"
+    };
+  }
+  rpc GetTransaction(GetTransactionRequest) returns (Transaction) {
+    option (google.api.http) = {
+      get: "/api/v1/transactions/{transaction_id}"
+    };
+  }
+  rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/transactions"
+    };
+  }
+
+  // Loan endpoints
+  rpc CreateLoan(Loan) returns (Loan) {
+    option (google.api.http) = {
+      post: "/api/v1/loans"
+      body: "*"
+    };
+  }
+  rpc GetLoan(GetLoanRequest) returns (Loan) {
+    option (google.api.http) = {
+      get: "/api/v1/loans/{loan_id}"
+    };
+  }
+  rpc UpdateLoan(Loan) returns (Loan) {
+    option (google.api.http) = {
+      put: "/api/v1/loans/{loan_id}"
+      body: "*"
+    };
+  }
+  rpc DeleteLoan(GetLoanRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/loans/{loan_id}"
+    };
+  }
+  rpc ListLoans(ListLoansRequest) returns (ListLoansResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/loans"
+    };
+  }
+
+  // Loan Payment endpoints
+  rpc CreateLoanPayment(LoanPayment) returns (LoanPayment) {
+    option (google.api.http) = {
+      post: "/api/v1/loan-payments"
+      body: "*"
+    };
+  }
+  rpc GetLoanPayment(GetLoanPaymentRequest) returns (LoanPayment) {
+    option (google.api.http) = {
+      get: "/api/v1/loan-payments/{loan_payment_id}"
+    };
+  }
+  rpc ListLoanPayments(ListLoanPaymentsRequest) returns (ListLoanPaymentsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/loan-payments"
+    };
+  }
+
+  // Business Logic Services
+  rpc GetCustomerAccounts(GetCustomerAccountsRequest) returns (ListAccountsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/customers/{customer_id}/accounts"
+    };
+  }
+  
+  rpc GetCustomerLoans(GetCustomerLoansRequest) returns (ListLoansResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/customers/{customer_id}/loans"
+    };
+  }
+  
+  rpc GetLoanPayments(GetLoanPaymentsRequest) returns (ListLoanPaymentsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/loans/{loan_id}/payments"
+    };
+  }
+  
+  rpc GetAccountTransactions(GetAccountTransactionsRequest) returns (ListTransactionsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/accounts/{account_id}/transactions"
+    };
+  }
+}
+
+// Person message
+message Person {
+  int32 person_id = 1;
+  string last_name = 2;
+  string first_name = 3;
+  google.protobuf.Timestamp date_of_birth = 4;
+  string email = 5;
+  string phone_number = 6;
+  string address = 7;
+  string tax_identifier = 8;
+}
+
+message GetPersonRequest {
+  int32 person_id = 1;
+}
+
+message ListPersonsRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+}
+
+message ListPersonsResponse {
+  repeated Person persons = 1;
+  int32 total_count = 2;
+  int32 page_count = 3;
+}
+
+// Customer message
+message Customer {
+  int32 customer_id = 1;
+  int32 person_id = 2;
+  string customer_type = 3;
+  Person person = 4;
+}
+
+message GetCustomerRequest {
+  int32 customer_id = 1;
+}
+
+message ListCustomersRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+  string customer_type = 3;
+}
+
+message ListCustomersResponse {
+  repeated Customer customers = 1;
+  int32 total_count = 2;
+  int32 page_count = 3;
+}
+
+message GetCustomerAccountsRequest {
+  int32 customer_id = 1;
+  string account_status = 2;
+}
+
+message GetCustomerLoansRequest {
+  int32 customer_id = 1;
+  string loan_status = 2;
+}
+
+// Employee message
+message Employee {
+  int32 employee_id = 1;
+  int32 person_id = 2;
+  string position = 3;
+  int32 branch_id = 4;
+  Person person = 5;
+  Branch branch = 6;
+}
+
+message GetEmployeeRequest {
+  int32 employee_id = 1;
+}
+
+message ListEmployeesRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+  string position = 3;
+  int32 branch_id = 4;
+}
+
+message ListEmployeesResponse {
+  repeated Employee employees = 1;
+  int32 total_count = 2;
+  int32 page_count = 3;
+}
+
+// Branch message
+message Branch {
+  int32 branch_id = 1;
+  string branch_name = 2;
+  string branch_code = 3;
+  string address = 4;
+  string phone_number = 5;
+}
+
+message GetBranchRequest {
+  int32 branch_id = 1;
+}
+
+message ListBranchesRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+}
+
+message ListBranchesResponse {
+  repeated Branch branches = 1;
+  int32 total_count = 2;
+  int32 page_count = 3;
+}
+
+// Account message
+message Account {
+  int32 account_id = 1;
+  string account_number = 2;
+  string account_type = 3;
+  double current_balance = 4;
+  google.protobuf.Timestamp date_opened = 5;
+  google.protobuf.Timestamp date_closed = 6;
+  string account_status = 7;
+  int32 customer_id = 8;
+  Customer customer = 9;
+}
+
+message GetAccountRequest {
+  int32 account_id = 1;
+}
+
+message ListAccountsRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+  string account_type = 3;
+  string account_status = 4;
+  int32 customer_id = 5;
+}
+
+message ListAccountsResponse {
+  repeated Account accounts = 1;
+  int32 total_count = 2;
+  int32 page_count = 3;
+}
+
+// Transaction message
+message Transaction {
+  int32 transaction_id = 1;
+  string transaction_type = 2;
+  double amount = 3;
+  google.protobuf.Timestamp transaction_date = 4;
+  int32 account_id = 5;
+  Account account = 6;
+}
+
+message GetTransactionRequest {
+  int32 transaction_id = 1;
+}
+
+message ListTransactionsRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+  string transaction_type = 3;
+  int32 account_id = 4;
+  google.protobuf.Timestamp start_date = 5;
+  google.protobuf.Timestamp end_date = 6;
+}
+
+message ListTransactionsResponse {
+  repeated Transaction transactions = 1;
+  int32 total_count = 2;
+  int32 page_count = 3;
+}
+
+message GetAccountTransactionsRequest {
+  int32 account_id = 1;
+  string transaction_type = 2;
+  google.protobuf.Timestamp start_date = 3;
+  google.protobuf.Timestamp end_date = 4;
+  int32 page_size = 5;
+  int32 page_number = 6;
+}
+
+// Loan message
+message Loan {
+  int32 loan_id = 1;
+  string loan_type = 2;
+  double loan_amount = 3;
+  double interest_rate = 4;
+  int32 term = 5;
+  google.protobuf.Timestamp start_date = 6;
+  google.protobuf.Timestamp end_date = 7;
+  string loan_status = 8;
+  int32 customer_id = 9;
+  Customer customer = 10;
+}
+
+message GetLoanRequest {
+  int32 loan_id = 1;
+}
+
+message ListLoansRequest {
+  int32 page_size = 1;
+  int32 page_number = 2;
+  string loan_type = 3;
+  string loan_status = 4;
+  int32 customer_id = 5;
+}
+
+message ListLoansResponse {
+  repeated Loan loans = 1;
+  int32 total_count = 2;
+  int32 page_count = 3;
+}
+
+// LoanPayment message
+message LoanPayment {
+  int32 loan_payment_id = 1;
+  int32 loan_id = 2;
+  google.protobuf.Timestamp scheduled_payment_date = 3;
+  double payment_amount = 4;
+  double principal_amount = 5;
+  double interest_amount = 6;
+  double paid_amount = 7;
+  google.protobuf.Timestamp paid_date = 8;
+  Loan loan = 9;
+}
+
+message GetLoanPaymentRequest {
+    int32 loan_payment_id = 1;
+}
+  
+message ListLoanPaymentsRequest {
+    int32 page_size = 1;
+    int32 page_number = 2;
+    int32 loan_id = 3;
+    google.protobuf.Timestamp start_date = 4;
+    google.protobuf.Timestamp end_date = 5;
+}
+  
+message ListLoanPaymentsResponse {
+    repeated LoanPayment loan_payments = 1;
+    int32 total_count = 2;
+    int32 page_count = 3;
+}
+  
+message GetLoanPaymentsRequest {
+    int32 loan_id = 1;
+    google.protobuf.Timestamp start_date = 2;
+    google.protobuf.Timestamp end_date = 3;
+    int32 page_size = 4;
+    int32 page_number = 5;
+}
