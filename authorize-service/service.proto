@@ -27,7 +27,7 @@ service AuthorizeService {
         };
     }
     
-    rpc CreateCasbinRule(CasbinRule) returns (CasbinRule) {
+    rpc CreateCasbinRule(CasbinRule) returns (CreateCasbinRuleResponse) {
         option (google.api.http) = {
             post: "/casbin"
             body: "*"
@@ -40,7 +40,7 @@ service AuthorizeService {
         };
     }
     
-    rpc UpdateCasbinRule(UpdateCasbinRuleRequest) returns (CasbinRule) {
+    rpc UpdateCasbinRule(UpdateCasbinRuleRequest) returns (UpdateCasbinRuleResponse) {
         option (google.api.http) = {
             put: "/casbin/{id}/{field}/{value}"
         };
@@ -158,3 +158,14 @@ message CasbinRuleReponse {
     string message = 1;
     bool error = 2;
 };
+
+message CreateCasbinRuleResponse {
+    string message = 1;
+    bool error = 2;
+}
+
+message UpdateCasbinRuleResponse {
+    string message = 1;
+    bool error = 2;
+}
+
