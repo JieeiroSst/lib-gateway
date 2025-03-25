@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package shortlink;
+
+option go_package = "./pb";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+enum LinkStatus {
+    ACTIVE = 0;
+    EXPIRED = 1;
+    DISABLED = 2;
+}
+
+message Link {
+    string id = 1;
+    string original_url = 2;
+    string short_code = 3;
+    string user_id = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp expired_at = 6;
+    int32 total_clicks = 7;
+    LinkStatus status = 8;
+}
+
+message LinkClick {
+    string id = 1;
+    string link_id = 2;
+    google.protobuf.Timestamp clicked_at = 3;
+    string ip_address = 4;
+    string country = 5;
+    string browser = 6;
+    string device_type = 7;
+}
+
+message CreateLinkRequest {
+    string original_url = 1;
+    string user_id = 2;
+    google.protobuf.Timestamp expired_at = 3;
+}
+
+message GetLinkRequest {
+    string short_code = 1;
+}
+
+message ListLinksRequest {
+    string user_id = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+}
+
+message ListLinksResponse {
+    repeated Link links = 1;
+    int32 total_count = 2;
+}
+
+message LinkStatsRequest {
+    string link_id = 1;
+    google.protobuf.Timestamp start_date = 2;
+    google.protobuf.Timestamp end_date = 3;
+}
+
+message LinkStatsResponse {
+    int32 total_clicks = 1;
+    repeated LinkClick clicks = 2;
+    map<string, int32> country_stats = 3;
+    map<string, int32> browser_stats = 4;
+}
+
+service ShortlinkService {
+    rpc CreateLink(CreateLinkRequest) returns (Link) {
+        option (google.api.http) = {
+            post: "/v1/links"
+            body: "*"
+        };
+    }
+
+    rpc GetLink(GetLinkRequest) returns (Link) {
+        option (google.api.http) = {
+            get: "/v1/links/{short_code}"
+        };
+    }
+
+    rpc ListLinks(ListLinksRequest) returns (ListLinksResponse) {
+        option (google.api.http) = {
+            get: "/v1/links"
+        };
+    }
+
+    rpc DeleteLink(GetLinkRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/v1/links/{short_code}"
+        };
+    }
+
+    rpc GetLinkStats(LinkStatsRequest) returns (LinkStatsResponse) {
+        option (google.api.http) = {
+            get: "/v1/links/{link_id}/stats"
+        };
+    }
+}
