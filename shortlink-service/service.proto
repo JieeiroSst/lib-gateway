@@ -72,32 +72,32 @@ message LinkStatsResponse {
 service ShortlinkService {
     rpc CreateLink(CreateLinkRequest) returns (Link) {
         option (google.api.http) = {
-            post: "/v1/links"
+            post: "/v1/internallinks"
             body: "*"
         };
     }
 
     rpc GetLink(GetLinkRequest) returns (Link) {
         option (google.api.http) = {
-            get: "/v1/links/{short_code}"
+            get: "/v1/internallinks/{short_code}"
         };
     }
 
     rpc ListLinks(ListLinksRequest) returns (ListLinksResponse) {
         option (google.api.http) = {
-            get: "/v1/links"
+            get: "/v1/internallinks"
         };
     }
 
     rpc DeleteLink(GetLinkRequest) returns (google.protobuf.Empty) {
         option (google.api.http) = {
-            delete: "/v1/links/{short_code}"
+            delete: "/v1/internallinks/{short_code}"
         };
     }
 
     rpc GetLinkStats(LinkStatsRequest) returns (LinkStatsResponse) {
         option (google.api.http) = {
-            get: "/v1/links/{link_id}/stats"
+            get: "/v1/internallinks/{link_id}/stats"
         };
     }
 }
