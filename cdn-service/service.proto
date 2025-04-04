@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package file;
+
+option go_package = "./proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service FileService {
+  rpc UploadFile(UploadFileRequest) returns (FileResponse) {
+    option (google.api.http) = {
+      post: "/v1/files"
+      body: "*"
+    };
+  }
+
+  rpc GetFile(GetFileRequest) returns (FileResponse) {
+    option (google.api.http) = {
+      get: "/v1/files/{file_id}"
+    };
+  }
+
+  rpc GetFileContent(GetFileRequest) returns (FileContentResponse) {
+    option (google.api.http) = {
+      get: "/v1/files/{file_id}/content"
+    };
+  }
+
+  rpc ListFiles(ListFilesRequest) returns (ListFilesResponse) {
+    option (google.api.http) = {
+      get: "/v1/files"
+    };
+  }
+
+  rpc DeleteFile(DeleteFileRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/files/{file_id}"
+    };
+  }
+}
+
+enum FileType {
+  FILE_TYPE_UNSPECIFIED = 0;
+  FILE_TYPE_IMAGE = 1;
+  FILE_TYPE_VIDEO = 2;
+}
+
+message UploadFileRequest {
+  bytes content = 1;
+  string filename = 2;
+  string mime_type = 3;
+  FileType file_type = 4;
+  map<string, string> metadata = 5;
+}
+
+message GetFileRequest {
+  string file_id = 1;
+}
+
+message DeleteFileRequest {
+  string file_id = 1;
+}
+
+message ListFilesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  FileType file_type = 3;
+  google.protobuf.Timestamp created_after = 4;
+  google.protobuf.Timestamp created_before = 5;
+}
+
+message FileResponse {
+  string file_id = 1;
+  string filename = 2;
+  int64 size_bytes = 3;
+  string mime_type = 4;
+  FileType file_type = 5;
+  string url = 6;
+  google.protobuf.Timestamp created_at = 7;
+  map<string, string> metadata = 8;
+}
+
+message FileContentResponse {
+  bytes content = 1;
+  string mime_type = 2;
+  string filename = 3;
+}
+
+message ListFilesResponse {
+  repeated FileResponse files = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
