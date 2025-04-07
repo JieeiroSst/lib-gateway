@@ -15,30 +15,6 @@ service FileService {
       body: "*"
     };
   }
-
-  rpc GetFile(GetFileRequest) returns (FileResponse) {
-    option (google.api.http) = {
-      get: "/v1/files/{file_id}"
-    };
-  }
-
-  rpc GetFileContent(GetFileRequest) returns (FileContentResponse) {
-    option (google.api.http) = {
-      get: "/v1/files/{file_id}/content"
-    };
-  }
-
-  rpc ListFiles(ListFilesRequest) returns (ListFilesResponse) {
-    option (google.api.http) = {
-      get: "/v1/files"
-    };
-  }
-
-  rpc DeleteFile(DeleteFileRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "/v1/files/{file_id}"
-    };
-  }
 }
 
 enum FileType {
