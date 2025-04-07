@@ -6,13 +6,18 @@ option go_package = "./proto";
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 service FileService {
   rpc UploadFile(UploadFileRequest) returns (FileResponse) {
     option (google.api.http) = {
       post: "/v1/files"
       body: "*"
+    };
+  }
+
+  rpc GetFile(GetFileRequest) returns (FileContentResponse) {
+    option (google.api.http) = {
+      get: "/v1/files/{file_id}"
     };
   }
 }
@@ -59,9 +64,8 @@ message FileResponse {
 }
 
 message FileContentResponse {
-  bytes content = 1;
-  string mime_type = 2;
-  string filename = 3;
+  string filename = 1;
+  string url = 2;
 }
 
 message ListFilesResponse {
