@@ -1,0 +1,1141 @@
+syntax = "proto3";
+
+package fooddelivery;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/fooddelivery/proto";
+
+service FoodDeliveryGateway {
+  // User service methods
+  rpc RegisterUser(RegisterUserRequest) returns (UserResponse);
+  rpc LoginUser(LoginRequest) returns (AuthResponse);
+  rpc GetUserProfile(UserRequest) returns (UserProfileResponse);
+  rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UserProfileResponse);
+  
+  // Restaurant service methods
+  rpc SearchRestaurants(SearchRestaurantsRequest) returns (RestaurantsResponse);
+  rpc GetRestaurantDetails(RestaurantRequest) returns (RestaurantResponse);
+  rpc GetRestaurantMenu(RestaurantRequest) returns (MenuResponse);
+  
+  // Order service methods
+  rpc CreateOrder(CreateOrderRequest) returns (OrderResponse);
+  rpc GetOrderStatus(OrderRequest) returns (OrderStatusResponse);
+  rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (OrderStatusResponse);
+  rpc GetOrderHistory(OrderHistoryRequest) returns (OrderHistoryResponse);
+  rpc CancelOrder(OrderRequest) returns (OrderStatusResponse);
+  
+  // Driver service methods
+  rpc UpdateDriverLocation(UpdateDriverLocationRequest) returns (google.protobuf.Empty);
+  rpc GetAvailableOrders(DriverRequest) returns (AvailableOrdersResponse);
+  rpc AcceptOrder(AcceptOrderRequest) returns (OrderResponse);
+  rpc CompleteDelivery(CompleteDeliveryRequest) returns (OrderResponse);
+  
+  // Payment service methods
+  rpc ProcessPayment(ProcessPaymentRequest) returns (PaymentResponse);
+  rpc RefundPayment(RefundRequest) returns (PaymentResponse);
+  
+  // Promotion service methods
+  rpc ApplyPromotion(ApplyPromotionRequest) returns (PromotionResponse);
+  rpc GetAvailablePromotions(UserRequest) returns (PromotionsResponse);
+  
+  // Support service methods
+  rpc CreateSupportTicket(CreateTicketRequest) returns (TicketResponse);
+  rpc GetTicketStatus(TicketRequest) returns (TicketResponse);
+  rpc AddTicketMessage(AddTicketMessageRequest) returns (TicketMessageResponse);
+  
+  // Notification service methods
+  rpc GetUserNotifications(UserRequest) returns (NotificationsResponse);
+  rpc MarkNotificationAsRead(NotificationRequest) returns (google.protobuf.Empty);
+
+  rpc SubscribeToOrderUpdates(OrderSubscriptionRequest) returns (stream OrderStatusUpdate);
+  rpc SubscribeToDriverLocation(DriverLocationSubscriptionRequest) returns (stream DriverLocationUpdate);
+  rpc SubscribeToNotifications(NotificationSubscriptionRequest) returns (stream NotificationEvent);
+  rpc SubscribeToNewOrders(RestaurantSubscriptionRequest) returns (stream NewOrderEvent);
+
+  // AdminService
+  rpc GetSystemStats(SystemStatsRequest) returns (SystemStatsResponse);
+  rpc GetActiveDrivers(DriverLocationRequest) returns (ActiveDriversResponse);
+  rpc CreatePromotion(CreatePromotionRequest) returns (PromotionInfo);
+  rpc UpdatePromotion(UpdatePromotionRequest) returns (PromotionInfo);
+  rpc ManageUser(ManageUserRequest) returns (UserResponse);
+  rpc GetSupportTickets(SupportTicketsRequest) returns (SupportTicketsResponse);
+  rpc AssignTicket(AssignTicketRequest) returns (TicketResponse);
+
+  // RestaurantManagement
+  rpc CreateRestaurant(CreateRestaurantRequest) returns (RestaurantResponse);
+  rpc UpdateRestaurant(UpdateRestaurantRequest) returns (RestaurantResponse);
+  rpc CreateMenuItem(CreateMenuItemRequest) returns (MenuItemResponse);
+  rpc UpdateMenuItem(UpdateMenuItemRequest) returns (MenuItemResponse);
+  rpc DeleteMenuItem(MenuItemRequest) returns (google.protobuf.Empty);
+  rpc GetPendingOrders(RestaurantRequest) returns (RestaurantOrdersResponse);
+  rpc UpdateOrderPreparationStatus(UpdatePreparationStatusRequest) returns (OrderStatusResponse);
+  rpc GetRestaurantAnalytics(RestaurantAnalyticsRequest) returns (RestaurantAnalyticsResponse);
+}
+
+// Common messages
+message UserRequest {
+  string user_id = 1;
+}
+
+message RestaurantRequest {
+  string restaurant_id = 1;
+}
+
+message OrderRequest {
+  string order_id = 1;
+}
+
+message DriverRequest {
+  string driver_id = 1;
+}
+
+message TicketRequest {
+  string ticket_id = 1;
+}
+
+message NotificationRequest {
+  string notification_id = 1;
+}
+
+// User service messages
+message RegisterUserRequest {
+  string email = 1;
+  string password = 2;
+  string phone_number = 3;
+  string first_name = 4;
+  string last_name = 5;
+  UserType user_type = 6;
+  
+  enum UserType {
+    CUSTOMER = 0;
+    DRIVER = 1;
+    RESTAURANT_STAFF = 2;
+    ADMIN = 3;
+  }
+  
+  // Optional fields based on user type
+  DriverDetails driver_details = 7;
+  RestaurantStaffDetails restaurant_staff_details = 8;
+}
+
+message DriverDetails {
+  string vehicle_type = 1;
+  string license_number = 2;
+  string vehicle_color = 3;
+  string vehicle_make = 4;
+  string vehicle_model = 5;
+  string vehicle_year = 6;
+}
+
+message RestaurantStaffDetails {
+  string restaurant_id = 1;
+  string role = 2;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string user_id = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+  UserType user_type = 4;
+  
+  enum UserType {
+    CUSTOMER = 0;
+    DRIVER = 1;
+    RESTAURANT_STAFF = 2;
+    ADMIN = 3;
+  }
+}
+
+message UserResponse {
+  string user_id = 1;
+  string email = 2;
+  string phone_number = 3;
+  string first_name = 4;
+  string last_name = 5;
+  UserType user_type = 6;
+  
+  enum UserType {
+    CUSTOMER = 0;
+    DRIVER = 1;
+    RESTAURANT_STAFF = 2;
+    ADMIN = 3;
+  }
+}
+
+message UserProfileResponse {
+  UserResponse user = 1;
+  repeated AddressInfo addresses = 2;
+  PaymentMethodsInfo payment_methods = 3;
+  CustomerPreferences preferences = 4; // For customers
+  DriverProfileInfo driver_profile = 5; // For drivers
+}
+
+message AddressInfo {
+  string address_id = 1;
+  string address_line1 = 2;
+  string address_line2 = 3;
+  string city = 4;
+  string state = 5;
+  string postal_code = 6;
+  string country = 7;
+  double latitude = 8;
+  double longitude = 9;
+  bool is_default = 10;
+  string label = 11;
+  string delivery_instructions = 12;
+}
+
+message PaymentMethodsInfo {
+  repeated PaymentMethod payment_methods = 1;
+}
+
+message PaymentMethod {
+  string payment_method_id = 1;
+  string type = 2; // "credit_card", "paypal", etc.
+  string last_four = 3; // Last four digits for cards
+  bool is_default = 4;
+  string card_type = 5; // "visa", "mastercard", etc.
+  string expiry_date = 6; // For cards
+}
+
+message CustomerPreferences {
+  repeated string favorite_cuisines = 1;
+  repeated string dietary_restrictions = 2;
+  bool contactless_delivery = 3;
+  int32 default_tip_percentage = 4;
+}
+
+message DriverProfileInfo {
+  string vehicle_type = 1;
+  string license_number = 2;
+  bool is_active = 3;
+  Location current_location = 4;
+  float rating = 5;
+  string vehicle_details = 6;
+}
+
+message UpdateUserProfileRequest {
+  string user_id = 1;
+  string phone_number = 2;
+  string first_name = 3;
+  string last_name = 4;
+  repeated AddressInfo addresses = 5;
+  CustomerPreferences preferences = 6;
+  DriverProfileInfo driver_profile = 7;
+}
+
+// Restaurant service messages
+message SearchRestaurantsRequest {
+  Location user_location = 1;
+  double radius_km = 2;
+  string cuisine_type = 3;
+  string search_query = 4;
+  bool open_now = 5;
+  SortOption sort_by = 6;
+  int32 page = 7;
+  int32 page_size = 8;
+  
+  enum SortOption {
+    RELEVANCE = 0;
+    RATING_HIGH_TO_LOW = 1;
+    DELIVERY_TIME_LOW_TO_HIGH = 2;
+    DISTANCE_LOW_TO_HIGH = 3;
+  }
+}
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+}
+
+message RestaurantsResponse {
+  repeated RestaurantSummary restaurants = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message RestaurantSummary {
+  string restaurant_id = 1;
+  string name = 2;
+  string cuisine_type = 3;
+  float rating = 4;
+  int32 rating_count = 5;
+  string thumbnail_url = 6;
+  int32 estimated_delivery_time = 7; // in minutes
+  double delivery_fee = 8;
+  bool is_promoted = 9;
+  double distance_km = 10;
+}
+
+message RestaurantResponse {
+  string restaurant_id = 1;
+  string name = 2;
+  string description = 3;
+  string cuisine_type = 4;
+  AddressInfo address = 5;
+  string contact_phone = 6;
+  string contact_email = 7;
+  repeated OperatingHours operating_hours = 8;
+  bool is_currently_open = 9;
+  float rating = 10;
+  int32 rating_count = 11;
+  repeated string image_urls = 12;
+  double delivery_fee = 13;
+  int32 estimated_preparation_time = 14; // in minutes
+  bool accepts_online_payments = 15;
+}
+
+message OperatingHours {
+  string day = 1;
+  string opening_time = 2;
+  string closing_time = 3;
+}
+
+message MenuResponse {
+  string restaurant_id = 1;
+  string restaurant_name = 2;
+  repeated MenuCategory categories = 3;
+}
+
+message MenuCategory {
+  string category_id = 1;
+  string name = 2;
+  string description = 3;
+  int32 display_order = 4;
+  repeated MenuItem items = 5;
+}
+
+message MenuItem {
+  string item_id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  string image_url = 5;
+  int32 preparation_time = 6; // in minutes
+  bool is_vegetarian = 7;
+  bool is_vegan = 8;
+  bool is_gluten_free = 9;
+  int32 spice_level = 10; // 0-5
+  repeated CustomizationOption customization_options = 11;
+  bool is_popular = 12;
+}
+
+message CustomizationOption {
+  string option_id = 1;
+  string name = 2;
+  bool is_required = 3;
+  int32 min_selections = 4;
+  int32 max_selections = 5;
+  repeated CustomizationChoice choices = 6;
+}
+
+message CustomizationChoice {
+  string choice_id = 1;
+  string name = 2;
+  double price_adjustment = 3;
+}
+
+// Order service messages
+message CreateOrderRequest {
+  string customer_id = 1;
+  string restaurant_id = 2;
+  string delivery_address_id = 3;
+  repeated OrderItem items = 4;
+  string payment_method_id = 5;
+  string promotion_code = 6;
+  double tip_amount = 7;
+  string special_instructions = 8;
+  bool scheduled_order = 9;
+  google.protobuf.Timestamp scheduled_time = 10;
+}
+
+message OrderItem {
+  string menu_item_id = 1;
+  int32 quantity = 2;
+  repeated CustomizationSelection customizations = 3;
+  string special_instructions = 4;
+}
+
+message CustomizationSelection {
+  string option_id = 1;
+  repeated string selected_choice_ids = 2;
+}
+
+message OrderResponse {
+  string order_id = 1;
+  string customer_id = 2;
+  string restaurant_id = 3;
+  string restaurant_name = 4;
+  OrderStatus status = 5;
+  AddressInfo delivery_address = 6;
+  google.protobuf.Timestamp placed_at = 7;
+  google.protobuf.Timestamp estimated_delivery_time = 8;
+  google.protobuf.Timestamp actual_delivery_time = 9;
+  repeated OrderItemDetails items = 10;
+  OrderPricing pricing = 11;
+  string special_instructions = 12;
+  DriverInfo driver = 13;
+  string tracking_url = 14;
+  
+  enum OrderStatus {
+    CREATED = 0;
+    CONFIRMED = 1;
+    PREPARING = 2;
+    READY_FOR_PICKUP = 3;
+    PICKED_UP = 4;
+    DELIVERED = 5;
+    CANCELLED = 6;
+  }
+}
+
+message OrderItemDetails {
+  string item_id = 1;
+  string name = 2;
+  int32 quantity = 3;
+  double unit_price = 4;
+  double total_price = 5;
+  repeated CustomizationDetail customizations = 6;
+  string special_instructions = 7;
+}
+
+message CustomizationDetail {
+  string option_name = 1;
+  repeated string selected_choices = 2;
+  double price_adjustment = 3;
+}
+
+message OrderPricing {
+  double subtotal = 1;
+  double delivery_fee = 2;
+  double service_fee = 3;
+  double tax = 4;
+  double tip = 5;
+  double discount = 6;
+  string promotion_code = 7;
+  double total_amount = 8;
+}
+
+message DriverInfo {
+  string driver_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string phone_number = 4;
+  string vehicle_type = 5;
+  string vehicle_details = 6;
+  float rating = 7;
+  Location current_location = 8;
+}
+
+message OrderStatusResponse {
+  string order_id = 1;
+  OrderStatus status = 2;
+  google.protobuf.Timestamp estimated_delivery_time = 3;
+  google.protobuf.Timestamp status_updated_at = 4;
+  string status_message = 5;
+  DriverInfo driver = 6;
+  Location current_location = 7;
+  
+  enum OrderStatus {
+    CREATED = 0;
+    CONFIRMED = 1;
+    PREPARING = 2;
+    READY_FOR_PICKUP = 3;
+    PICKED_UP = 4;
+    DELIVERED = 5;
+    CANCELLED = 6;
+  }
+}
+
+message UpdateOrderStatusRequest {
+  string order_id = 1;
+  OrderStatus new_status = 2;
+  string updated_by_id = 3; // User ID of who updated the status
+  string status_notes = 4;
+  
+  enum OrderStatus {
+    CREATED = 0;
+    CONFIRMED = 1;
+    PREPARING = 2;
+    READY_FOR_PICKUP = 3;
+    PICKED_UP = 4;
+    DELIVERED = 5;
+    CANCELLED = 6;
+  }
+}
+
+message OrderHistoryRequest {
+  string user_id = 1;
+  UserType user_type = 2; // Customer, Driver, or Restaurant
+  int32 page = 3;
+  int32 page_size = 4;
+  string filter_by_status = 5; // Optional filter
+  
+  enum UserType {
+    CUSTOMER = 0;
+    DRIVER = 1;
+    RESTAURANT = 2;
+  }
+}
+
+message OrderHistoryResponse {
+  repeated OrderSummary orders = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message OrderSummary {
+  string order_id = 1;
+  string restaurant_name = 2;
+  OrderStatus status = 3;
+  google.protobuf.Timestamp placed_at = 4;
+  double total_amount = 5;
+  int32 item_count = 6;
+  
+  enum OrderStatus {
+    CREATED = 0;
+    CONFIRMED = 1;
+    PREPARING = 2;
+    READY_FOR_PICKUP = 3;
+    PICKED_UP = 4;
+    DELIVERED = 5;
+    CANCELLED = 6;
+  }
+}
+
+// Driver service messages
+message UpdateDriverLocationRequest {
+  string driver_id = 1;
+  Location location = 2;
+  bool is_active = 3;
+}
+
+message AvailableOrdersResponse {
+  repeated AvailableOrder orders = 1;
+}
+
+message AvailableOrder {
+  string order_id = 1;
+  string restaurant_name = 2;
+  AddressInfo pickup_address = 3;
+  AddressInfo delivery_address = 4;
+  double distance_km = 5;
+  double estimated_earnings = 6;
+  int32 items_count = 7;
+  google.protobuf.Timestamp pickup_ready_time = 8;
+}
+
+message AcceptOrderRequest {
+  string driver_id = 1;
+  string order_id = 2;
+}
+
+message CompleteDeliveryRequest {
+  string order_id = 1;
+  string driver_id = 2;
+  Location delivery_location = 3;
+  string delivery_photo_url = 4; // Optional photo confirmation
+  string delivery_notes = 5;
+}
+
+// Payment service messages
+message ProcessPaymentRequest {
+  string order_id = 1;
+  string payment_method_id = 2;
+  double amount = 3;
+  string currency = 4; // e.g., "USD"
+  PaymentType payment_type = 5;
+  
+  enum PaymentType {
+    PAYMENT = 0;
+    AUTHORIZATION = 1;
+    CAPTURE = 2;
+  }
+}
+
+message PaymentResponse {
+  string payment_id = 1;
+  string order_id = 2;
+  double amount = 3;
+  PaymentStatus status = 4;
+  string transaction_id = 5;
+  string receipt_url = 6;
+  google.protobuf.Timestamp processed_at = 7;
+  
+  enum PaymentStatus {
+    PENDING = 0;
+    AUTHORIZED = 1;
+    CAPTURED = 2;
+    REFUNDED = 3;
+    FAILED = 4;
+  }
+}
+
+message RefundRequest {
+  string payment_id = 1;
+  string order_id = 2;
+  double amount = 3; // Can be partial refund
+  string reason = 4;
+}
+
+// Promotion service messages
+message ApplyPromotionRequest {
+  string user_id = 1;
+  string promotion_code = 2;
+  string restaurant_id = 3; // Optional, for restaurant-specific promotions
+  double cart_value = 4;
+}
+
+message PromotionResponse {
+  bool is_valid = 1;
+  string promotion_id = 2;
+  string promotion_code = 3;
+  string description = 4;
+  DiscountType discount_type = 5;
+  double discount_value = 6;
+  double minimum_order_value = 7;
+  double max_discount_amount = 8;
+  double calculated_discount = 9;
+  string invalid_reason = 10; // If is_valid is false
+  
+  enum DiscountType {
+    PERCENTAGE = 0;
+    FIXED_AMOUNT = 1;
+  }
+}
+
+message PromotionsResponse {
+  repeated PromotionInfo promotions = 1;
+}
+
+message PromotionInfo {
+  string promotion_id = 1;
+  string code = 2;
+  string description = 3;
+  DiscountType discount_type = 4;
+  double discount_value = 5;
+  double minimum_order_value = 6;
+  double max_discount_amount = 7;
+  google.protobuf.Timestamp end_date = 8;
+  string restaurant_id = 9; // Null for platform-wide promotions
+  string restaurant_name = 10;
+  
+  enum DiscountType {
+    PERCENTAGE = 0;
+    FIXED_AMOUNT = 1;
+  }
+}
+
+// Support service messages (continued)
+message CreateTicketRequest {
+    string user_id = 1;
+    string order_id = 2; // Optional
+    string subject = 3;
+    string description = 4;
+    Priority priority = 5;
+    
+    enum Priority {
+      LOW = 0;
+      MEDIUM = 1;
+      HIGH = 2;
+      URGENT = 3;
+    }
+  }
+  
+message TicketResponse {
+    string ticket_id = 1;
+    string user_id = 2;
+    string order_id = 3;
+    string subject = 4;
+    string description = 5;
+    TicketStatus status = 6;
+    Priority priority = 7;
+    string assigned_to = 8; // Support agent ID
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+    google.protobuf.Timestamp resolved_at = 11;
+    repeated TicketMessageInfo messages = 12;
+
+    enum TicketStatus {
+        OPEN = 0;
+        IN_PROGRESS = 1;
+        RESOLVED = 2;
+        CLOSED = 3;
+    }
+
+    enum Priority {
+        LOW = 0;
+        MEDIUM = 1;
+        HIGH = 2;
+        URGENT = 3;
+    }
+}
+
+message TicketMessageInfo {
+    string message_id = 1;
+    string sender_id = 2;
+    string sender_name = 3;
+    bool is_support_agent = 4;
+    string message = 5;
+    google.protobuf.Timestamp created_at = 6;
+    repeated string attachment_urls = 7;
+}
+
+message AddTicketMessageRequest {
+    string ticket_id = 1;
+    string sender_id = 2;
+    string message = 3;
+    repeated string attachment_urls = 4;
+}
+
+message TicketMessageResponse {
+    string message_id = 1;
+    string ticket_id = 2;
+    string sender_id = 3;
+    string sender_name = 4;
+    bool is_support_agent = 5;
+    string message = 6;
+    google.protobuf.Timestamp created_at = 7;
+    repeated string attachment_urls = 8;
+}
+
+// Notification service messages
+message NotificationsResponse {
+    repeated NotificationInfo notifications = 1;
+    int32 unread_count = 2;
+}
+
+message NotificationInfo {
+    string notification_id = 1;
+    string user_id = 2;
+    string title = 3;
+    string message = 4;
+    NotificationType type = 5;
+    string reference_id = 6; // Could be order_id, promotion_id, etc.
+    bool is_read = 7;
+    google.protobuf.Timestamp created_at = 8;
+
+    enum NotificationType {
+        ORDER_UPDATE = 0;
+        PROMOTION = 1;
+        SYSTEM = 2;
+        PAYMENT = 3;
+        SUPPORT = 4;
+    }
+}
+
+message CreateRestaurantRequest {
+    string owner_id = 1;
+    string name = 2;
+    string description = 3;
+    string cuisine_type = 4;
+    AddressInfo address = 5;
+    string contact_phone = 6;
+    string contact_email = 7;
+    repeated OperatingHours operating_hours = 8;
+    repeated string image_urls = 9;
+    double delivery_fee = 10;
+    int32 estimated_preparation_time = 11;
+    bool accepts_online_payments = 12;
+}
+
+message UpdateRestaurantRequest {
+    string restaurant_id = 1;
+    string name = 2;
+    string description = 3;
+    string cuisine_type = 4;
+    AddressInfo address = 5;
+    string contact_phone = 6;
+    string contact_email = 7;
+    repeated OperatingHours operating_hours = 8;
+    repeated string image_urls = 9;
+    double delivery_fee = 10;
+    int32 estimated_preparation_time = 11;
+    bool accepts_online_payments = 12;
+    bool is_active = 13;
+}
+
+message CreateMenuItemRequest {
+    string restaurant_id = 1;
+    string category_id = 2;
+    string name = 3;
+    string description = 4;
+    double price = 5;
+    string image_url = 6;
+    int32 preparation_time = 7;
+    bool is_vegetarian = 8;
+    bool is_vegan = 9;
+    bool is_gluten_free = 10;
+    int32 spice_level = 11;
+    repeated CustomizationOption customization_options = 12;
+}
+
+message UpdateMenuItemRequest {
+    string item_id = 1;
+    string restaurant_id = 2;
+    string category_id = 3;
+    string name = 4;
+    string description = 5;
+    double price = 6;
+    string image_url = 7;
+    int32 preparation_time = 8;
+    bool is_vegetarian = 9;
+    bool is_vegan = 10;
+    bool is_gluten_free = 11;
+    int32 spice_level = 12;
+    repeated CustomizationOption customization_options = 13;
+    bool is_active = 14;
+}
+
+message MenuItemRequest {
+    string item_id = 1;
+    string restaurant_id = 2;
+}
+
+message MenuItemResponse {
+    string item_id = 1;
+    string restaurant_id = 2;
+    string category_id = 3;
+    string name = 4;
+    string description = 5;
+    double price = 6;
+    string image_url = 7;
+    int32 preparation_time = 8;
+    bool is_vegetarian = 9;
+    bool is_vegan = 10;
+    bool is_gluten_free = 11;
+    int32 spice_level = 12;
+    repeated CustomizationOption customization_options = 13;
+    bool is_active = 14;
+}
+
+message RestaurantOrdersResponse {
+    repeated OrderResponse orders = 1;
+    int32 total_count = 2;
+}
+
+message UpdatePreparationStatusRequest {
+    string order_id = 1;
+    string restaurant_id = 2;
+    PreparationStatus status = 3;
+    int32 estimated_ready_minutes = 4;
+
+    enum PreparationStatus {
+        CONFIRMED = 0;
+        PREPARING = 1;
+        READY_FOR_PICKUP = 2;
+    }
+}
+
+message RestaurantAnalyticsRequest {
+    string restaurant_id = 1;
+    google.protobuf.Timestamp start_date = 2;
+    google.protobuf.Timestamp end_date = 3;
+    AnalyticsType type = 4;
+
+    enum AnalyticsType {
+        SALES = 0;
+        ORDERS = 1;
+        ITEMS = 2;
+        CUSTOMERS = 3;
+        ALL = 4;
+    }
+}
+
+message RestaurantAnalyticsResponse {
+    string restaurant_id = 1;
+    SalesData sales_data = 2;
+    OrdersData orders_data = 3;
+    ItemsData items_data = 4;
+    CustomersData customers_data = 5;
+}
+
+message SalesData {
+    double total_sales = 1;
+    repeated DailySales daily_sales = 2;
+    double average_order_value = 3;
+    repeated HourlySales hourly_breakdown = 4;
+}
+
+message DailySales {
+    string date = 1;
+    double sales_amount = 2;
+    int32 orders_count = 3;
+}
+
+message HourlySales {
+    int32 hour = 1;
+    double sales_amount = 2;
+    int32 orders_count = 3;
+}
+
+message OrdersData {
+    int32 total_orders = 1;
+    int32 completed_orders = 2;
+    int32 cancelled_orders = 3;
+    double cancellation_rate = 4;
+    int32 average_preparation_time = 5;
+    int32 average_delivery_time = 6;
+}
+
+message ItemsData {
+    repeated TopMenuItem top_items = 1;
+    repeated CategoryPerformance category_performance = 2;
+}
+
+message TopMenuItem {
+    string item_id = 1;
+    string name = 2;
+    int32 quantity_sold = 3;
+    double total_sales = 4;
+    double percentage_of_orders = 5;
+}
+
+message CategoryPerformance {
+    string category_id = 1;
+    string name = 2;
+    int32 items_sold = 3;
+    double total_sales = 4;
+    double percentage_of_sales = 5;
+}
+
+message CustomersData {
+    int32 total_customers = 1;
+    int32 new_customers = 2;
+    int32 returning_customers = 3;
+    double average_customer_frequency = 4;
+    repeated TopCustomer top_customers = 5;
+}
+
+message TopCustomer {
+    string customer_id = 1;
+    int32 orders_count = 2;
+    double total_spent = 3;
+    double average_order_value = 4;
+}
+
+message SystemStatsRequest {
+    google.protobuf.Timestamp start_date = 1;
+    google.protobuf.Timestamp end_date = 2;
+}
+
+message SystemStatsResponse {
+    int32 total_orders = 1;
+    double total_sales = 2;
+    int32 active_users = 3;
+    int32 active_restaurants = 4;
+    int32 active_drivers = 5;
+    double platform_revenue = 6;
+    repeated RegionStats region_stats = 7;
+}
+
+message RegionStats {
+    string region_name = 1;
+    int32 orders_count = 2;
+    double sales_amount = 3;
+    int32 restaurants_count = 4;
+    int32 drivers_count = 5;
+}
+
+message DriverLocationRequest {
+    Location center = 1;
+    double radius_km = 2;
+}
+
+message ActiveDriversResponse {
+    repeated ActiveDriver drivers = 1;
+    int32 total_count = 2;
+}
+
+message ActiveDriver {
+    string driver_id = 1;
+    string name = 2;
+    Location location = 3;
+    bool is_on_delivery = 4;
+    string current_order_id = 5;
+    google.protobuf.Timestamp last_updated = 6;
+}
+
+message CreatePromotionRequest {
+    string code = 1;
+    string description = 2;
+    DiscountType discount_type = 3;
+    double discount_value = 4;
+    double minimum_order_value = 5;
+    double max_discount_amount = 6;
+    google.protobuf.Timestamp start_date = 7;
+    google.protobuf.Timestamp end_date = 8;
+    int32 usage_limit = 9;
+    string restaurant_id = 10; // Optional, for restaurant-specific promotions
+
+    enum DiscountType {
+        PERCENTAGE = 0;
+        FIXED_AMOUNT = 1;
+    }
+}
+
+message UpdatePromotionRequest {
+    string promotion_id = 1;
+    string description = 2;
+    double minimum_order_value = 3;
+    double max_discount_amount = 4;
+    google.protobuf.Timestamp end_date = 5;
+    int32 usage_limit = 6;
+    bool is_active = 7;
+}
+
+message ManageUserRequest {
+    string user_id = 1;
+    Action action = 2;
+    string reason = 3;
+
+    enum Action {
+        ACTIVATE = 0;
+        DEACTIVATE = 1;
+        RESET_PASSWORD = 2;
+        VERIFY = 3;
+    }
+}
+
+message SupportTicketsRequest {
+    TicketStatus status = 1;
+    Priority priority = 2;
+    int32 page = 3;
+    int32 page_size = 4;
+
+    enum TicketStatus {
+        OPEN = 0;
+        IN_PROGRESS = 1;
+        RESOLVED = 2;
+        CLOSED = 3;
+        ALL = 4;
+    }
+
+    enum Priority {
+        LOW = 0;
+        MEDIUM = 1;
+        HIGH = 2;
+        URGENT = 3;
+        TOP = 4;
+    }
+}
+
+message SupportTicketsResponse {
+    repeated TicketResponse tickets = 1;
+    int32 total_count = 2;
+    int32 page = 3;
+    int32 page_size = 4;
+}
+
+message AssignTicketRequest {
+    string ticket_id = 1;
+    string agent_id = 2;
+    TicketStatus status = 3;
+    Priority priority = 4;
+
+    enum TicketStatus {
+        OPEN = 0;
+        IN_PROGRESS = 1;
+        RESOLVED = 2;
+        CLOSED = 3;
+    }
+
+    enum Priority {
+        LOW = 0;
+        MEDIUM = 1;
+        HIGH = 2;
+        URGENT = 3;
+    }
+}
+
+message OrderSubscriptionRequest {
+    string order_id = 1;
+    string user_id = 2;
+}
+
+message OrderStatusUpdate {
+    string order_id = 1;
+    OrderStatus status = 2;
+    string status_message = 3;
+    google.protobuf.Timestamp timestamp = 4;
+    Location location = 5; // Optional driver location
+    int32 estimated_minutes_remaining = 6;
+
+    enum OrderStatus {
+        CREATED = 0;
+        CONFIRMED = 1;
+        PREPARING = 2;
+        READY_FOR_PICKUP = 3;
+        PICKED_UP = 4;
+        DELIVERED = 5;
+        CANCELLED = 6;
+    }
+}
+
+message DriverLocationSubscriptionRequest {
+    string order_id = 1;
+    string user_id = 2;
+}
+
+message DriverLocationUpdate {
+    string driver_id = 1;
+    string order_id = 2;
+    Location location = 3;
+    google.protobuf.Timestamp timestamp = 4;
+    int32 estimated_minutes_remaining = 5;
+}
+
+message NotificationSubscriptionRequest {
+    string user_id = 1;
+    repeated NotificationType types = 2;
+
+    enum NotificationType {
+        ORDER_UPDATE = 0;
+        PROMOTION = 1;
+        SYSTEM = 2;
+        PAYMENT = 3;
+        SUPPORT = 4;
+        ALL = 5;
+    }
+}
+  
+message NotificationEvent {
+    string notification_id = 1;
+    string user_id = 2;
+    string title = 3;
+    string message = 4;
+    NotificationType type = 5;
+    string reference_id = 6;
+    google.protobuf.Timestamp created_at = 7;
+    
+    enum NotificationType {
+      ORDER_UPDATE = 0;
+      PROMOTION = 1;
+      SYSTEM = 2;
+      PAYMENT = 3;
+      SUPPORT = 4;
+    }
+}
+  
+message RestaurantSubscriptionRequest {
+    string restaurant_id = 1;
+    string user_id = 2;
+}
+  
+message NewOrderEvent {
+    string order_id = 1;
+    string restaurant_id = 2;
+    string customer_name = 3;
+    int32 items_count = 4;
+    double total_amount = 5;
+    google.protobuf.Timestamp placed_at = 6;
+    bool requires_confirmation = 7;
+}

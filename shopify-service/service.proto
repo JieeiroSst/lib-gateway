@@ -1,0 +1,220 @@
+syntax = "proto3";
+
+package flashsale;
+
+option go_package = "github.com/example/flashsale";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service FlashSaleService {
+  rpc CreateFlashSale(CreateFlashSaleRequest) returns (FlashSaleResponse);
+  rpc UpdateFlashSale(UpdateFlashSaleRequest) returns (FlashSaleResponse);
+  rpc GetFlashSale(GetFlashSaleRequest) returns (FlashSaleResponse);
+  rpc ListFlashSales(ListFlashSalesRequest) returns (ListFlashSalesResponse);
+  rpc CancelFlashSale(CancelFlashSaleRequest) returns (FlashSaleResponse);
+  
+  rpc AddProductToSale(AddProductToSaleRequest) returns (SaleProductResponse);
+  rpc RemoveProductFromSale(RemoveProductFromSaleRequest) returns (google.protobuf.Empty);
+  rpc UpdateSaleProduct(UpdateSaleProductRequest) returns (SaleProductResponse);
+  rpc ListSaleProducts(ListSaleProductsRequest) returns (ListSaleProductsResponse);
+  
+  rpc GetActiveFlashSales(GetActiveFlashSalesRequest) returns (ListFlashSalesResponse);
+  rpc ReserveProduct(ReserveProductRequest) returns (ReservationResponse);
+  rpc ConfirmReservation(ConfirmReservationRequest) returns (OrderResponse);
+  rpc CancelReservation(CancelReservationRequest) returns (google.protobuf.Empty);
+  
+  rpc SubscribeToSaleUpdates(SubscribeSaleRequest) returns (stream SaleUpdateEvent);
+  rpc SubscribeToInventoryUpdates(SubscribeInventoryRequest) returns (stream InventoryUpdateEvent);
+}
+
+// Request and Response messages
+message CreateFlashSaleRequest {
+  string name = 1;
+  string description = 2;
+  google.protobuf.Timestamp start_time = 3;
+  google.protobuf.Timestamp end_time = 4;
+  int32 max_purchases_per_customer = 5;
+}
+
+message UpdateFlashSaleRequest {
+  string sale_id = 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp start_time = 4;
+  google.protobuf.Timestamp end_time = 5;
+  int32 max_purchases_per_customer = 6;
+  SaleStatus status = 7;
+}
+
+message GetFlashSaleRequest {
+  string sale_id = 1;
+}
+
+message CancelFlashSaleRequest {
+  string sale_id = 1;
+}
+
+message ListFlashSalesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  SaleStatus status_filter = 3;
+}
+
+message AddProductToSaleRequest {
+  string sale_id = 1;
+  string product_id = 2;
+  double sale_price = 3;
+  int32 sale_quantity = 4;
+}
+
+message RemoveProductFromSaleRequest {
+  string sale_product_id = 1;
+}
+
+message UpdateSaleProductRequest {
+  string sale_product_id = 1;
+  double sale_price = 2;
+  int32 sale_quantity = 3;
+}
+
+message ListSaleProductsRequest {
+  string sale_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message GetActiveFlashSalesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ReserveProductRequest {
+  string customer_id = 1;
+  string sale_product_id = 2;
+  int32 quantity = 3;
+}
+
+message ConfirmReservationRequest {
+  string reservation_id = 1;
+  string shopify_checkout_id = 2;
+}
+
+message CancelReservationRequest {
+  string reservation_id = 1;
+}
+
+message SubscribeSaleRequest {
+  string sale_id = 1;
+}
+
+message SubscribeInventoryRequest {
+  string sale_id = 1;
+}
+
+// Response messages
+message FlashSaleResponse {
+  string sale_id = 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp start_time = 4;
+  google.protobuf.Timestamp end_time = 5;
+  SaleStatus status = 6;
+  int32 max_purchases_per_customer = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message ListFlashSalesResponse {
+  repeated FlashSaleResponse sales = 1;
+  string next_page_token = 2;
+}
+
+message SaleProductResponse {
+  string sale_product_id = 1;
+  string sale_id = 2;
+  string product_id = 3;
+  string product_title = 4;
+  double regular_price = 5;
+  double sale_price = 6;
+  int32 sale_quantity = 7;
+  int32 sold_quantity = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+message ListSaleProductsResponse {
+  repeated SaleProductResponse products = 1;
+  string next_page_token = 2;
+}
+
+message ReservationResponse {
+  string reservation_id = 1;
+  string customer_id = 2;
+  string sale_product_id = 3;
+  int32 quantity = 4;
+  ReservationStatus status = 5;
+  google.protobuf.Timestamp expiration_time = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message OrderResponse {
+  string order_id = 1;
+  string shopify_order_id = 2;
+  string customer_id = 3;
+  string sale_id = 4;
+  double total_amount = 5;
+  OrderStatus status = 6;
+  repeated OrderItemResponse items = 7;
+  google.protobuf.Timestamp created_at = 8;
+}
+
+message OrderItemResponse {
+  string order_item_id = 1; 
+  string order_id = 2;
+  string sale_product_id = 3;
+  string product_title = 4;
+  int32 quantity = 5;
+  double unit_price = 6;
+}
+
+// Event messages
+message SaleUpdateEvent {
+  string sale_id = 1;
+  SaleStatus status = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  string message = 4;
+}
+
+message InventoryUpdateEvent {
+  string sale_product_id = 1;
+  string product_title = 2;
+  int32 remaining_quantity = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+// Enums
+enum SaleStatus {
+  SALE_STATUS_UNSPECIFIED = 0;
+  SALE_STATUS_SCHEDULED = 1;
+  SALE_STATUS_ACTIVE = 2;
+  SALE_STATUS_ENDED = 3;
+  SALE_STATUS_CANCELLED = 4;
+}
+
+enum ReservationStatus {
+  RESERVATION_STATUS_UNSPECIFIED = 0;
+  RESERVATION_STATUS_PENDING = 1;
+  RESERVATION_STATUS_CONFIRMED = 2;
+  RESERVATION_STATUS_EXPIRED = 3;
+  RESERVATION_STATUS_CANCELLED = 4;
+}
+
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_PENDING = 1;
+  ORDER_STATUS_PROCESSING = 2;
+  ORDER_STATUS_COMPLETED = 3;
+  ORDER_STATUS_FAILED = 4;
+  ORDER_STATUS_CANCELLED = 5;
+}

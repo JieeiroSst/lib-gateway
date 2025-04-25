@@ -1,0 +1,282 @@
+syntax = "proto3";
+
+package newsfeed;
+
+option go_package = "github.com/example/newsfeed";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service ThreadsService {
+  rpc FollowUser(FollowUserRequest) returns (FollowResponse);
+  rpc UnfollowUser(UnfollowUserRequest) returns (google.protobuf.Empty);
+  rpc GetFollowers(GetFollowersRequest) returns (UserList);
+  rpc GetFollowing(GetFollowingRequest) returns (UserList);
+
+  rpc CreatePost(CreatePostRequest) returns (Post);
+  rpc GetPost(GetPostRequest) returns (Post);
+  rpc UpdatePost(UpdatePostRequest) returns (Post);
+  rpc DeletePost(DeletePostRequest) returns (google.protobuf.Empty);
+  rpc LikePost(LikePostRequest) returns (LikeResponse);
+  rpc UnlikePost(UnlikePostRequest) returns (google.protobuf.Empty);
+  rpc GetPostLikes(GetPostLikesRequest) returns (UserList);
+  rpc AddTagToPost(AddTagRequest) returns (Post);
+  rpc RemoveTagFromPost(RemoveTagRequest) returns (Post);
+
+  rpc CreateComment(CreateCommentRequest) returns (Comment);
+  rpc GetComment(GetCommentRequest) returns (Comment);
+  rpc UpdateComment(UpdateCommentRequest) returns (Comment);
+  rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
+  rpc GetPostComments(GetPostCommentsRequest) returns (CommentList);
+  rpc GetCommentReplies(GetCommentRepliesRequest) returns (CommentList);
+  rpc LikeComment(LikeCommentRequest) returns (LikeResponse);
+  rpc UnlikeComment(UnlikeCommentRequest) returns (google.protobuf.Empty);
+
+  rpc GetUserFeed(GetUserFeedRequest) returns (PostList);
+  rpc GetExplorePostsGlobal(GetExploreRequest) returns (PostList);
+  rpc GetExploreTrendingTags(google.protobuf.Empty) returns (TagList);
+  rpc GetTagFeed(GetTagFeedRequest) returns (PostList);
+}
+
+message User {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string bio = 4;
+  string profile_image_url = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  int32 followers_count = 8;
+  int32 following_count = 9;
+  bool is_followed_by_current_user = 10;
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+  string bio = 4;
+  string profile_image_url = 5;
+}
+
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message UpdateUserRequest {
+  string user_id = 1;
+  string bio = 2;
+  string profile_image_url = 3;
+  string email = 4;
+  string password = 5;
+}
+
+message DeleteUserRequest {
+  string user_id = 1;
+}
+
+message FollowUserRequest {
+  string follower_id = 1;
+  string followed_id = 2;
+}
+
+message FollowResponse {
+  bool success = 1;
+  User followed_user = 2;
+}
+
+message UnfollowUserRequest {
+  string follower_id = 1;
+  string followed_id = 2;
+}
+
+message GetFollowersRequest {
+  string user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message GetFollowingRequest {
+  string user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message UserList {
+  repeated User users = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// Post messages
+message Post {
+  string id = 1;
+  string user_id = 2;
+  User user = 3;
+  string content = 4;
+  repeated string media_urls = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  int32 like_count = 8;
+  int32 comment_count = 9;
+  bool liked_by_current_user = 10;
+  repeated Tag tags = 11;
+}
+
+message CreatePostRequest {
+  string user_id = 1;
+  string content = 2;
+  repeated string media_urls = 3;
+  repeated string tag_names = 4;
+}
+
+message GetPostRequest {
+  string post_id = 1;
+}
+
+message UpdatePostRequest {
+  string post_id = 1;
+  string content = 2;
+  repeated string media_urls = 3;
+}
+
+message DeletePostRequest {
+  string post_id = 1;
+}
+
+message LikePostRequest {
+  string user_id = 1;
+  string post_id = 2;
+}
+
+message LikeResponse {
+  bool success = 1;
+  int32 new_like_count = 2;
+}
+
+message UnlikePostRequest {
+  string user_id = 1;
+  string post_id = 2;
+}
+
+message GetPostLikesRequest {
+  string post_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message PostList {
+  repeated Post posts = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message AddTagRequest {
+  string post_id = 1;
+  string tag_name = 2;
+}
+
+message RemoveTagRequest {
+  string post_id = 1;
+  string tag_id = 2;
+}
+
+// Comment messages
+message Comment {
+  string id = 1;
+  string post_id = 2;
+  string user_id = 3;
+  User user = 4;
+  string parent_comment_id = 5;
+  string content = 6;
+  repeated string media_urls = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  int32 like_count = 10;
+  int32 reply_count = 11;
+  bool liked_by_current_user = 12;
+}
+
+message CreateCommentRequest {
+  string post_id = 1;
+  string user_id = 2;
+  string parent_comment_id = 3;
+  string content = 4;
+  repeated string media_urls = 5;
+}
+
+message GetCommentRequest {
+  string comment_id = 1;
+}
+
+message UpdateCommentRequest {
+  string comment_id = 1;
+  string content = 2;
+  repeated string media_urls = 3;
+}
+
+message DeleteCommentRequest {
+  string comment_id = 1;
+}
+
+message GetPostCommentsRequest {
+  string post_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message GetCommentRepliesRequest {
+  string comment_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message CommentList {
+  repeated Comment comments = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message LikeCommentRequest {
+  string user_id = 1;
+  string comment_id = 2;
+}
+
+message UnlikeCommentRequest {
+  string user_id = 1;
+  string comment_id = 2;
+}
+
+// Feed messages
+message GetUserFeedRequest {
+  string user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+  FeedType feed_type = 4;
+
+  enum FeedType {
+    FOLLOWING = 0;
+    FOR_YOU = 1; 
+  }
+}
+
+message GetExploreRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message Tag {
+  string id = 1;
+  string name = 2;
+  int32 post_count = 3;
+}
+
+message TagList {
+  repeated Tag tags = 1;
+}
+
+message GetTagFeedRequest {
+  string tag_name = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}

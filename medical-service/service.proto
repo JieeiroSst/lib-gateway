@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+package medical_records;
+
+option go_package = "github.com/example/medical_records";
+
+import "google/protobuf/timestamp.proto";
+
+service MedicalRecordsService {
+  rpc CreatePatient(Patient) returns (PatientResponse);
+  rpc GetPatient(PatientRequest) returns (PatientResponse);
+  rpc UpdatePatient(Patient) returns (PatientResponse);
+  rpc ListPatients(PatientFilterRequest) returns (PatientListResponse);
+  
+  rpc CreateMedicalRecord(MedicalRecord) returns (MedicalRecordResponse);
+  rpc GetMedicalRecord(MedicalRecordRequest) returns (MedicalRecordResponse);
+  rpc UpdateMedicalRecord(MedicalRecord) returns (MedicalRecordResponse);
+  rpc ListMedicalRecords(MedicalRecordFilterRequest) returns (MedicalRecordListResponse);
+  
+  rpc RequestAccess(AccessRequest) returns (AccessResponse);
+  rpc GetAccessLogs(AccessLogRequest) returns (AccessLogResponse);
+}
+
+// Patient messages
+message Patient {
+  string patient_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string date_of_birth = 4;
+  string address = 5;
+  string contact_info = 6;
+  string insurance_info = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message PatientRequest {
+  string patient_id = 1;
+  string auth_token = 2;
+  string access_reason = 3;
+}
+
+message PatientResponse {
+  Patient patient = 1;
+  bool success = 2;
+  string error_message = 3;
+}
+
+message PatientFilterRequest {
+  string last_name = 1;
+  string first_name = 2;
+  string date_of_birth = 3;
+  int32 page_size = 4;
+  int32 page_number = 5;
+  string auth_token = 6;
+  string access_reason = 7;
+}
+
+message PatientListResponse {
+  repeated Patient patients = 1;
+  int32 total_count = 2;
+  bool success = 3;
+  string error_message = 4;
+}
+
+// Medical record messages
+message MedicalRecord {
+  string record_id = 1;
+  string patient_id = 2;
+  string record_type = 3;
+  bytes record_data = 4;
+  google.protobuf.Timestamp created_at = 5;
+  string created_by = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  string updated_by = 8;
+}
+
+message MedicalRecordRequest {
+  string record_id = 1;
+  string auth_token = 2;
+  string access_reason = 3;
+}
+
+message MedicalRecordResponse {
+  MedicalRecord record = 1;
+  bool success = 2;
+  string error_message = 3;
+}
+
+message MedicalRecordFilterRequest {
+  string patient_id = 1;
+  string record_type = 2;
+  google.protobuf.Timestamp start_date = 3;
+  google.protobuf.Timestamp end_date = 4;
+  int32 page_size = 5;
+  int32 page_number = 6;
+  string auth_token = 7;
+  string access_reason = 8;
+}
+
+message MedicalRecordListResponse {
+  repeated MedicalRecord records = 1;
+  int32 total_count = 2;
+  bool success = 3;
+  string error_message = 4;
+}
+
+// Access control messages
+message AccessRequest {
+  string staff_id = 1;
+  string patient_id = 2;
+  string record_id = 3;
+  string access_reason = 4;
+  string auth_token = 5;
+}
+
+message AccessResponse {
+  bool granted = 1;
+  string session_token = 2;
+  int32 time_limit_seconds = 3;
+  string error_message = 4;
+}
+
+message AccessLogRequest {
+  string patient_id = 1;
+  string staff_id = 2;
+  google.protobuf.Timestamp start_date = 3;
+  google.protobuf.Timestamp end_date = 4;
+  int32 page_size = 5;
+  int32 page_number = 6;
+  string auth_token = 7;
+}
+
+message AccessLog {
+  string log_id = 1;
+  string staff_id = 2;
+  string patient_id = 3;
+  string record_id = 4;
+  string action_type = 5;
+  google.protobuf.Timestamp timestamp = 6;
+  string ip_address = 7;
+  string access_reason = 8;
+}
+
+message AccessLogResponse {
+  repeated AccessLog logs = 1;
+  int32 total_count = 2;
+  bool success = 3;
+  string error_message = 4;
+}
+
+// Authentication messages
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+  string ip_address = 3;
+}
+
+message LoginResponse {
+  bool success = 1;
+  string auth_token = 2;
+  int32 expiry_seconds = 3;
+  string staff_id = 4;
+  string role = 5;
+  string error_message = 6;
+}
+
+message LogoutRequest {
+  string auth_token = 1;
+}
+
+message TokenRequest {
+  string auth_token = 1;
+}
+
+message TokenResponse {
+  bool valid = 1;
+  string staff_id = 2;
+  string role = 3;
+  int32 remaining_seconds = 4;
+}
