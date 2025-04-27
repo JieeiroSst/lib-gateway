@@ -1,0 +1,270 @@
+syntax = "proto3";
+
+package vendingmachine;
+
+option go_package = "./proto";
+
+import "google/api/annotations.proto";
+
+service VendingMachineService {
+    rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {
+        option (google.api.http) = {
+            get: "/v1/products"
+        };
+    }
+
+    rpc GetProduct(GetProductRequest) returns (GetProductResponse) {
+        option (google.api.http) = {
+            get: "/v1/products/{product_id}"
+        };
+    }
+
+    rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse) {
+        option (google.api.http) = {
+            get: "/v1/categories"
+        };
+    }
+
+    rpc ListProductsByCategory(ListProductsByCategoryRequest) returns (ListProductsResponse) {
+        option (google.api.http) = {
+            get: "/v1/products/category/{category}"
+        };
+    }
+
+    rpc StartSession(StartSessionRequest) returns (StartSessionResponse) {
+        option (google.api.http) = {
+            post: "/v1/sessions/start"
+        };
+    }
+
+    rpc EndSession(EndSessionRequest) returns (EndSessionResponse) {
+        option (google.api.http) = {
+            post: "/v1/sessions/end"
+        };
+    }
+
+    rpc InitiatePayment(InitiatePaymentRequest) returns (InitiatePaymentResponse) {
+        option (google.api.http) = {
+            post: "/v1/payments/initiate"
+        };
+    }
+
+    rpc ProcessPayment(ProcessPaymentRequest) returns (ProcessPaymentResponse) {
+        option (google.api.http) = {
+            post: "/v1/payments/process"
+        };
+    }
+
+    rpc CheckPaymentStatus(CheckPaymentStatusRequest) returns (CheckPaymentStatusResponse) {
+        option (google.api.http) = {
+            get: "/v1/payments/status"
+        };
+    }
+
+    rpc CheckAvailability(CheckAvailabilityRequest) returns (CheckAvailabilityResponse) {
+        option (google.api.http) = {
+            get: "/v1/availability"
+        };
+    }
+
+    rpc ReserveProduct(ReserveProductRequest) returns (ReserveProductResponse) {
+        option (google.api.http) = {
+            post: "/v1/products/reserve"
+        };
+    }
+
+    rpc ReleaseReservation(ReleaseReservationRequest) returns (ReleaseReservationResponse) {
+        option (google.api.http) = {
+            post: "/v1/products/release"
+        };
+    }
+
+    rpc ConfirmDispensed(ConfirmDispensedRequest) returns (ConfirmDispensedResponse) {
+        option (google.api.http) = {
+            post: "/v1/confirm-dispensed"
+        };
+    }
+
+    rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {
+        option (google.api.http) = {
+            post: "/v1/orders/create"
+        };
+    }
+
+    rpc GetOrderStatus(GetOrderStatusRequest) returns (GetOrderStatusResponse) {
+        option (google.api.http) = {
+            get: "/v1/orders/status/{order_id}"
+        };
+    }
+
+    rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse) {
+        option (google.api.http) = {
+            post: "/v1/orders/cancel"
+        };
+    }
+}
+
+message Product {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    int32 price_cents = 4;
+    string category = 5;
+    string image_url = 6;
+    map<string, string> attributes = 7; 
+}
+
+message ListProductsRequest {
+    int32 page_size = 1;
+    string page_token = 2;
+}
+
+message ListProductsResponse {
+    repeated Product products = 1;
+    string next_page_token = 2;
+}
+
+message GetProductRequest {
+    string product_id = 1;
+}
+
+message GetProductResponse {
+    Product product = 1;
+}
+
+message ListCategoriesRequest {}
+
+message ListCategoriesResponse {
+    repeated string categories = 1;
+}
+
+message ListProductsByCategoryRequest {
+    string category = 1;
+    int32 page_size = 2;
+    string page_token = 3;
+}
+
+message CheckAvailabilityRequest {
+    string product_id = 1;
+    string machine_id = 2;
+}
+
+message CheckAvailabilityResponse {
+    bool available = 1;
+    int32 quantity = 2;
+}
+
+message ReserveProductRequest {
+    string product_id = 1;
+    string machine_id = 2;
+    string session_id = 3;
+}
+
+message ReserveProductResponse {
+    bool success = 1;
+    string reservation_id = 2;
+    int32 timeout_seconds = 3;
+}
+
+message ReleaseReservationRequest {
+    string reservation_id = 1;
+}
+
+message ReleaseReservationResponse {
+    bool success = 1;
+}
+
+message ConfirmDispensedRequest {
+    string reservation_id = 1;
+    string order_id = 2;
+}
+
+message ConfirmDispensedResponse {
+    bool success = 1;
+}
+
+message InitiatePaymentRequest {
+    string session_id = 1;
+    int32 amount_cents = 2;
+    string currency = 3;
+    string product_id = 4;
+}
+
+message InitiatePaymentResponse {
+    string payment_id = 1;
+    string payment_url = 2;
+}
+
+message ProcessPaymentRequest {
+    string payment_id = 1;
+    string payment_method = 2;
+    string payment_token = 3;
+}
+
+message ProcessPaymentResponse {
+    bool success = 1;
+    string transaction_id = 2;
+    string status = 3;
+}
+
+message CheckPaymentStatusRequest {
+    string payment_id = 1;
+}
+
+message CheckPaymentStatusResponse {
+    string status = 1; // "pending", "completed", "failed", "refunded"
+    string transaction_id = 2;
+}
+
+message CreateOrderRequest {
+    string session_id = 1;
+    string product_id = 2;
+    string machine_id = 3;
+    string reservation_id = 4;
+    string payment_id = 5;
+}
+
+message CreateOrderResponse {
+    string order_id = 1;
+    string status = 2;
+}
+
+message GetOrderStatusRequest {
+    string order_id = 1;
+}
+
+message GetOrderStatusResponse {
+    string order_id = 1;
+    string status = 2;
+    string product_id = 3;
+    string machine_id = 4;
+    int64 created_at = 5;
+    int64 updated_at = 6;
+}
+
+message CancelOrderRequest {
+    string order_id = 1;
+    string reason = 2;
+}
+
+message CancelOrderResponse {
+    bool success = 1;
+    string status = 2;
+}
+
+message StartSessionRequest {
+    string machine_id = 1;
+}
+
+message StartSessionResponse {
+    string session_id = 1;
+    int32 timeout_seconds = 2;
+}
+
+message EndSessionRequest {
+    string session_id = 1;
+}
+
+message EndSessionResponse {
+    bool success = 1;
+}
