@@ -1,0 +1,196 @@
+syntax = "proto3";
+
+package bonuslink_serivce;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./proto";
+
+service BonuslinkSerivce {
+  // Link management
+  rpc CreateLink(CreateLinkRequest) returns (LinkResponse);
+  rpc GetLink(GetLinkRequest) returns (LinkResponse);
+  rpc ListLinks(ListLinksRequest) returns (ListLinksResponse);
+  rpc DeactivateLink(DeactivateLinkRequest) returns (LinkResponse);
+
+  // Link click tracking and reward processing
+  rpc TrackLinkClick(TrackLinkClickRequest) returns (TrackLinkClickResponse);
+  
+  // Reward management
+  rpc GetUserRewards(GetUserRewardsRequest) returns (GetUserRewardsResponse);
+  rpc RedeemReward(RedeemRewardRequest) returns (RedeemRewardResponse);
+  rpc CreateLinkReward(CreateLinkRewardRequest) returns (LinkRewardResponse);
+  rpc UpdateLinkReward(UpdateLinkRewardRequest) returns (LinkRewardResponse);
+  
+  // Analytics
+  rpc GetRewardStatistics(GetRewardStatisticsRequest) returns (GetRewardStatisticsResponse);
+}
+
+enum RewardCategory {
+  POINTS = 0;
+  BADGE = 1;
+  DISCOUNT = 2;
+  EXPERIENCE = 3;
+  PREMIUM_CONTENT = 4;
+}
+
+message CreateLinkRequest {
+  string url = 1;
+  string title = 2;
+  optional string description = 3;
+  string created_by_user_id = 4;
+}
+
+message GetLinkRequest {
+  string link_id = 1;
+}
+
+message ListLinksRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  optional string created_by_user_id = 3;
+  optional bool active_only = 4;
+}
+
+message ListLinksResponse {
+  repeated LinkResponse links = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message DeactivateLinkRequest {
+  string link_id = 1;
+}
+
+message LinkResponse {
+  string link_id = 1;
+  string url = 2;
+  string title = 3;
+  optional string description = 4;
+  string created_by_user_id = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  bool is_active = 8;
+  repeated LinkRewardResponse rewards = 9;
+}
+
+message TrackLinkClickRequest {
+  string user_id = 1;
+  string link_id = 2;
+  optional string ip_address = 3;
+  optional string user_agent = 4;
+}
+
+message TrackLinkClickResponse {
+  string click_id = 1;
+  google.protobuf.Timestamp clicked_at = 2;
+  repeated AwardedReward awarded_rewards = 3;
+}
+
+message AwardedReward {
+  string user_reward_id = 1;
+  string reward_type_name = 2;
+  RewardCategory reward_category = 3;
+  double reward_value = 4;
+  google.protobuf.Timestamp expires_at = 5;
+  optional string badge_image_url = 6;  
+  optional string premium_content_id = 7;  
+}
+
+message GetUserRewardsRequest {
+  string user_id = 1;
+  optional RewardCategory reward_category = 2;
+  optional bool include_redeemed = 3;
+  optional bool include_expired = 4;
+  int32 page_size = 5;
+  string page_token = 6;
+}
+
+message GetUserRewardsResponse {
+  repeated UserRewardResponse rewards = 1;
+  string next_page_token = 2;
+}
+
+message UserRewardResponse {
+  string user_reward_id = 1;
+  string user_id = 2;
+  string link_id = 3;
+  string link_title = 4;
+  string reward_type_name = 5;
+  RewardCategory reward_category = 6;
+  double reward_value = 7;
+  google.protobuf.Timestamp awarded_at = 8;
+  optional google.protobuf.Timestamp redeemed_at = 9;
+  optional google.protobuf.Timestamp expires_at = 10;
+  optional string badge_image_url = 11;  
+  optional string premium_content_id = 12;  
+}
+
+message RedeemRewardRequest {
+  string user_reward_id = 1;
+}
+
+message RedeemRewardResponse {
+  bool success = 1;
+  UserRewardResponse redeemed_reward = 2;
+}
+
+message CreateLinkRewardRequest {
+  string link_id = 1;
+  int32 reward_type_id = 2;
+  double reward_value = 3;
+  int32 max_claims_per_user = 4;
+  optional google.protobuf.Timestamp expires_at = 5;
+}
+
+message UpdateLinkRewardRequest {
+  string link_reward_id = 1;
+  optional double reward_value = 2;
+  optional int32 max_claims_per_user = 3;
+  optional google.protobuf.Timestamp expires_at = 4;
+}
+
+message LinkRewardResponse {
+  string link_reward_id = 1;
+  string link_id = 2;
+  int32 reward_type_id = 3;
+  string reward_type_name = 4;
+  RewardCategory reward_category = 5;
+  double reward_value = 6;
+  int32 max_claims_per_user = 7;
+  optional google.protobuf.Timestamp expires_at = 8;
+  google.protobuf.Timestamp created_at = 9;
+}
+
+message GetRewardStatisticsRequest {
+  google.protobuf.Timestamp start_date = 1;
+  google.protobuf.Timestamp end_date = 2;
+  optional int32 reward_type_id = 3;
+  optional string link_id = 4;
+  bool group_by_day = 5;
+}
+
+message DailyStatistic {
+  google.protobuf.Timestamp date = 1;
+  int32 clicks_count = 2;
+  int32 rewards_awarded_count = 3;
+  double total_value_awarded = 4;
+}
+
+message RewardTypeStatistic {
+  int32 reward_type_id = 1;
+  string reward_type_name = 2;
+  RewardCategory reward_category = 3;
+  int32 rewards_awarded_count = 4;
+  double total_value_awarded = 5;
+}
+
+message GetRewardStatisticsResponse {
+  google.protobuf.Timestamp start_date = 1;
+  google.protobuf.Timestamp end_date = 2;
+  int32 total_clicks = 3;
+  int32 total_rewards_awarded = 4;
+  double total_value_awarded = 5;
+  repeated DailyStatistic daily_statistics = 6;
+  repeated RewardTypeStatistic reward_type_statistics = 7;
+}
