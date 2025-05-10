@@ -3,27 +3,70 @@ syntax = "proto3";
 package bonuslink_serivce;
 
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 option go_package = "./proto";
 
 service BonuslinkSerivce {
   // Link management
-  rpc CreateLink(CreateLinkRequest) returns (LinkResponse);
-  rpc GetLink(GetLinkRequest) returns (LinkResponse);
-  rpc ListLinks(ListLinksRequest) returns (ListLinksResponse);
-  rpc DeactivateLink(DeactivateLinkRequest) returns (LinkResponse);
+  rpc CreateLink(CreateLinkRequest) returns (LinkResponse)
+  {
+    option (google.api.http) = {
+      post: "/api/v1/links"
+      body: "*"
+    };
+  }
+  rpc GetLink(GetLinkRequest) returns (LinkResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/links/{link_id}"
+    };
+  }
+  rpc ListLinks(ListLinksRequest) returns (ListLinksResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/links"
+    };
+  }
+  rpc DeactivateLink(DeactivateLinkRequest) returns (LinkResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/links/{link_id}"
+    };
+  }
 
   // Link click tracking and reward processing
-  rpc TrackLinkClick(TrackLinkClickRequest) returns (TrackLinkClickResponse);
+  rpc TrackLinkClick(TrackLinkClickRequest) returns (TrackLinkClickResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/links/{link_id}/click"
+    };
+  }
   
   // Reward management
-  rpc GetUserRewards(GetUserRewardsRequest) returns (GetUserRewardsResponse);
-  rpc RedeemReward(RedeemRewardRequest) returns (RedeemRewardResponse);
-  rpc CreateLinkReward(CreateLinkRewardRequest) returns (LinkRewardResponse);
-  rpc UpdateLinkReward(UpdateLinkRewardRequest) returns (LinkRewardResponse);
+  rpc GetUserRewards(GetUserRewardsRequest) returns (GetUserRewardsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/rewards"
+    };
+  }
+  rpc RedeemReward(RedeemRewardRequest) returns (RedeemRewardResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/rewards/redeem"
+    };
+  }
+  rpc CreateLinkReward(CreateLinkRewardRequest) returns (LinkRewardResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/rewards"
+    };
+  }
+  rpc UpdateLinkReward(UpdateLinkRewardRequest) returns (LinkRewardResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/rewards/{link_reward_id}"
+    };
+  }
   
   // Analytics
-  rpc GetRewardStatistics(GetRewardStatisticsRequest) returns (GetRewardStatisticsResponse);
+  rpc GetRewardStatistics(GetRewardStatisticsRequest) returns (GetRewardStatisticsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/rewards/statistics"
+    };
+  }
 }
 
 enum RewardCategory {
