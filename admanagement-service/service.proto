@@ -1,0 +1,430 @@
+// =============================================
+// GRPC PROTO DEFINITION FOR AD MANAGEMENT SYSTEM
+// =============================================
+
+syntax = "proto3";
+
+package admanagement.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "./admanagement";
+
+// Campaign messages
+message Campaign {
+  int32 id = 1;
+  int32 user_id = 2;
+  string name = 3;
+  string description = 4;
+  double budget = 5;
+  google.protobuf.Timestamp start_date = 6;
+  google.protobuf.Timestamp end_date = 7;
+  string status = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// Ad Category messages
+message AdCategory {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  int32 parent_id = 4;
+  bool is_active = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+// Ad Position messages
+message AdPosition {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  int32 width = 4;
+  int32 height = 5;
+  int32 max_file_size = 6;
+  repeated string allowed_formats = 7;
+  bool is_active = 8;
+}
+
+// Ad messages
+message Ad {
+  int32 id = 1;
+  int32 campaign_id = 2;
+  int32 category_id = 3;
+  string title = 4;
+  string description = 5;
+  string ad_type = 6;
+  string content_url = 7;
+  string target_url = 8;
+  string file_path = 9;
+  int32 file_size = 10;
+  string mime_type = 11;
+  int32 duration = 12;
+  int32 priority = 13;
+  bool is_active = 14;
+  google.protobuf.Timestamp start_date = 15;
+  google.protobuf.Timestamp end_date = 16;
+  google.protobuf.Timestamp created_at = 17;
+  google.protobuf.Timestamp updated_at = 18;
+  
+  // Additional fields for responses
+  AdCategory category = 19;
+  Campaign campaign = 20;
+  repeated AdPosition positions = 21;
+  AdStats stats = 22;
+}
+
+// Ad Statistics
+message AdStats {
+  int32 ad_id = 1;
+  int32 total_impressions = 2;
+  int32 total_clicks = 3;
+  double ctr = 4;
+  double total_cost = 5;
+  double total_revenue = 6;
+  google.protobuf.Timestamp last_updated = 7;
+}
+
+// Targeting Rule messages
+message TargetingRule {
+  int32 id = 1;
+  int32 ad_id = 2;
+  string rule_type = 3;
+  string rule_operator = 4;
+  string rule_value = 5; // JSON string
+  bool is_active = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+// =============================================
+// REQUEST/RESPONSE MESSAGES
+// =============================================
+
+// Campaign requests
+message CreateCampaignRequest {
+  string name = 1;
+  string description = 2;
+  double budget = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+}
+
+message UpdateCampaignRequest {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  double budget = 4;
+  google.protobuf.Timestamp start_date = 5;
+  google.protobuf.Timestamp end_date = 6;
+  string status = 7;
+}
+
+message GetCampaignsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string status = 3;
+  int32 user_id = 4;
+}
+
+message GetCampaignsResponse {
+  repeated Campaign campaigns = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// Ad requests
+message CreateAdRequest {
+  int32 campaign_id = 1;
+  int32 category_id = 2;
+  string title = 3;
+  string description = 4;
+  string ad_type = 5;
+  string content_url = 6;
+  string target_url = 7;
+  int32 duration = 8;
+  int32 priority = 9;
+  google.protobuf.Timestamp start_date = 10;
+  google.protobuf.Timestamp end_date = 11;
+  repeated int32 position_ids = 12;
+  repeated TargetingRule targeting_rules = 13;
+}
+
+message UpdateAdRequest {
+  int32 id = 1;
+  string title = 2;
+  string description = 3;
+  string target_url = 4;
+  int32 priority = 5;
+  bool is_active = 6;
+  google.protobuf.Timestamp start_date = 7;
+  google.protobuf.Timestamp end_date = 8;
+  repeated int32 position_ids = 9;
+}
+
+message GetAdsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  int32 campaign_id = 3;
+  string ad_type = 4;
+  bool is_active = 5;
+  int32 category_id = 6;
+}
+
+message GetAdsResponse {
+  repeated Ad ads = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message GetAdRequest {
+  int32 id = 1;
+}
+
+message DeleteAdRequest {
+  int32 id = 1;
+}
+
+// Ad serving requests
+message ServeAdRequest {
+  int32 position_id = 1;
+  string user_id = 2;
+  string session_id = 3;
+  string ip_address = 4;
+  string user_agent = 5;
+  string page_url = 6;
+  string referrer_url = 7;
+  map<string, string> targeting_context = 8; // For targeting rules
+}
+
+message ServeAdResponse {
+  Ad ad = 1;
+  string impression_id = 2;
+  bool has_ad = 3;
+}
+
+// Tracking requests
+message TrackImpressionRequest {
+  int32 ad_id = 1;
+  string user_id = 2;
+  string session_id = 3;
+  string ip_address = 4;
+  string user_agent = 5;
+  string page_url = 6;
+  string referrer_url = 7;
+  int32 position_id = 8;
+}
+
+message TrackClickRequest {
+  int32 ad_id = 1;
+  string impression_id = 2;
+  string user_id = 3;
+  string session_id = 4;
+  string ip_address = 5;
+  string user_agent = 6;
+  string referrer_url = 7;
+  string target_url = 8;
+}
+
+message TrackingResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Analytics requests
+message GetAdAnalyticsRequest {
+  int32 ad_id = 1;
+  google.protobuf.Timestamp start_date = 2;
+  google.protobuf.Timestamp end_date = 3;
+  string group_by = 4; // "day", "hour", "week", "month"
+}
+
+message AdAnalyticsData {
+  string date = 1;
+  int32 impressions = 2;
+  int32 clicks = 3;
+  double ctr = 4;
+  double cost = 5;
+  double revenue = 6;
+}
+
+message GetAdAnalyticsResponse {
+  repeated AdAnalyticsData data = 1;
+  AdStats summary = 2;
+}
+
+message GetCampaignAnalyticsRequest {
+  int32 campaign_id = 1;
+  google.protobuf.Timestamp start_date = 2;
+  google.protobuf.Timestamp end_date = 3;
+}
+
+message CampaignAnalyticsData {
+  Campaign campaign = 1;
+  AdStats stats = 2;
+  repeated Ad top_performing_ads = 3;
+}
+
+// File upload requests
+message UploadFileRequest {
+  string filename = 1;
+  string content_type = 2;
+  bytes file_data = 3;
+  string ad_type = 4;
+}
+
+message UploadFileResponse {
+  string file_url = 1;
+  string file_path = 2;
+  int32 file_size = 3;
+  bool success = 4;
+  string message = 5;
+}
+
+// Common responses
+message StandardResponse {
+  bool success = 1;
+  string message = 2;
+  int32 code = 3;
+}
+
+// List responses
+message GetCategoriesResponse {
+  repeated AdCategory categories = 1;
+}
+
+message GetPositionsResponse {
+  repeated AdPosition positions = 1;
+}
+
+// =============================================
+// SERVICE DEFINITIONS
+// =============================================
+
+
+service AdmanagementService {
+  // Campaign Management Service
+  rpc CreateCampaign(CreateCampaignRequest) returns (Campaign) {
+    option (google.api.http) = {
+      post: "/v1/campaigns"
+      body: "*"
+    };
+  }
+  
+  rpc GetCampaigns(GetCampaignsRequest) returns (GetCampaignsResponse) {
+    option (google.api.http) = {
+      get: "/v1/campaigns"
+    };
+  }
+  
+  rpc GetCampaign(GetAdRequest) returns (Campaign) {
+    option (google.api.http) = {
+      get: "/v1/campaigns/{id}"
+    };
+  }
+  
+  rpc UpdateCampaign(UpdateCampaignRequest) returns (Campaign) {
+    option (google.api.http) = {
+      put: "/v1/campaigns/{id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteCampaign(DeleteAdRequest) returns (StandardResponse) {
+    option (google.api.http) = {
+      delete: "/v1/campaigns/{id}"
+    };
+  }
+
+  // Ad Management Service
+    rpc CreateAd(CreateAdRequest) returns (Ad) {
+    option (google.api.http) = {
+      post: "/v1/ads"
+      body: "*"
+    };
+  }
+  
+  rpc GetAds(GetAdsRequest) returns (GetAdsResponse) {
+    option (google.api.http) = {
+      get: "/v1/ads"
+    };
+  }
+  
+  rpc GetAd(GetAdRequest) returns (Ad) {
+    option (google.api.http) = {
+      get: "/v1/ads/{id}"
+    };
+  }
+  
+  rpc UpdateAd(UpdateAdRequest) returns (Ad) {
+    option (google.api.http) = {
+      put: "/v1/ads/{id}"
+      body: "*"
+    };
+  }
+  
+  rpc DeleteAd(DeleteAdRequest) returns (StandardResponse) {
+    option (google.api.http) = {
+      delete: "/v1/ads/{id}"
+    };
+  }
+  
+  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse) {
+    option (google.api.http) = {
+      post: "/v1/ads/upload"
+      body: "*"
+    };
+  }
+
+  // Ad Serving Service
+    rpc TrackImpression(TrackImpressionRequest) returns (TrackingResponse) {
+    option (google.api.http) = {
+      post: "/v1/track/impression"
+      body: "*"
+    };
+  }
+  
+  rpc TrackClick(TrackClickRequest) returns (TrackingResponse) {
+    option (google.api.http) = {
+      post: "/v1/track/click"
+      body: "*"
+    };
+  }
+
+  // Ad Serving Service
+    rpc ServeAd(ServeAdRequest) returns (ServeAdResponse) {
+    option (google.api.http) = {
+      post: "/v1/serve"
+      body: "*"
+    };
+  }
+
+  // Analytics Service
+    rpc GetAdAnalytics(GetAdAnalyticsRequest) returns (GetAdAnalyticsResponse) {
+    option (google.api.http) = {
+      get: "/v1/analytics/ads/{ad_id}"
+    };
+  }
+  
+  rpc GetCampaignAnalytics(GetCampaignAnalyticsRequest) returns (CampaignAnalyticsData) {
+    option (google.api.http) = {
+      get: "/v1/analytics/campaigns/{campaign_id}"
+    };
+  }
+
+  // Metadata Service
+    rpc GetCategories(google.protobuf.Empty) returns (GetCategoriesResponse) {
+    option (google.api.http) = {
+      get: "/v1/metadata/categories"
+    };
+  }
+  
+  rpc GetPositions(google.protobuf.Empty) returns (GetPositionsResponse) {
+    option (google.api.http) = {
+      get: "/v1/metadata/positions"
+    };
+  }
+}
